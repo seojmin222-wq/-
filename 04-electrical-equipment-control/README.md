@@ -46,8 +46,11 @@
 ### 5) 최종평가: 이중 보호회로 기반 복합 자동 시퀀스 (2026.05.08)
 EOCR1/EOCR2 이중 과부하 보호, 리미트스위치 LS1/LS2, 타이머 T1/T2, 릴레이 X1/X2, 접촉기 MC1/MC2를 조합해 "LS1 ON 시 설정시간 간격으로 MC1+YL 점멸 반복, LS2 ON 시 MC2+RL 점멸 반복"하는 복합 자동 시퀀스 회로를 설계·배선했습니다.
 
-![회로 도면](images/04-circuit-diagram.png)
-![실제 배선 작업](images/04-wiring.png)
+<p align="center">
+  <img src="CT1.png" width="48%" />
+  <img src="CT2.png" width="48%" />
+</p>  
+![실제 배선 작업](CT3.png)
 
 ## 결과 및 성과
 - 급수·컨베이어·온도제어 등 4개 이상 실습 과제 회로 설계·배선 전 과제 정상 동작 확인
