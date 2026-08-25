@@ -26,7 +26,8 @@ PLC 로직만으로는 현장 데이터를 실시간으로 모니터링하고 �
 ![시스템 구성도](프젝1이미지/01-architecture_2.png)
 
 **SCADA 데이터 흐름**: PLC → Kepserver → PowerTool → Database
-**비전검사 자동화 흐름**: Cognex 비전 카메라 → VS Code(C#) 판정 로직 → 아두이노/PLC → MPS 자동 배출
+
+**비전검사 자동화 흐름**: Cognex 비전 카메라 + VS Code(C#)  → 아두이노 → PLC → MPS 자동 배출
 
 ## 주요 구현 내용
 
@@ -37,21 +38,29 @@ GXWorks2로 스마트 창고관리 시스템의 PLC 래더 로직을 설계하�
 
 [MPS 창고관리 설비의 입출고 컨베이어, 위치 감지 센서, 스토퍼 실린더, 랙 적재 상태 등]을 제어 대상으로 삼아 기능 단위로 로직을 구성했습니다.
 
+***주요 로직***
 | 기능 블록 | 주요 내용 |
 |---|---|
-| 기동/정지 인터록 | [비상정지·안전 조건이 모두 충족될 때만 기동을 허용하는 로직] |
+| 기동/정지 인터록 | [비상정지·초기 안전 조건이 모두 충족될 때만 기동을 허용하는 로직] |
 | 입출고 시퀀스 제어 | [센서 감지 순서에 따라 컨베이어·스토퍼 등을 순차 동작시키는 로직] |
 | 위치/재고 판별 | [랙별 적재 유무를 센서로 판별해 저장 위치를 결정하는 로직] |
-| 이상 감지 및 알람 | [타임아웃·센서 미검출 시 알람 비트를 On시키는 로직] |
 
-전체 rung을 다 나열하는 대신, 대표적인 구간만 캡처해 로직의 동작 원리를 설명합니다.
 
-![PLC 래더로직 - 기동 인터록](images/01-plc-ladder-interlock.png)
-> [비상정지 B접점과 안전센서 조건이 모두 충족될 때만 기동 코일이 여자되도록 구성한 인터록 로직입니다.]
+**기동/정지 인터록**
+<p align="center">
+  <img src="프젝1이미지/PLC1.png" width="48%" />
+  <img src="프젝1이미지/PLC1-1.png" width="48%" />
+</p>
 
-![PLC 래더로직 - 입출고 시퀀스](images/01-plc-ladder-sequence.png)
-> [위치 센서 신호에 따라 컨베이어 모터와 스토퍼 실린더를 순차 제어하는 로직입니다.]
+**입출고 시퀀스 제어**
+![입출고 시퀀스 제어](프젝1이미지/PLC2.png)
 
+**위치/재고 판별**
+<p align="center">
+  <img src="프젝1이미지/PLC3.png" width="48%" />
+  <img src="프젝1이미지/PLC4.png" width="48%" />
+</p>
+  
 <details>
 <summary>전체 래더로직 더 보기</summary>
 
@@ -61,20 +70,45 @@ GXWorks2로 스마트 창고관리 시스템의 PLC 래더 로직을 설계하�
 
 **HMI 화면 구현**
 
-GTDesigner3로 [자동/수동 모드 전환, 설비 상태 모니터링, 알람 이력 확인] 화면을 구성해 현장에서 PLC 상태를 직관적으로 확인·조작할 수 있도록 했습니다.
+GTDesigner3로 MAIN · Servo Control · Equipment Control 3개 화면을 구성하고, 화면 상단 버튼으로 서로 전환할 수 있도록 했습니다.
 
-![HMI 메인 화면](images/01-hmi-main.png)
+| ![MAIN](프젝1이미지/HMI1.png) | ![Servo Control](프젝1이미지/HMI2.png) | ![Equipment Control](프젝1이미지/HMI3.png) |
+|:---:|:---:|:---:|
+| 서보/설비 제어 진입 및 현재 날짜·시각 표시 | 원점 복귀·JOG·에러 리셋 조작 및 상태(에러/경고/위치/속도) 모니터링 | 가공 설정·비상정지/해제·창고 적재 램프·작업 수량 카운트 |
 
-- [자동/수동 모드 전환 스위치]
-- [컨베이어·센서 실시간 상태 표시]
-- [알람 발생 이력 표시]
 
 ### 2) iFIX 기반 SCADA 창고관리 시스템
 PLC·HMI 구현을 마친 뒤, Kepserver에서 Modbus TCP, OPC, OPC UA 통신 드라이버를 각각 직접 설정해 3종 프로토콜 통신을 구현했고, 이 중 미쯔비시 PLC는 실제 장비로 태그값을 가져와 확인했습니다. MQTT·MySQL 기반 데이터 처리도 학습해 적용했습니다.
 
+**Kepserver 통신 드라이버 및 태그 설정**
+
+KEPServerEX에서 미쯔비시 PLC 디바이스 영역별로 OPC 그룹을 구성하고 PLC 메모리를 OPC 태그로 노출시킨 뒤, iFIX I/O 드라이버에서 해당 OPC 항목을 참조하는 중간 태그를 구성해 PLC ↔ Kepserver ↔ iFIX 통신 경로를 연결했습니다. 이후 iFIX DB Manager에서 실제 SCADA 화면에 쓰일 태그에 한글 설명을 붙여 최종 태그 데이터베이스를 완성했습니다.
+
+<details>
+<summary>태그 설정 화면 더 보기</summary>
+
+**KEPServerEX OPC 그룹/아이템 구성**
+![KEPServerEX PowerTool](프젝1이미지/KEP1.png)
+
+**iFIX I/O 드라이버 태그 (KEPServer OPC 항목 매핑)**
+![iFIX I/O 드라이버 태그](프젝1이미지/KEP3.png)
+
+**iFIX DB Manager 최종 태그 목록**
+![iFIX DB Manager](프젝1이미지/KEP3.png)
+
+</details>
+
 iFIX에 SCADA 화면을 구성해 DO 태그로 MPS를 원격 구동하려 했으나, 태그 설정이 정확함에도 실제 구동이 되지 않는 문제가 발생했습니다. PLC → Kepserver → PowerTool → Database로 이어지는 데이터 흐름을 역으로 추적한 결과, Database에는 DO 값이 Write되지만 PLC까지 신호가 전달되지 않았고, PowerTool 단계에서 Write 칸에는 값이 들어가지만 Read 값이 비어있는 것을 확인했습니다. DO 태그만으로는 PowerTool의 Read가 이루어지지 않아 이후 Kepserver·PLC로 신호가 전달되지 않는다는 원인을 파악하고, Database에 DO와 짝을 이루는 DI 태그를 추가 생성해 Write→Read 사이클을 완성시킴으로써 문제를 해결했습니다. 이후 HDA 기능으로 원하는 기간의 태그 이력을 조회할 수 있도록 구성했습니다.
 
-![iFIX SCADA 화면](images/01-ifix-scada.png)
+### iFIX 화면 구성
+iFIX SCADA도 HMI와 유사하게 MAIN·Equipment Control·Servo Control 제어 화면과 HDA 기반 이력 조회(Trend) 화면으로 구성했습니다. 상단 공통 헤더에 화면 전환 버튼과 현재 날짜·시각, Auto/Manual 모드 전환 스위치를 배치했습니다.
+
+| ![MAIN](프젝1이미지/iFIX1.png) | ![Equipment Control](프젝1이미지/iFIX2.png) |
+|:---:|:---:|
+| 공정 모식도 + 축별 Jog 수동 제어 + Servo Position 실시간 표시 | 창고 적재 램프(층별/좌우) + 상태 램프 + 작업 수량(실시간 태그값) 모니터링 |
+| ![Servo Control](프젝1이미지/iFIX3.png) | ![Trend](프젝1이미지/iFIX4.png) |
+| JOG·원점 복귀·에러 리셋 조작 및 위치/속도/에러 상태 표시 | HDA로 태그 이력을 시계열 그래프로 조회 |
+
 
 ### 3) Cognex 비전 기반 품질검사 자동화
 PC제어 수업에서 Cognex 비전 카메라를 VS Code(C#) 환경과 연동해 물품을 실시간으로 촬영·판정하는 로직을 구현했습니다. 판정 결과를 아두이노·PLC와 연동해 기준 미달 물품이 감지되면 자동으로 배출되도록 로직을 구성했습니다. 아두이노, PLC, VS Code, Cognex 카메라를 소프트웨어·하드웨어 전 영역에서 연동해 C#으로 MPS 설비를 직접 구동, 비전 판정부터 물리적 배출까지 이어지는 하나의 자동화 루프를 완성했습니다.
