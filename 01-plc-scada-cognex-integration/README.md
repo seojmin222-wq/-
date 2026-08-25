@@ -70,7 +70,7 @@ GXWorks2로 스마트 창고관리 시스템의 PLC 래더 로직을 설계하�
 <details>
 <summary>전체 래더로직 더 보기</summary>
 
-발표 자료에서 정리했던 전체 로직은 PDF로 첨부해 두었습니다 → [PLC 래더로직 전체 PDF](docs/01-plc-ladder-full.pdf)
+발표 자료에서 정리했던 전체 로직은 PDF로 첨부해 두었습니다 → [PLC 래더로직 전체 PDF](프젝1이미지/PLC%20프로젝트%201_서정민.pdf)
 
 </details>
 
