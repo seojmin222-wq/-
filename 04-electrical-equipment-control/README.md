@@ -3,24 +3,24 @@
 ### 급수 · 컨베이어 · 온도제어 · 이중 과부하 보호 복합 시퀀스 구현
 
 > **Relay · Timer · Counter · Sensor · EOCR 등 산업용 제어기기를 조합해
-> 자동/수동 시퀀스 회로를 직접 설계·배선하고 최종 복합 시퀀스 평가를 통과한 제어회로 프로젝트**
+> 자동/수동 시퀀스 회로를 직접 설계·배선하고 복합 자동제어 최종평가를 통과한 프로젝트**
 
 * **기간**: 2026.04 ~ 2026.05
 * **참여 형태**: 개인 실습 및 최종평가
-* **담당 역할**: 회로 도면 설계 · 제어기기 선정 · 실제 결선 · 동작 검증 전 과정 수행
+* **담당 역할**: 회로 설계 · 제어기기 결선 · 실제 배선 · 동작 검증 전 과정 직접 수행
 * **주요 기술**: Sequence Control, Relay, Timer, Counter, FLS, EOCR, Limit Switch, Temperature Controller
 
 ---
 
 ## 시스템 구성
 
-| 구분                 | 핵심 제어 기기                   | 구현 동작                                         |
-| ------------------ | -------------------------- | --------------------------------------------- |
-| **급수 자동/수동 제어**    | FLS, Timer, MC             | 수위 감지 기반 자동 급수 / Timer 기반 수동 순차 기동            |
-| **Conveyor 자동화**   | Proximity Sensor, CNT      | 제품 수량 계수 후 Conveyor → 포장 공정 자동 전환             |
-| **온도 자동조절**        | TC, Thermocouple           | 설정 온도 도달 시 순환 → 배기 Motor 자동 전환                |
-| **공통 보호회로**        | EOCR, Flicker Relay        | 과전류 발생 시 설비 정지 및 Lamp·Buzzer 경보               |
-| **최종 복합 Sequence** | EOCR, LS, Timer, Relay, MC | Limit Sensor 입력에 따른 Motor·Lamp 반복 점멸 Sequence |
+| 구분                 | 핵심 제어 기기                          | 구현 동작                                |
+| ------------------ | --------------------------------- | ------------------------------------ |
+| **급수 자동/수동 제어**    | FLS, Timer, MC                    | 수위 감지 기반 자동 급수 / Timer 기반 수동 순차 기동   |
+| **Conveyor 자동화**   | 근접센서, Counter                     | 제품 수량 계수 후 Conveyor → 포장 공정 자동 전환    |
+| **온도 자동조절**        | TC, Thermocouple                  | 설정 온도 도달 시 순환 Motor → 배기 Motor 자동 전환 |
+| **공통 보호회로**        | EOCR, Flicker Relay, Fuse         | 과전류 발생 시 설비 정지 및 Lamp·Buzzer 경보      |
+| **최종 복합 Sequence** | EOCR1/2, LS1/2, T1/2, X1/2, MC1/2 | Limit Switch 입력에 따른 Motor·Lamp 반복 동작 |
 
 ---
 
@@ -29,17 +29,23 @@
 
 <br>
 
-대한상공회의소 **반도체장비 제어 전문가 과정**에서 산업 현장에서 사용하는 Relay, Timer, Counter, Sensor 등의 동작 원리를 이해하고, 이를 조합한 자동화 Sequence 회로를 직접 설계·배선했습니다.
+대한상공회의소 **반도체장비 제어 전문가 과정**에서 산업 현장에서 사용하는 Relay, Timer, Counter, Sensor 및 보호기기의 동작 원리를 학습하고, 이를 조합한 자동화 Sequence 회로를 직접 설계·배선했습니다.
 
-단순히 주어진 회로를 결선하는 것이 아니라 각 제어기기의 접점 특성과 동작 조건을 이해한 뒤,
+단순히 주어진 선을 따라 결선하는 것이 아니라 각 기기의
 
-**입력 조건 → Relay Logic → Timer / Counter → Output → Protection**
+* Coil 동작
+* NO / NC Contact 전환
+* Timer Delay
+* Counter 계수
+* Sensor 입력
+* Motor 출력
+* 과전류 보호
 
-으로 이어지는 전체 Sequence를 도면으로 설계하고 실제 제어반에 구현하는 것이 주요 과제였습니다.
+관계를 이해한 뒤 실제 요구조건에 맞는 Sequence를 구성하는 것이 주요 과제였습니다.
 
-특히 자동화 설비에서는 정상 동작뿐 아니라 Over Current 등 이상 상황에서도 설비를 안전하게 정지시켜야 하기 때문에 **EOCR 및 Interlock을 포함한 보호회로 설계**도 함께 적용했습니다.
+프로젝트에서는 급수, Conveyor, 온도조절 등 서로 다른 자동제어 요구사항을 각각 회로로 구현했고, 모든 회로에는 EOCR과 Fuse 등 **Protection Circuit을 함께 적용해 이상 상황에서 안전하게 정지하도록 설계**했습니다.
 
-최종평가에서는 개별 실습에서 학습한 내용을 종합해 **2개의 EOCR, Limit Switch, Timer, Relay, Magnetic Contactor를 결합한 복합 자동 Sequence**를 직접 설계·배선했습니다.
+최종평가에서는 앞선 실습 내용을 종합해 **EOCR 2개, Limit Switch 2개, Timer 2개, Relay, Magnetic Contactor를 결합한 복합 자동 Sequence**를 직접 설계·결선했습니다.
 
 </details>
 
@@ -50,22 +56,23 @@
 
 <br>
 
-| 구분                 | 제어 기기                            | 역할                         |
-| ------------------ | -------------------------------- | -------------------------- |
-| Relay Logic        | Relay(X), Magnetic Contactor(MC) | 조건 Logic 및 Motor 출력 제어     |
-| 유지회로               | 자기유지 회로                          | 입력 해제 후에도 운전 상태 유지         |
-| Timer              | T                                | 설정 시간 이후 출력 및 Sequence 전환  |
-| Counter            | CNT                              | Sensor 입력 횟수 계수            |
-| Level Control      | FLS                              | 수위 감지 및 Pump 자동 제어         |
-| Temperature        | TC, Thermocouple                 | 온도 검출 및 설정값 비교             |
-| Position Detection | Limit Switch                     | 기계 위치 및 동작 완료 감지           |
-| Object Detection   | Proximity Sensor                 | 제품 통과 감지                   |
-| Protection         | EOCR                             | Motor Over Current 감지 및 보호 |
-| Alarm              | Flicker Relay                    | Lamp / Buzzer 점멸 경보        |
+| 구분          | 제어 기기                            | 역할                         |
+| ----------- | -------------------------------- | -------------------------- |
+| Relay Logic | Relay(X), Magnetic Contactor(MC) | 조건 Logic 및 Motor 출력 제어     |
+| 유지회로        | 자기유지회로                           | 입력 해제 후에도 운전 상태 유지         |
+| Timer       | T                                | 설정 시간 이후 출력 및 Sequence 전환  |
+| Counter     | CNT                              | Sensor 입력 횟수 계수            |
+| 수위제어        | FLS                              | 수위 검출 및 급수 Motor 자동 제어     |
+| 온도제어        | TC, Thermocouple                 | 온도 측정 및 설정값 비교             |
+| 위치검출        | Limit Switch                     | 설비 위치 및 동작 완료 감지           |
+| 물체검출        | Proximity Sensor                 | 제품 통과 감지                   |
+| 과전류 보호      | EOCR                             | Motor Over Current 감지 및 차단 |
+| 경보          | Flicker Relay                    | Lamp / Buzzer 반복 점멸        |
+| 회로 보호       | Fuse                             | 이상 전류 발생 시 제어회로 보호         |
 
 ### 작업 범위
 
-`회로 요구사항 분석 → Sequence 설계 → 도면 작성 → 실제 결선 → 동작 확인 → 오류 수정`
+`요구사항 분석 → Sequence 설계 → 회로도 작성 → 실제 결선 → 동작 검증 → 배선 Troubleshooting`
 
 </details>
 
@@ -78,25 +85,27 @@
 
 ### 3-1. FLS 기반 급수 자동 / 수동 제어
 
-Selector Switch를 이용해 **AUTO / MANUAL Mode를 전환할 수 있는 급수 제어회로**를 설계했습니다.
+Selector Switch를 이용해 **AUTO / MANUAL Mode를 선택할 수 있는 급수 제어회로**를 설계했습니다.
 
-자동 Mode에서는 FLS(Floatless Level Switch)가 수위를 감지해 설정 조건에 따라 MC1을 자동으로 동작시키도록 구성했습니다.
+자동 Mode에서는 FLS(Floatless Level Switch)가 수위를 감지하고, 설정된 수위 조건에 따라 MC1이 자동으로 동작하도록 구성했습니다.
 
-수동 Mode에서는 Push Button과 Timer를 이용해 작업자가 직접 운전을 시작하면 **MC1 → MC2가 시간차를 두고 순차적으로 기동**하도록 설계했습니다.
+수동 Mode에서는 Push Button과 Timer를 이용해 작업자가 운전을 시작하면 **MC1 → MC2가 일정 시간 간격으로 순차 기동**하도록 설계했습니다.
 
 #### 제어 흐름
 
 ```text
 AUTO Mode
+
 FLS 수위 감지
-     ↓
+      ↓
 수위 조건 판정
-     ↓
+      ↓
 MC1 자동 기동
 ```
 
 ```text
 MANUAL Mode
+
 PB1 입력
    ↓
 MC1 기동
@@ -106,51 +115,51 @@ Timer 동작
 MC2 순차 기동
 ```
 
-<!-- 여기에 급수 제어 회로 사진 추가 -->
+<!-- 급수 자동/수동 제어 회로 사진 -->
 
 <p align="center">
-  <img src="이미지경로" width="80%" alt="급수 자동 수동 제어회로">
+  <img src="이미지경로" width="85%" alt="급수 자동 수동 제어회로">
 </p>
 
 ---
 
 ### 3-2. Proximity Sensor + Counter 기반 Conveyor 자동화
 
-Proximity Sensor로 Conveyor를 통과하는 제품을 감지하고 **Counter(CNT)를 이용해 제품 수량을 계수하는 자동화 회로**를 구성했습니다.
+근접센서로 Conveyor를 통과하는 제품을 감지하고 **Counter(CNT)를 이용해 통과 수량을 계수하는 자동화 회로**를 구현했습니다.
 
-설정된 수량에 도달하기 전에는 Conveyor Motor인 IM1이 동작하며, Counter가 목표 수량을 감지하면 기존 Conveyor 동작을 종료하고 **포장 공정용 IM2로 자동 전환**되도록 Sequence를 설계했습니다.
+설정 수량에 도달하기 전에는 Conveyor Motor인 IM1이 동작하며, Counter가 목표 수량에 도달하면 IM1의 동작을 종료하고 **포장 공정용 IM2로 자동 전환**되도록 Sequence를 구성했습니다.
 
 #### 제어 흐름
 
 ```text
 제품 진입
    ↓
-Proximity Sensor
+근접센서 감지
    ↓
-CNT +1
+Counter +1
    ↓
-설정 수량 확인
+설정 수량 비교
    ↓
 IM1 정지
    ↓
 IM2 자동 기동
 ```
 
-센서 입력을 단순 Motor ON/OFF 신호로 사용하는 것이 아니라 **Counter와 연계해 생산 수량을 기준으로 다음 공정을 자동 전환하는 Sequence**를 구현했습니다.
+Sensor 입력을 단순 ON/OFF 신호로 사용하는 것이 아니라 **제품 수량이라는 공정 조건으로 변환해 다음 Sequence를 제어**하도록 구현했습니다.
 
-<!-- 여기에 컨베이어 회로 사진 추가 -->
+<!-- Conveyor 자동화 회로 사진 -->
 
 <p align="center">
-  <img src="이미지경로" width="80%" alt="컨베이어 자동화 회로">
+  <img src="이미지경로" width="85%" alt="컨베이어 자동화 회로">
 </p>
 
 ---
 
 ### 3-3. Temperature Controller 기반 자동 온도조절
 
-Thermocouple을 이용해 온도를 측정하고 Temperature Controller의 설정값과 비교해 Motor 동작을 자동 전환하는 회로를 구성했습니다.
+Thermocouple로 현재 온도를 감지하고 Temperature Controller의 설정값과 비교해 Motor 동작을 자동으로 전환하는 회로를 구성했습니다.
 
-정상 온도 범위에서는 순환 Motor를 운전하고, 설정 온도에 도달하면 접점 상태를 전환해 **순환 Motor → 배기 Motor**로 자동 변경되도록 설계했습니다.
+정상 온도 구간에서는 순환 Motor를 운전하고, 설정 온도에 도달하면 Contact 상태가 전환되며 **순환 Motor → 배기 Motor**로 자동 변경되도록 설계했습니다.
 
 #### 제어 흐름
 
@@ -161,25 +170,28 @@ Thermocouple
       ↓
 TC 설정값 비교
       ↓
-설정 온도 미만 → 순환 Motor
-설정 온도 도달 → 배기 Motor
+설정 온도 미만
+→ 순환 Motor
+
+설정 온도 도달
+→ 배기 Motor
 ```
 
-이를 통해 작업자가 직접 Motor를 조작하지 않아도 온도 조건에 따라 설비가 자동으로 상태를 변경하는 **Feedback 기반 Sequence Control**을 구현했습니다.
+이를 통해 작업자의 수동 조작 없이 **온도 입력값을 기준으로 출력 장치가 자동 전환되는 Feedback Sequence**를 구현했습니다.
 
-<!-- 여기에 온도제어 회로 사진 추가 -->
+<!-- 온도 자동조절 회로 사진 -->
 
 <p align="center">
-  <img src="이미지경로" width="80%" alt="온도 자동조절 회로">
+  <img src="이미지경로" width="85%" alt="온도 자동조절 회로">
 </p>
 
 ---
 
-### 3-4. EOCR + Flicker Relay 기반 공통 보호회로
+### 3-4. EOCR + Flicker Relay 기반 보호 및 경보회로
 
-각 실습 회로에는 정상 운전 Logic뿐 아니라 **Motor Over Current 발생 시 설비를 안전하게 정지시키는 EOCR 보호회로**를 함께 적용했습니다.
+각 실습 회로에는 정상 운전 Logic뿐 아니라 **과전류 발생 시 Motor를 차단하는 EOCR 보호회로**를 함께 적용했습니다.
 
-EOCR이 이상 전류를 감지하면 Magnetic Contactor의 운전 회로를 차단해 Motor를 정지시키고, 동시에 Flicker Relay를 이용해 **Lamp와 Buzzer가 반복적으로 동작하는 Alarm 회로**를 구성했습니다.
+EOCR이 이상 전류를 감지하면 Magnetic Contactor의 운전 회로가 차단되어 Motor가 정지하고, Flicker Relay를 통해 **Lamp와 Buzzer가 반복적으로 동작하도록 경보회로**를 구성했습니다.
 
 #### 보호 흐름
 
@@ -188,39 +200,63 @@ Over Current 발생
        ↓
 EOCR 동작
        ↓
-Motor 출력 차단
+MC 출력 차단
        ↓
-설비 안전 정지
+Motor 정지
        ↓
 Flicker Relay
        ↓
 Lamp + Buzzer 경보
 ```
 
-정상 Sequence와 Protection Logic을 별도로 구성하는 것이 아니라 **운전회로 안에 보호 조건을 함께 포함시키는 방식**으로 설계했습니다.
+정상 운전 조건보다 **Protection Contact가 우선하도록 회로에 포함**해 이상 발생 시 설비가 계속 운전되지 않도록 설계했습니다.
 
-<!-- 여기에 EOCR 보호회로 사진 추가 -->
+<!-- EOCR + Flicker Relay 회로 사진 -->
 
 <p align="center">
-  <img src="이미지경로" width="80%" alt="EOCR 보호회로">
+  <img src="이미지경로" width="85%" alt="EOCR 과전류 보호 및 플리커 경보회로">
 </p>
 
 ---
 
-### 3-5. 최종평가 – 이중 EOCR 기반 복합 자동 Sequence
+### 3-5. Fuse 기반 제어회로 전원 흐름 구성
 
-**2026.05.08** 최종평가에서는 앞선 실습에서 사용한 제어기기를 종합해 보다 복잡한 Sequence 회로를 설계·배선했습니다.
+실제 결선 과정에서는 Fuse도 단순히 지정된 단자를 따라 연결하지 않고, **전원 신호가 어느 방향으로 들어오고 Fuse를 거친 뒤 어떤 제어회로로 전달되어야 하는지 직접 판단해 배선**했습니다.
+
+#### 전원 흐름
+
+```text
+Power Input
+    ↓
+   Fuse
+    ↓
+Protection Circuit
+    ↓
+Relay / Timer / Sensor
+    ↓
+MC / Output
+```
+
+전체 회로에서 전원이 공급되는 지점과 보호 이후 신호가 전달되어야 할 경로를 확인하며 Fuse의 입·출력 방향과 다음 연결 지점을 구성했습니다.
+
+이를 통해 개별 단자를 단순 연결하는 것이 아니라 **전원 → 보호회로 → 제어회로 → 출력으로 이어지는 전체 전류 흐름을 기준으로 Wiring을 구성하는 경험**을 쌓았습니다.
+
+---
+
+### 3-6. 최종평가 – 이중 EOCR 기반 복합 자동 Sequence
+
+**2026.05.08** 최종평가에서는 앞선 실습에서 사용한 여러 제어기기를 종합해 복합 Sequence 회로를 직접 설계·배선했습니다.
 
 #### 사용 기기
 
 * EOCR1 / EOCR2
-* LS1 / LS2
+* Limit Switch LS1 / LS2
 * Timer T1 / T2
 * Relay X1 / X2
 * Magnetic Contactor MC1 / MC2
 * Yellow Lamp / Red Lamp
 
-#### 동작 조건
+#### 동작 조건 1
 
 ```text
 LS1 ON
@@ -229,8 +265,10 @@ Timer Sequence
    ↓
 MC1 + Yellow Lamp
    ↓
-설정 시간 간격 반복 점멸
+설정 시간 간격 반복 동작
 ```
+
+#### 동작 조건 2
 
 ```text
 LS2 ON
@@ -239,17 +277,21 @@ Timer Sequence
    ↓
 MC2 + Red Lamp
    ↓
-설정 시간 간격 반복 점멸
+설정 시간 간격 반복 동작
 ```
 
-두 개의 Motor 회로에 각각 EOCR을 적용해 **이중 Overload Protection**을 구성했으며, Limit Switch 입력과 Timer·Relay 접점을 조합해 두 Sequence가 요구조건에 맞춰 반복 동작하도록 구현했습니다.
+두 Motor 회로에는 각각 EOCR을 적용해 **이중 Overload Protection**을 구성했습니다.
 
-#### 회로 설계 및 실제 결선
+또한 Limit Switch 입력과 Timer·Relay Contact를 조합해 각각의 출력이 설정된 시간 간격으로 반복 동작하도록 Sequence를 구현했습니다.
+
+#### 회로 설계
 
 <p align="center">
   <img src="CT1.png" width="48%" alt="최종평가 회로 1">
   <img src="CT2.png" width="48%" alt="최종평가 회로 2">
 </p>
+
+#### 실제 결선
 
 <p align="center">
   <img src="CT3.png" width="90%" alt="최종평가 실제 배선 작업">
@@ -260,63 +302,94 @@ MC2 + Red Lamp
 ---
 
 <details>
-<summary><b>04. 설계 · 배선 검증 포인트</b></summary>
+<summary><b>04. 트러블슈팅 ⭐</b></summary>
 
 <br>
 
-### 1. Contact 동작 상태를 기준으로 Sequence 검증
+### Trouble 01. Timer 동작 후 Reset되지 않는 문제
 
-Relay와 Timer를 사용할 때는 단순히 배선 위치를 외우는 것이 아니라 **각 단계에서 NO / NC Contact가 어떤 상태로 변화하는지**를 기준으로 전체 Sequence를 확인했습니다.
+#### Problem
 
-```text
-Input
- ↓
-Relay Coil
- ↓
-Contact 상태 변화
- ↓
-Timer / Counter
- ↓
-MC Output
-```
+Timer를 사용하는 Sequence를 실제 배선한 뒤 반복 동작을 확인하는 과정에서, 한 번 동작한 Timer가 **정상적으로 Reset되지 않아 다음 Sequence가 이어지지 않는 문제**가 발생했습니다.
 
-회로가 예상과 다르게 동작하는 경우 입력부터 출력까지 접점 상태를 순서대로 확인해 원인을 좁혔습니다.
+#### Analysis
 
----
+Timer 설정값이나 부품 자체의 이상보다는 **Reset 신호가 실제 Timer까지 전달되고 있는지**를 먼저 확인했습니다.
 
-### 2. 자동 / 수동 Mode 회로 분리
+회로도와 실제 결선을 비교하면서 Timer의 Pin 번호와 각 Pin의 기능을 다시 확인했고, Reset 동작을 담당하는 Pin까지 배선을 하나씩 추적했습니다.
 
-자동·수동 겸용 회로에서는 두 Mode의 출력 조건이 동시에 성립하지 않도록 Selector Switch 조건을 분리했습니다.
-
-이를 통해 자동운전 중 수동 입력이 Motor Sequence에 영향을 주거나 반대로 수동운전 조건이 자동 Logic에 영향을 주는 것을 방지했습니다.
-
----
-
-### 3. Protection Logic 우선 적용
-
-Motor 운전 조건이 충족되더라도 EOCR 등 Protection Contact가 정상 상태일 때만 Magnetic Contactor가 동작하도록 구성했습니다.
+그 결과 **Reset 신호가 입력되어야 하는 Timer Pin에 배선 자체가 연결되지 않은 상태**임을 확인했습니다.
 
 ```text
-운전 조건
-   +
-Protection 정상
-   ↓
-MC 동작 허용
+Reset 조건 발생
+      ↓
+Relay Contact
+      ↓
+Timer Reset Pin
+      ↓
+[배선 누락]
 ```
 
-이를 통해 제어 Sequence보다 **Safety Condition이 우선하도록 회로를 설계하는 습관**을 익혔습니다.
+#### Solution
+
+Timer의 Pin Diagram을 다시 확인한 뒤 누락된 Reset 신호 배선을 추가했습니다.
+
+이후 Timer를 반복 동작시키며
+
+`Timer 동작 → 설정시간 완료 → Reset → 다음 Sequence`
+
+가 정상적으로 반복되는지 검증했습니다.
+
+#### Result
+
+Timer가 매 Cycle마다 정상적으로 Reset되면서 이후 Sequence도 연속적으로 동작하는 것을 확인했습니다.
+
+> **Learned**
+> 제어기가 예상대로 동작하지 않을 때 부품 자체를 먼저 의심하는 것이 아니라, **조건 신호가 실제 어느 Pin까지 전달되는지를 회로도와 실제 Wiring을 비교하며 추적하는 것이 중요하다는 점**을 배웠습니다.
 
 ---
 
-### 4. 도면과 실제 배선 비교 검증
+### Trouble 02. Start 입력에도 회로가 기동하지 않는 문제
 
-회로도상에서는 정상으로 보이더라도 실제 배선 과정에서는 단자 번호나 접점 위치를 잘못 연결할 수 있기 때문에,
+#### Problem
 
-`도면 → 단자 번호 → 실제 배선 → 동작`
+Sequence 회로의 배선을 완료한 뒤 Start 입력을 주었지만 **Relay와 출력회로가 동작하지 않아 전체 Sequence가 시작되지 않는 문제**가 발생했습니다.
 
-순서로 하나씩 대조하며 검증했습니다.
+#### Analysis
 
-이를 통해 회로 설계 능력뿐 아니라 실제 현장에서 필요한 **Drawing Reading 및 Wiring Verification 경험**을 함께 쌓았습니다.
+Start 입력부터 신호가 전달되는 경로를 하나씩 확인하면서 Relay 및 제어기기의 Pin을 다시 점검했습니다.
+
+확인 결과, 부품의 **Pin 번호 배열과 실제 Contact 구조를 혼동해 배선한 것**이 원인이었습니다.
+
+해당 부품은 공통단자인 **C를 기준으로 A 또는 B 접점과 연결되어야 신호가 전달되는 구조**였지만, 초기 결선에서는 각 단자의 기능보다 물리적인 Pin 배열을 기준으로
+
+```text
+C → A → B → D
+```
+
+형태로 연결했습니다.
+
+즉, Pin의 위치를 순서대로 연결했지만 실제 내부 Contact에서는 C와 A 또는 C와 B 사이가 하나의 신호 경로를 구성해야 하므로 회로가 성립하지 않았습니다.
+
+#### Solution
+
+부품의 Pin Diagram을 다시 확인하며
+
+* Common Pin이 어느 단자인지
+* NO / NC Contact가 어느 Pin인지
+* 입력 상태에 따라 C가 A와 연결되는지 B와 연결되는지
+* 다음 제어기로 전달할 신호를 어느 Pin에서 꺼내야 하는지
+
+를 다시 정리했습니다.
+
+이후 Pin의 위치가 아니라 **실제 Contact 동작 원리를 기준으로 회로를 재배선**했습니다.
+
+#### Result
+
+Pin 기능에 맞게 결선한 이후 Start 입력 시 Relay가 정상 동작했고, 전체 Sequence가 의도한 순서대로 시작되는 것을 확인했습니다.
+
+> **Learned**
+> 제어회로 배선에서는 단순히 Pin 번호나 배치 순서를 외우는 것이 아니라 **Common Contact를 기준으로 입력 신호가 어느 접점을 통해 출력으로 전달되는지 이해한 상태에서 결선해야 한다는 점**을 체감했습니다.
 
 </details>
 
@@ -327,13 +400,15 @@ MC 동작 허용
 
 <br>
 
-* **급수 · Conveyor · 온도제어 · Protection 등 4종 이상의 Sequence 회로 직접 설계 및 배선**
+* **급수 · Conveyor · 온도제어 · Protection 등 4종 이상의 Sequence 회로 직접 설계·배선**
 * FLS 기반 **급수 AUTO / MANUAL 제어 구현**
 * Proximity Sensor + Counter 기반 **제품 수량별 Conveyor 자동 전환 구현**
 * Temperature Controller 기반 **자동 온도조절 Sequence 구현**
-* EOCR + Flicker Relay 기반 **Motor Over Current Protection 및 Alarm 회로 구현**
-* Relay · Timer · Counter · Limit Switch 등 다양한 제어기기 조합 경험
-* **EOCR1/2 · LS1/2 · Timer1/2 · Relay · MC 기반 최종 복합 Sequence 평가 통과**
+* EOCR + Flicker Relay 기반 **Motor Over Current Protection 및 Alarm 구현**
+* Fuse 입·출력 신호 흐름을 직접 판단해 **제어회로 전원 및 보호 경로 구성**
+* Relay · Timer · Counter · Limit Switch 등 다양한 산업용 제어기기의 **Pin 및 Contact 동작 원리 이해**
+* Timer Reset 미동작 및 Start 불가 문제를 **Pin 단위 신호 추적으로 진단·해결**
+* **EOCR1/2 · LS1/2 · T1/2 · Relay · MC 기반 복합 Sequence 최종평가 통과**
 * 회로 설계부터 실제 결선 및 동작 검증까지 전 과정 수행
 * **반도체장비 제어 전문가 과정 이수**
 
@@ -346,14 +421,15 @@ MC 동작 허용
 
 <br>
 
-이번 과정을 통해 Relay, Timer, Counter, Sensor와 같은 개별 제어기기의 기능을 아는 것과 **여러 기기를 조합해 하나의 Sequence를 설계하는 것은 다른 문제**라는 점을 체감했습니다.
+이번 과정을 통해 Relay, Timer, Counter, Sensor와 같은 개별 제어기기의 기능을 이해하는 것과 **여러 기기를 실제 Sequence로 연결하는 것은 다른 문제**라는 점을 체감했습니다.
 
-각 기기의 Coil과 NO / NC Contact가 동작하면서 다음 조건에 어떤 영향을 주는지를 순서대로 이해해야 복합 Sequence를 안정적으로 구성할 수 있었습니다.
+특히 Timer Reset이 되지 않거나 Start 신호를 입력해도 회로가 시작되지 않는 문제를 해결하면서, 단순히 도면이 맞는지만 확인하는 것이 아니라 **입력 신호가 실제 배선을 따라 어느 Pin까지 전달되고 있는지를 직접 추적하는 방법**을 익혔습니다.
 
-특히 Motor를 동작시키는 Logic만 구현하는 것이 아니라 EOCR과 Interlock 같은 Protection Circuit을 항상 함께 적용하면서 **설비 제어에서는 정상 동작보다 이상 상황에서 안전하게 정지시키는 조건이 우선되어야 한다는 설계 원칙**을 익혔습니다.
+처음에는 일부 제어기의 Pin을 물리적인 배열 순서 위주로 이해했지만, 실제 Troubleshooting 과정에서 Common Contact와 NO / NC Contact 사이의 전기적 관계를 다시 확인하며 **Pin 번호보다 내부 접점의 동작 원리를 이해하는 것이 중요하다는 점**을 배웠습니다.
 
-또한 회로도가 논리적으로 맞더라도 실제 결선 과정에서 단자나 접점을 잘못 연결하면 설비가 정상 동작하지 않기 때문에, 도면과 실제 배선을 하나씩 비교하며 원인을 찾는 과정을 반복했습니다.
+또한 Fuse, EOCR과 같은 Protection Device를 배선하면서 정상 운전 신호만 연결하는 것이 아니라 **전원이 어떤 보호기기를 거쳐 어느 제어회로로 전달되어야 하는지 전체 전류 흐름을 기준으로 회로를 바라보는 습관**을 익혔습니다.
 
-이를 통해 **Sequence Drawing 설계와 실제 Wiring 능력을 함께 갖춰야 현장 장비의 동작 원인을 정확히 분석하고 Troubleshooting할 수 있다는 점**을 배웠습니다.
+이를 통해 회로 설계 능력뿐 아니라 실제 Wiring 과정에서 발생하는 문제를 **회로도 → Pin → Contact → 실제 배선 → 출력 상태 순으로 추적하는 현장형 Troubleshooting 경험**을 쌓았습니다.
 
 </details>
+
