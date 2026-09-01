@@ -1,136 +1,356 @@
-# 산업용 제어·모니터링 시스템 2종 구축 (iFIX SCADA 창고관리 + Cognex 비전 품질검사 자동화)
+# 산업용 제어·모니터링 시스템 2종 구축
 
-## 개요
-대한상공회의소 산업자동화 실습 과정에서 성격이 다른 두 가지 제어·모니터링 시스템을 구축한 프로젝트입니다.
-1. PLC·HMI·SCADA(iFIX)를 통합한 스마트 창고관리 시스템 구축
-2. Cognex 비전 카메라와 PLC·아두이노를 연동해 기준 미달 물품을 자동 배출하는 품질검사 자동화 시스템 구축
+### iFIX SCADA 창고관리 + Cognex 비전 품질검사 자동화
 
-- **기간**: [YYYY.MM ~ YYYY.MM]
-- **참여 형태**: [개인 / 팀 - 인원수]
-- **담당 역할**: [본인 역할]
+> **PLC · HMI · SCADA · Vision · C# · Arduino를 연계해
+> 모니터링부터 품질 판정 및 실제 설비 제어까지 구현한 산업자동화 프로젝트**
 
-## 배경 및 문제 정의
-PLC 로직만으로는 현장 데이터를 실시간으로 모니터링하고 이력을 관리하는 데 한계가 있었고, 품질검사 공정은 육안 검사에 의존하고 있어 자동화가 필요했습니다. 이 두 가지 문제를 각각 SCADA 통합과 비전 기반 자동화로 해결하는 것을 목표로 프로젝트를 진행했습니다.
+* **기간**: 2026.03 - 04 / 2026.07 - 08
+* **참여 형태**: 개인
+* **주요 기술**: Mitsubishi PLC, GXWorks2, GTDesigner3, iFIX, KEPServerEX, Cognex Vision, C#, Arduino
 
-## 사용 기술 / 툴
-- PLC: GXWorks2 (래더 로직 설계), 미쯔비시 PLC
-- HMI: GTDesigner3
-- SCADA: iFIX
-- 통신: Modbus TCP, OPC, OPC UA, MQTT, HDA (KEPServerEX)
-- DB: MySQL
-- 비전 검사: Cognex Vision Camera
-- 개발 환경: VS Code (C#)
-- 하드웨어 연동: Arduino, MPS 설비
+---
 
 ## 시스템 구성
-![시스템 구성도](프젝1이미지/01-architecture_2.png)
-
-**SCADA 데이터 흐름**: PLC → Kepserver → PowerTool → Database
-**비전검사 자동화 흐름**: Cognex 비전 카메라 → VS Code(C#) 판정 로직 → 아두이노 → PLC → MPS 자동 배출
-
-## 주요 구현 내용
-
-### 1) PLC 래더로직 설계 및 HMI 화면 구현
-GXWorks2로 스마트 창고관리 시스템의 PLC 래더 로직을 설계하고, GTDesigner3로 현장 조작·모니터링용 HMI 화면을 구현했습니다. SCADA 통합에 앞서 필드 계층(PLC)에서 제어 로직과 인터록을 먼저 완성한 뒤, 이를 기반으로 HMI·iFIX와 연동하는 순서로 시스템을 구축했습니다.
-
-**래더로직 설계**
-
-[MPS 창고관리 설비의 입출고 컨베이어, 위치 감지 센서, 스토퍼 실린더, 랙 적재 상태 등]을 제어 대상으로 삼아 기능 단위로 로직을 구성했습니다.
-
-**주요 로직**
-
-| 기능 블록 | 주요 내용 |
-|---|---|
-| 기동/정지 인터록 | [비상정지·초기 안전 조건이 모두 충족될 때만 기동을 허용하는 로직] |
-| 입출고 시퀀스 제어 | [센서 감지 순서에 따라 컨베이어·스토퍼 등을 순차 동작시키는 로직] |
-| 위치/재고 판별 | [랙별 적재 유무를 센서로 판별해 저장 위치를 결정하는 로직] |
-
-**기동/정지 인터록**
 
 <p align="center">
-  <img src="프젝1이미지/PLC1.png" width="48%" />
-  <img src="프젝1이미지/PLC1-1.png" width="48%" />
+  <img src="프젝1이미지/01-architecture_2.png" alt="시스템 구성도" width="90%">
 </p>
 
-**입출고 시퀀스 제어**
+* **SCADA 데이터 흐름**
+  `PLC → KEPServerEX → PowerTool → iFIX Database`
 
-![입출고 시퀀스 제어](프젝1이미지/PLC2.png)
+* **비전검사 자동화 흐름**
+  `Cognex Vision Camera → C# 판정 → Arduino → PLC → MPS 자동 배출`
 
-**위치/재고 판별**
-
-<p align="center">
-  <img src="프젝1이미지/PLC3.png" width="48%" />
-  <img src="프젝1이미지/PLC4.png" width="48%" />
-</p>
-
-**소재 판별 및 수량 카운트**
-
-금속/비금속 소재 판별로 개수 파악이 가장 중요했는데, 비금속 조건이 계속 SET되는 문제가 발생했습니다. 금속·비금속 조건 사이에 인터록을 걸어 두 조건이 동시에 참이 되지 않도록 했고, 수량으로 기동 여부를 판단할 때도 실제 금속·비금속이 들어왔는지를 조건으로 한 번 더 걸러 엉뚱한 조건 충족이 카운트에 기여하지 않도록 했습니다. 또한 D1·D2 수량 값을 연산에 쓰기 전에 카운팅이 먼저 끝나야 한다는 점을 놓쳐서, 연산 타이밍을 X13 조건에 도달하기 전 단계로 앞당겨 값이 확정된 뒤에만 연산되도록 수정했습니다.
+---
 
 <details>
-<summary>전체 래더로직 더 보기</summary>
+<summary><b>01. 프로젝트 개요 및 문제 정의</b></summary>
 
-발표 자료에서 정리했던 전체 로직은 PDF로 첨부해 두었습니다 → [PLC 래더로직 전체 PDF](프젝1이미지/PLC%20프로젝트%201_서정민.pdf)
+<br>
+
+대한상공회의소 산업자동화 실습 과정에서 성격이 다른 두 가지 제어·모니터링 시스템을 구축했습니다.
+
+1. **PLC · HMI · SCADA(iFIX)를 통합한 스마트 창고관리 시스템**
+2. **Cognex 비전 카메라와 PLC · Arduino를 연동한 품질검사 자동화 시스템**
+
+PLC 로직만으로는 현장 데이터를 실시간으로 모니터링하고 이력을 관리하는 데 한계가 있었고, 품질검사 공정은 육안 검사에 의존하고 있어 자동화가 필요했습니다.
+
+이에 따라 첫 번째 프로젝트에서는 **PLC-HMI-SCADA를 하나의 데이터 흐름으로 통합한 창고관리 시스템**을 구축했고, 두 번째 프로젝트에서는 **비전 검사 결과가 실제 설비의 자동 배출 동작까지 이어지는 품질검사 자동화 시스템**을 구현했습니다.
 
 </details>
 
-**HMI 화면 구현**
-
-GTDesigner3로 MAIN · Servo Control · Equipment Control 3개 화면을 구성하고, 화면 상단 버튼으로 서로 전환할 수 있도록 했습니다.
-
-| ![MAIN](프젝1이미지/HMI1.png) | ![Servo Control](프젝1이미지/HMI2.png) | ![Equipment Control](프젝1이미지/HMI3.png) |
-|:---:|:---:|:---:|
-| 서보/설비 제어 진입 및 현재 날짜·시각 표시 | 원점 복귀·JOG·에러 리셋 조작 및 상태(에러/경고/위치/속도) 모니터링 | 가공 설정·비상정지/해제·창고 적재 램프·작업 수량 카운트 |
-
-### 2) iFIX 기반 SCADA 창고관리 시스템
-PLC·HMI 구현을 마친 뒤, Kepserver에서 Modbus TCP, OPC, OPC UA 통신 드라이버를 각각 직접 설정해 3종 프로토콜 통신을 구현했고, 이 중 미쯔비시 PLC는 실제 장비로 태그값을 가져와 확인했습니다. MQTT·MySQL 기반 데이터 처리도 학습해 적용했습니다.
-
-**Kepserver 통신 드라이버 및 태그 설정**
-
-KEPServerEX에서 미쯔비시 PLC 디바이스 영역별로 OPC 그룹을 구성하고 PLC 메모리를 OPC 태그로 노출시킨 뒤, iFIX I/O 드라이버에서 해당 OPC 항목을 참조하는 중간 태그를 구성해 PLC ↔ Kepserver ↔ iFIX 통신 경로를 연결했습니다. 이후 iFIX DB Manager에서 실제 SCADA 화면에 쓰일 태그에 한글 설명을 붙여 최종 태그 데이터베이스를 완성했습니다.
+---
 
 <details>
-<summary>태그 설정 화면 더 보기</summary>
+<summary><b>02. 사용 기술 / 툴</b></summary>
 
-**KEPServerEX OPC 그룹/아이템 구성**
-![KEPServerEX PowerTool](프젝1이미지/KEP1.png)
+<br>
 
-**iFIX I/O 드라이버 태그 (KEPServer OPC 항목 매핑)**
-![iFIX I/O 드라이버 태그](프젝1이미지/KEP2.png)
-
-**iFIX DB Manager 최종 태그 목록**
-![iFIX DB Manager](프젝1이미지/KEP3.png)
+| 구분          | 기술 / 툴                             |
+| ----------- | ---------------------------------- |
+| PLC         | Mitsubishi PLC, GXWorks2           |
+| HMI         | GTDesigner3                        |
+| SCADA       | iFIX                               |
+| 통신          | Modbus TCP, OPC, OPC UA, MQTT, HDA |
+| Middleware  | KEPServerEX                        |
+| DB          | MySQL                              |
+| Vision      | Cognex Vision Camera               |
+| Programming | C#                                 |
+| Hardware    | Arduino, MPS 설비                    |
 
 </details>
 
-iFIX에 SCADA 화면을 구성해 DO 태그로 MPS를 원격 구동하려 했으나, 태그 설정이 정확함에도 실제 구동이 되지 않는 문제가 발생했습니다. PLC → Kepserver → PowerTool → Database로 이어지는 데이터 흐름을 역으로 추적한 결과, Database에는 DO 값이 Write되지만 PLC까지 신호가 전달되지 않았고, PowerTool 단계에서 Write 칸에는 값이 들어가지만 Read 값이 비어있는 것을 확인했습니다. DO 태그만으로는 PowerTool의 Read가 이루어지지 않아 이후 Kepserver·PLC로 신호가 전달되지 않는다는 원인을 파악하고, Database에 DO와 짝을 이루는 DI 태그를 추가 생성해 Write→Read 사이클을 완성시킴으로써 문제를 해결했습니다. 이후 HDA 기능으로 원하는 기간의 태그 이력을 조회할 수 있도록 구성했습니다.
+---
 
-**iFIX 화면 구성**
+<details>
+<summary><b>03. 주요 구현 내용</b></summary>
 
-iFIX SCADA도 HMI와 유사하게 MAIN·Equipment Control·Servo Control 제어 화면과 HDA 기반 이력 조회(Trend) 화면으로 구성했습니다. 상단 공통 헤더에 화면 전환 버튼과 현재 날짜·시각, Auto/Manual 모드 전환 스위치를 배치했습니다.
+<br>
 
-| ![MAIN](프젝1이미지/iFIX1.png) | ![Equipment Control](프젝1이미지/iFIX2.png) |
-|:---:|:---:|
-| 공정 모식도 + 축별 Jog 수동 제어 + Servo Position 실시간 표시 | 창고 적재 램프(층별/좌우) + 상태 램프 + 작업 수량(실시간 태그값) 모니터링 |
-| ![Servo Control](프젝1이미지/iFIX3.png) | ![Trend](프젝1이미지/iFIX4.png) |
-| JOG·원점 복귀·에러 리셋 조작 및 위치/속도/에러 상태 표시 | HDA로 태그 이력을 시계열 그래프로 조회 |
+### 3-1. PLC 래더로직 설계 및 HMI 구현
 
-### 3) Cognex 비전 기반 품질검사 자동화
-PC제어 수업에서 Cognex 비전 카메라를 VS Code(C#) 환경과 연동해 물품을 실시간으로 촬영·판정하는 로직을 구현했습니다. 판정 결과를 아두이노·PLC와 연동해 기준 미달 물품이 감지되면 자동으로 배출되도록 로직을 구성했습니다. 아두이노, PLC, VS Code, Cognex 카메라를 소프트웨어·하드웨어 전 영역에서 연동해 C#으로 MPS 설비를 직접 구동, 비전 판정부터 물리적 배출까지 이어지는 하나의 자동화 루프를 완성했습니다.
+GXWorks2를 활용해 스마트 창고관리 설비의 PLC 제어 로직을 설계하고, GTDesigner3로 현장 조작 및 상태 모니터링을 위한 HMI 화면을 구현했습니다.
 
-| ![비전검사 제어 프로그램 (C#)](프젝1이미지/PC제어1.png) | ![실제 장비 연동 구성](프젝1이미지/PC제어2.png) |
-|:---:|:---:|
-| Modbus TCP로 PLC와 통신하며 PatMax 패턴매칭·Blob 검출·QR 코드 판독 결과를 실시간 모니터링·제어하는 자체 개발 프로그램 | PLC·비전 카메라·아두이노·MPS 설비를 실제로 배선 연결해 판정부터 배출까지 구동한 전체 시스템 구성 |
+SCADA 통합에 앞서 필드 계층인 PLC에서 제어 로직과 인터록을 먼저 완성한 뒤, 해당 디바이스를 기준으로 HMI와 iFIX를 단계적으로 연동했습니다.
 
-## 결과 및 성과
-- Kepserver에서 Modbus TCP·OPC·OPC UA 통신 드라이버 3종을 직접 구현하고, 미쯔비시 PLC 실제 태그값 연동을 확인
-- PLC-HMI-SCADA 전 계층 통합 시스템 완성, iFIX 화면에서 MPS 원격 구동 및 기간별 이력 조회 정상 동작 확인
-- 아두이노·PLC·VS Code·Cognex 카메라 4개 장비를 SW·HW 전 영역에서 통합 연동
-- 기준 미달 물품 실시간 판정 및 자동 배출 로직 정상 동작 확인
+#### PLC 래더로직 설계
 
-## 회고 / 배운 점
-데이터 모니터링 중심의 SCADA 시스템과 실시간 비전 기반 품질검사 시스템이라는 서로 다른 성격의 산업자동화 시스템을 모두 구축하며, 필드-제어-모니터링 계층을 통합하는 역량과 래더 로직, SCADA 태그, C# 등 이기종 장비·언어를 하나의 제어 루프로 엮는 시스템 통합 역량을 확보했습니다.
+MPS 창고관리 설비의 입·출고 컨베이어, 위치 감지 센서, 스토퍼 실린더, 소재 감지 센서, 랙 적재 상태 등을 제어 대상으로 기능별 로직을 구성했습니다.
 
-PLC 래더로직을 직접 설계하면서 소재 판별, 수량 연산, 반복 횟수 제어 로직에서 SET 유지, 인터록 누락, 연산 순서 문제가 반복적으로 발생했는데, 원인을 추적해보면 대부분 "한 스캔 안에서 신호가 어떤 순서로 반영되는가"의 문제였습니다. 릴레이 동작이 위에서 아래로, 스캔마다 순차적으로 반영된다는 PLC의 기본 동작 원리를 실제 트러블슈팅을 통해 체감하면서, 자동화 로직을 설계할 때는 조건이 "충족되는지"뿐 아니라 "언제 충족되는지"까지 함께 고려해야 한다는 것을 배웠습니다.
+| 기능 블록     | 주요 내용                           |
+| --------- | ------------------------------- |
+| 기동/정지 인터록 | 비상정지 및 초기 안전 조건 충족 시에만 설비 기동 허용 |
+| 입출고 시퀀스   | 센서 입력 순서에 따라 컨베이어·스토퍼 순차 제어     |
+| 위치/재고 판별  | 랙별 적재 상태를 판별해 저장 위치 결정          |
+| 소재/수량 판별  | 금속·비금속 소재 구분 및 종류별 작업 수량 카운트    |
 
-특히 MPS 원격 구동이 되지 않는 문제를 해결하는 과정에서, PLC(필드 계층) → Kepserver(통신 드라이버 계층) → PowerTool(미들웨어 계층) → Database(데이터 계층)로 이어지는 전체 데이터 흐름을 직접 역추적해야 했습니다. 이 과정에서 각 계층이 서로 다른 프로그램과 방식으로 데이터를 주고받는다는 점, 그리고 그중 한 계층에서라도 Read/Write 사이클이 끊기면 겉으로는 설정이 맞아 보여도 전체 시스템이 동작하지 않는다는 점을 직접 체감했습니다. 이 경험을 통해 SCADA 시스템을 단순히 "태그 하나"의 문제가 아니라, 여러 프로그램과 계층을 관통하는 하나의 데이터 파이프라인으로 바라보는 시각을 갖게 됐습니다.
+#### 기동/정지 인터록
+
+<p align="center">
+  <img src="프젝1이미지/PLC1.png" width="48%" alt="PLC 기동 정지 인터록 1">
+  <img src="프젝1이미지/PLC1-1.png" width="48%" alt="PLC 기동 정지 인터록 2">
+</p>
+
+#### 입출고 시퀀스 제어
+
+<p align="center">
+  <img src="프젝1이미지/PLC2.png" width="90%" alt="입출고 시퀀스 제어">
+</p>
+
+#### 위치 / 재고 판별
+
+<p align="center">
+  <img src="프젝1이미지/PLC3.png" width="48%" alt="위치 재고 판별 1">
+  <img src="프젝1이미지/PLC4.png" width="48%" alt="위치 재고 판별 2">
+</p>
+
+<details>
+<summary><b>📎 전체 래더로직 보기</b></summary>
+
+<br>
+
+[PLC 래더로직 전체 PDF](프젝1이미지/PLC%20프로젝트%201_서정민.pdf)
+
+</details>
+
+<br>
+
+#### HMI 화면 구현
+
+GTDesigner3로 **MAIN · Servo Control · Equipment Control** 3개 화면을 구성하고, 상단 버튼을 통해 각 화면으로 전환할 수 있도록 구현했습니다.
+
+|                   MAIN                   |               Servo Control              |             Equipment Control            |
+| :--------------------------------------: | :--------------------------------------: | :--------------------------------------: |
+| <img src="프젝1이미지/HMI1.png" width="100%"> | <img src="프젝1이미지/HMI2.png" width="100%"> | <img src="프젝1이미지/HMI3.png" width="100%"> |
+|         서보/설비 제어 진입 및 현재 날짜·시각 표시        |    원점 복귀·JOG·에러 리셋 및 위치·속도·알람 상태 모니터링    |      가공 설정·비상정지·창고 적재 상태 및 작업 수량 표시      |
+
+---
+
+### 3-2. iFIX 기반 SCADA 창고관리 시스템
+
+PLC·HMI 구현 이후 KEPServerEX를 이용해 PLC 데이터를 상위 SCADA 계층으로 연결했습니다.
+
+KEPServerEX에서 **Modbus TCP · OPC · OPC UA** 통신 환경을 직접 구성하고, Mitsubishi PLC의 실제 디바이스 값을 OPC 태그로 가져와 통신 상태를 확인했습니다.
+
+추가로 MQTT 및 MySQL 기반 데이터 처리 방식도 학습하고 적용했습니다.
+
+#### 데이터 연결 구조
+
+```text
+PLC Device
+    ↓
+KEPServerEX OPC Tag
+    ↓
+iFIX I/O Driver
+    ↓
+iFIX Database Tag
+    ↓
+SCADA Screen
+```
+
+KEPServerEX에서 Mitsubishi PLC의 디바이스 영역별 OPC 그룹과 Item을 구성해 PLC 메모리를 OPC 태그로 노출했습니다.
+
+이후 iFIX I/O Driver에서 해당 OPC Item을 참조하도록 태그를 매핑하고, DB Manager에서 실제 SCADA 화면에 사용할 태그와 설명을 구성해 최종 태그 데이터베이스를 완성했습니다.
+
+<details>
+<summary><b>📎 KEPServerEX / iFIX 태그 설정 화면 보기</b></summary>
+
+<br>
+
+#### KEPServerEX OPC 그룹 / Item 구성
+
+<p align="center">
+  <img src="프젝1이미지/KEP1.png" width="90%" alt="KEPServerEX OPC 설정">
+</p>
+
+#### iFIX I/O Driver 태그 매핑
+
+<p align="center">
+  <img src="프젝1이미지/KEP2.png" width="90%" alt="iFIX IO Driver">
+</p>
+
+#### iFIX DB Manager
+
+<p align="center">
+  <img src="프젝1이미지/KEP3.png" width="90%" alt="iFIX DB Manager">
+</p>
+
+</details>
+
+<br>
+
+#### iFIX 화면 구현
+
+iFIX에서도 HMI와 동일한 설비를 상위 계층에서 제어·모니터링할 수 있도록 **MAIN · Equipment Control · Servo Control · Trend** 화면을 구성했습니다.
+
+상단 공통 Header에는 화면 전환 버튼, 현재 날짜·시각, Auto/Manual Mode 전환 기능을 배치했습니다.
+
+|                    MAIN                   |             Equipment Control             |
+| :---------------------------------------: | :---------------------------------------: |
+| <img src="프젝1이미지/iFIX1.png" width="100%"> | <img src="프젝1이미지/iFIX2.png" width="100%"> |
+|  공정 모식도, 축별 JOG 제어, Servo Position 실시간 표시 |        창고 적재 상태, 설비 상태 및 작업 수량 모니터링       |
+
+|               Servo Control               |                   Trend                   |
+| :---------------------------------------: | :---------------------------------------: |
+| <img src="프젝1이미지/iFIX3.png" width="100%"> | <img src="프젝1이미지/iFIX4.png" width="100%"> |
+|      JOG·원점복귀·에러 리셋 및 위치·속도·에러 상태 표시      |            HDA 기반 태그 이력 시계열 조회            |
+
+HDA 기능을 이용해 사용자가 지정한 기간의 설비 태그 데이터를 조회하고 Trend 화면에서 시계열로 확인할 수 있도록 구성했습니다.
+
+---
+
+### 3-3. Cognex 비전 기반 품질검사 자동화
+
+Cognex 비전 카메라를 C# 프로그램과 연동해 물품을 실시간으로 촬영하고 품질을 판정하는 시스템을 구축했습니다.
+
+**PatMax 패턴 매칭 · Blob 검출 · QR Code 판독 결과**를 프로그램에서 실시간으로 모니터링하고, 판정 결과를 Arduino와 PLC로 전달해 기준 미달 제품이 검출될 경우 MPS 설비에서 자동 배출되도록 구현했습니다.
+
+#### 제어 흐름
+
+```text
+Cognex Vision Camera
+        ↓
+   C# 판정 로직
+        ↓
+     Arduino
+        ↓
+       PLC
+        ↓
+ MPS 자동 배출
+```
+
+이를 통해 비전 판정 결과가 소프트웨어 내부에서 끝나는 것이 아니라 실제 물리 설비의 동작까지 연결되는 하나의 자동화 제어 루프를 완성했습니다.
+
+|                     비전검사 제어 프로그램                     |                   실제 장비 연동                  |
+| :--------------------------------------------------: | :-----------------------------------------: |
+|       <img src="프젝1이미지/PC제어1.png" width="100%">      |  <img src="프젝1이미지/PC제어2.png" width="100%">  |
+| Modbus TCP 기반 PLC 통신 및 PatMax·Blob·QR 판독 결과 실시간 모니터링 | PLC·Vision Camera·Arduino·MPS 설비 실제 배선 및 구동 |
+
+</details>
+
+---
+
+<details>
+<summary><b>04. 트러블슈팅 ⭐</b></summary>
+
+<br>
+
+### Trouble 01. 금속·비금속 소재 판별 시 잘못된 수량 카운트
+
+#### Problem
+
+금속·비금속 소재를 구분해 종류별 수량을 카운트하는 과정에서 **비금속 판별 조건이 계속 SET 상태로 유지되며 실제 투입되지 않은 소재까지 수량 계산에 포함되는 문제**가 발생했습니다.
+
+또한 D1·D2에 저장된 수량 값을 이용한 연산이 카운팅 완료 전에 수행되면서 이전 Scan의 값이 계산에 반영되는 현상도 확인했습니다.
+
+#### Analysis
+
+래더 로직을 PLC Scan 순서 기준으로 추적한 결과 두 가지 원인을 확인했습니다.
+
+* 금속과 비금속 판별 조건 사이에 상호 배타 조건이 없어 두 상태가 동시에 영향을 줄 수 있었음
+* 수량 연산 시점이 실제 카운트 값이 확정되는 시점보다 빨랐음
+
+즉, 단순히 조건이 맞는지가 아니라 **한 Scan 안에서 신호와 연산 결과가 어떤 순서로 반영되는지**가 문제의 핵심이었습니다.
+
+#### Solution
+
+* 금속·비금속 판별 조건 사이에 **인터록 추가**
+* 실제 금속·비금속 감지 여부를 수량 판정 조건에 추가해 오카운트 방지
+* D1·D2 연산 시점을 X13 조건 진입 이전 단계로 이동
+* 카운팅 값이 확정된 이후에만 연산되도록 로직 수정
+
+#### Result
+
+잘못된 SET 유지와 오카운트를 제거하고, 실제 소재 종류와 수량에 따라 설비가 정상적으로 기동하도록 로직을 안정화했습니다.
+
+> **Learned**
+> PLC 로직에서는 조건의 충족 여부뿐 아니라 **해당 조건과 데이터가 어느 Scan에서 확정되는지까지 고려해야 한다는 점**을 배웠습니다.
+
+---
+
+### Trouble 02. iFIX 값은 변경되지만 실제 PLC가 동작하지 않는 문제
+
+#### Problem
+
+iFIX SCADA 화면에서 DO 태그를 조작하면 Database 값은 정상적으로 변경됐지만, 실제 PLC와 MPS 설비가 동작하지 않는 문제가 발생했습니다.
+
+태그 주소와 KEPServerEX 설정을 다시 확인했지만 설정상 오류는 발견되지 않았습니다.
+
+#### Analysis
+
+단일 태그 설정이 아닌 전체 데이터 흐름 문제라고 판단해 신호 전달 경로를 역순으로 추적했습니다.
+
+```text
+iFIX Database
+      ↓
+   PowerTool
+      ↓
+ KEPServerEX
+      ↓
+     PLC
+```
+
+각 계층에서 값을 확인한 결과 다음 상태를 확인했습니다.
+
+| 확인 구간           | 상태          |
+| --------------- | ----------- |
+| iFIX Database   | DO Write 정상 |
+| PowerTool Write | 값 입력 확인     |
+| PowerTool Read  | 값 없음        |
+| PLC             | 신호 미도달      |
+
+이를 통해 DO 태그에 기록된 값이 **PowerTool 단계에서 Read되지 않아 KEPServerEX와 PLC까지 전달되지 않는 것**이 원인임을 파악했습니다.
+
+#### Solution
+
+iFIX Database에 DO 태그와 대응되는 **DI 태그를 추가해 Write → Read 사이클을 구성**했습니다.
+
+이후 각 계층의 값을 단계별로 확인하면서 PowerTool → KEPServerEX → PLC까지 신호가 정상적으로 전달되는지 검증했습니다.
+
+#### Result
+
+iFIX 화면에서 MPS 설비를 정상적으로 원격 구동할 수 있게 되었으며, PLC-HMI-SCADA 전체 계층의 양방향 데이터 통신을 완성했습니다.
+
+> **Learned**
+> SCADA 시스템을 하나의 태그 문제가 아니라
+> **PLC ↔ 통신 Driver ↔ Middleware ↔ Database ↔ SCADA**로 이어지는 하나의 데이터 파이프라인으로 바라보는 관점을 익혔습니다.
+
+</details>
+
+---
+
+<details>
+<summary><b>05. 결과 및 성과</b></summary>
+
+<br>
+
+* **Modbus TCP · OPC · OPC UA 3종 통신 환경 직접 구성**
+* Mitsubishi PLC의 실제 태그값 연동 및 통신 확인
+* **PLC-HMI-SCADA 전체 계층 통합**
+* iFIX 기반 MPS 설비 원격 제어 구현
+* **HDA 기반 설비 이력 조회 및 Trend 시각화**
+* **Cognex Vision · C# · Arduino · PLC · MPS 통합 연동**
+* 기준 미달 제품 **실시간 판정 및 자동 배출 동작 검증**
+* PLC Scan Cycle 및 SCADA Data Flow 기반 **계층별 트러블슈팅 경험 확보**
+
+</details>
+
+---
+
+<details>
+<summary><b>06. 회고 / 배운 점</b></summary>
+
+<br>
+
+두 프로젝트를 통해 데이터 모니터링 중심의 SCADA 시스템과 실시간 제어 중심의 비전 검사 자동화 시스템을 구축하며, 개별 장비 제어를 넘어 **필드-제어-통신-모니터링 계층을 하나의 시스템으로 통합하는 경험**을 쌓았습니다.
+
+PLC 프로젝트에서는 소재 판별, 수량 연산, 반복 횟수 제어 과정에서 발생한 문제를 해결하며 조건의 참·거짓뿐 아니라 **Scan Cycle과 신호 반영 시점까지 고려한 시퀀스 설계의 중요성**을 배웠습니다.
+
+SCADA 프로젝트에서는 PLC부터 KEPServerEX, PowerTool, iFIX Database까지 데이터 전달 경로를 직접 추적하며 문제를 개별 태그가 아닌 **End-to-End 데이터 흐름 관점에서 분석하는 방법**을 익혔습니다.
+
+또한 Cognex Vision의 판정 결과를 C#·Arduino·PLC와 연결해 실제 MPS 설비의 동작까지 이어지도록 구현하면서, **서로 다른 프로토콜·언어·하드웨어를 하나의 제어 루프로 통합하는 시스템 Integration 역량**을 강화했습니다.
+
+</details>
+
