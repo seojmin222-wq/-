@@ -109,10 +109,32 @@ Lamp / Buzzer / Conveyor
 
 PC에서 장비를 직접 조작하면서 입출력 상태를 동시에 확인할 수 있도록 하여 **PC 기반 장비 제어 화면과 실제 I/O를 연동**했습니다.
 
-<p align="center">
-  <img src="프젝7이미지/PC제어2.png" width="80%" alt="C# PC 제어 화면">
-  <img src="프젝7이미지/PC제어3.png" width="80%" alt="C# PC 제어 화면">
-</p>
+<br>
+
+<table>
+  <tr>
+    <th width="50%">I/O Mapping Table</th>
+    <th width="50%">Arduino · I/O Board 실제 배선</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="프로젝트이미지/PC제어2.png" width="95%">
+    </td>
+    <td align="center">
+      <img src="프로젝트이미지/PC제어3.png" width="95%">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      Arduino·MPS 입출력 신호 및 Address Mapping
+    </td>
+    <td align="center">
+      Arduino와 산업용 I/O Board 실제 배선 및 신호 연동
+    </td>
+  </tr>
+</table>
+
+<br>
 
 ---
 
