@@ -44,21 +44,18 @@ RF Power Amplifier는 단순히 높은 출력만 확보하는 것이 아니라
 
 <br>
 
-<p align="center">
-  <img src="./media/image16.png" width="70%">
-</p>
-
-<p align="center">
-  <b>CGH40010F GaN Power Amplifier PCB Layout</b>
-</p>
-
-<p align="center">
-  <img src="./media/image17.png" width="70%">
-</p>
-
-<p align="center">
-  <b>PCB Layout Side View</b>
-</p>
+<table>
+  <tr>
+    <td align="center">
+      <img src="./media/image16.png" width="100%"><br>
+      <b>PCB Layout</b>
+    </td>
+    <td align="center">
+      <img src="./media/image17.png" width="100%"><br>
+      <b>PCB Layout Side View</b>
+    </td>
+  </tr>
+</table>
 
 ---
 
