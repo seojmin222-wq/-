@@ -283,10 +283,10 @@ Cognex의 검사 결과를 Arduino의 Digital Input으로 받아 판정 조건�
   </tr>
   <tr>
     <td align="center">
-      <img src="프로젝트이미지/PC제어6.png" width="95%">
+      <img src="프젝7이미지/PC제어6.png" width="95%">
     </td>
     <td align="center">
-      <img src="프로젝트이미지/PC제어7.png" width="95%">
+      <img src="프젝7이미지/PC제어7.png" width="95%">
     </td>
   </tr>
   <tr>
