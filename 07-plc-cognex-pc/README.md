@@ -14,7 +14,7 @@
 ## 시스템 구성
 
 <p align="center">
-  <img src="프로젝트이미지/01-architecture.png" alt="PC 제어 및 비전 자동화 시스템 구성도" width="90%">
+  <img src="프젝7이미지/PC제어1.png" alt="PC 제어 및 비전 자동화 시스템 구성도" width="90%">
 </p>
 
 * **PC · Arduino 제어 흐름**  
@@ -110,7 +110,8 @@ Lamp / Buzzer / Conveyor
 PC에서 장비를 직접 조작하면서 입출력 상태를 동시에 확인할 수 있도록 하여 **PC 기반 장비 제어 화면과 실제 I/O를 연동**했습니다.
 
 <p align="center">
-  <img src="프로젝트이미지/02-pc-control.png" width="80%" alt="C# PC 제어 화면">
+  <img src="프젝7이미지/PC제어2.png" width="80%" alt="C# PC 제어 화면">
+  <img src="프젝7이미지/PC제어3.png" width="80%" alt="C# PC 제어 화면">
 </p>
 
 ---
@@ -166,7 +167,7 @@ using Cognex.InSight.Sensor;
 * External Trigger
 
 <p align="center">
-  <img src="프로젝트이미지/03-vision-control.png" width="80%" alt="Cognex 비전검사 PC 제어 프로그램">
+  <img src="프젝7이미지/PC제어4.png" width="80%" alt="Cognex 비전검사 PC 제어 프로그램">
 </p>
 
 ---
@@ -227,7 +228,7 @@ Equipment Control
 
 | 비전검사 제어 프로그램 | 실제 장비 연동 |
 | :---: | :---: |
-| <img src="프로젝트이미지/04-vision-program.png" width="100%"> | <img src="프로젝트이미지/05-equipment.jpg" width="100%"> |
+| <img src="프젝7이미지/PC제어5.png" width="100%"> | <img src="프젝7이미지/PC제어6.png" width="100%"> |
 | PatMax·Blob·QR Code 판독 결과 및 장비 상태 모니터링 | Cognex Camera·Arduino·MPS 실제 배선 및 장비 연동 |
 
 </details>
