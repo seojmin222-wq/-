@@ -129,7 +129,7 @@ Lamp / Buzzer / Conveyor
       <img src="./프젝7이미지/PC제어3.png" width="95%">
     </td>
     <td align="center">
-      <img src="./프젝7이미지/PC제어2-1.png" width="95%">
+      <img src="./프젝7이미지/PC제어2.png" width="95%">
     </td>
   </tr>
   <tr>
