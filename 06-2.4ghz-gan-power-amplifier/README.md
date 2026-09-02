@@ -34,9 +34,31 @@ RF Power Amplifier는 단순히 높은 출력만 확보하는 것이 아니라
 
 `Routing → Pad → Via → Substrate → Parasitic L / C`
 
-와 같은 PCB의 물리적 구조가 회로 성능에 직접 영향을 주기 때문에 **Schematic 단계의 성능이 실제 PCB Layout에서도 유지되는지 검증하는 것**을 핵심 과제로 설정했습니다.
+와 같은 PCB의 물리적 구조가 회로 성능에 직접 영향을 주기 때문에,
+
+> **"Schematic 단계에서 설계한 성능을 실제 PCB Layout 환경에서도 유지할 수 있는가?"**
+
+를 핵심 문제로 설정했습니다.
 
 프로젝트에서 저는 **PCB Layout 설계와 소신호 Simulation을 중심으로 담당**했으며, 제조사에서 제공되지 않은 CGH40010F의 Physical Layout을 직접 구성해 Momentum EM Simulation이 가능하도록 구현했습니다.
+
+<br>
+
+<p align="center">
+  <img src="./media/image16.png" width="70%">
+</p>
+
+<p align="center">
+  <b>CGH40010F GaN Power Amplifier PCB Layout</b>
+</p>
+
+<p align="center">
+  <img src="./media/image17.png" width="70%">
+</p>
+
+<p align="center">
+  <b>PCB Layout Side View</b>
+</p>
 
 ---
 
@@ -63,7 +85,7 @@ RF Power Amplifier는 단순히 높은 출력만 확보하는 것이 아니라
 ### RF Circuit Design Process
 
 ```text
-GaN HEMT 특성 분석
+CGH40010F 특성 분석
         ↓
 Bias Point 설정
         ↓
@@ -123,8 +145,8 @@ Layout 성능 검증
 | Matching | Smith Chart | Input / Output Impedance Matching |
 | Matching Network | L / C | 50Ω Impedance Matching |
 | Large Signal | Harmonic Balance | Output Power 및 비선형 특성 분석 |
-| Harmonic | LC Trap Circuit | 2차 · 3차 Harmonic 억제 |
-| Layout | PCB Layout | 실제 Component / Routing 구현 |
+| Harmonic | LC Trap Circuit | Harmonic 억제 |
+| Layout | PCB Layout | 실제 Component 및 Routing 구현 |
 | Ground | GND Via | RF Ground Path 구현 |
 | Verification | EM Simulation | Schematic / Layout 결과 비교 |
 
@@ -134,7 +156,7 @@ Layout 성능 검증
 `ADS Momentum`  
 `CGH40010F GaN HEMT`  
 `S-Parameter`  
-`Stability Factor`  
+`Stability Factor K`  
 `Smith Chart`  
 `LC Matching`  
 `Harmonic Balance`  
@@ -153,7 +175,7 @@ Layout 성능 검증
 
 ## 3-1. CGH40010F Stability 및 Bias Point 분석
 
-2.4GHz 대역에서 Power Amplifier가 안정적으로 동작하도록 CGH40010F의 S-Parameter와 동작점을 분석했습니다.
+2.4GHz 대역에서 Power Amplifier가 안정적으로 동작하도록 CGH40010F의 동작 특성과 S-Parameter를 분석했습니다.
 
 RF Power Amplifier는 높은 Gain으로 인해 특정 Source / Load Impedance 조건에서 원하지 않는 발진이 발생할 수 있기 때문에 **Stability Factor K를 이용해 회로의 안정성을 검증**했습니다.
 
@@ -163,22 +185,21 @@ RF Power Amplifier는 높은 Gain으로 인해 특정 Source / Load Impedance �
 K = 2.243
 ```
 
-을 확인했으며 목표 주파수에서 안정적으로 동작할 수 있음을 확인했습니다.
+을 확인했으며 Input / Output Stability Index 역시 안정 조건을 만족해 목표 주파수에서 안정적으로 동작할 수 있음을 확인했습니다.
+
+<br>
 
 <p align="center">
-  <img src="./2025_capstone_final_final_KO.files/2025_capstone_final_final_KO_img_1.png" width="750">
+  <img src="./media/image1.png" width="75%">
 </p>
 
 <p align="center">
-  <b>Stability Analysis Result</b>
+  <b>Stability Factor K Simulation Result</b>
 </p>
 
-<p align="center">
-  <img src="./2025_capstone_final_final_KO.files/2025_capstone_final_final_KO_img_2.png" width="45%">
-  <img src="./2025_capstone_final_final_KO.files/2025_capstone_final_final_KO_img_3.png" width="45%">
-</p>
+---
 
-또한 Transistor의 정상적인 동작을 위해 Bias Point를 설정했습니다.
+Transistor의 정상적인 동작과 충분한 전류 공급을 위해 Bias Point를 설정했습니다.
 
 ```text
 VDS = 28V
@@ -187,7 +208,7 @@ IDS ≈ 211mA
 ```
 
 <p align="center">
-  <img src="./2025_capstone_final_final_KO.files/2025_capstone_final_final_KO_img_4.png" width="750">
+  <img src="./media/image2.png" width="65%">
 </p>
 
 <p align="center">
@@ -196,9 +217,9 @@ IDS ≈ 211mA
 
 ---
 
-## 3-2. RF Power Amplifier 기본 회로 구성
+## 3-2. 기본 PA 회로 구성 및 Impedance Matching
 
-CGH40010F를 중심으로 Bias Network, Input / Output Matching Network 및 Harmonic Filter를 포함한 Power Amplifier의 기본 구조를 구성했습니다.
+CGH40010F를 중심으로 Bias Network와 Input / Output Matching Network, Harmonic Filter를 포함한 RF Power Amplifier 구조를 구성했습니다.
 
 ```text
 RF Input
@@ -209,26 +230,24 @@ CGH40010F
    ↓
 Output Matching
    ↓
-Harmonic Filter
+Harmonic Trap
    ↓
 RF Output
 ```
 
 <p align="center">
-  <img src="./2025_capstone_final_final_KO.files/2025_capstone_final_final_KO_img_5.png" width="600">
+  <img src="./media/image3.png" width="60%">
 </p>
 
 <p align="center">
-  <b>RF Power Amplifier Basic Circuit Structure</b>
+  <b>RF Power Amplifier Basic Circuit</b>
 </p>
 
 ---
 
-## 3-3. Smith Chart 기반 Input / Output Impedance Matching
+GaN Transistor와 RF System의 기준 Impedance인 `50Ω` 사이의 부정합을 줄이기 위해 **LC Matching Network**를 구성했습니다.
 
-GaN Transistor와 RF System의 기준 Impedance인 `50Ω` 사이의 부정합을 줄이기 위해 Input / Output Matching Network를 설계했습니다.
-
-S-Parameter를 기반으로 Transistor의 Impedance 특성을 분석하고 **Smith Chart와 LC Network를 이용해 Impedance Matching**을 진행했습니다.
+S-Parameter를 기반으로 Transistor의 Impedance 특성을 분석한 뒤 Smith Chart를 이용해 Input / Output Impedance를 조정했습니다.
 
 ```text
 Transistor Impedance
@@ -241,13 +260,38 @@ L / C 값 선정
         ↓
 S11 / S22 확인
         ↓
-Matching 검증
+Matching 상태 검증
 ```
 
-최종적으로
+<p align="center">
+  <img src="./media/image4.png" width="90%">
+</p>
+
+<p align="center">
+  <b>CGH40010F Power Amplifier Schematic</b>
+</p>
+
+---
+
+### Smith Chart 기반 Matching 검증
+
+Layout Simulation에서도 Smith Chart를 통해 Impedance Matching 상태를 확인했습니다.
+
+<p align="center">
+  <img src="./media/image9.png" width="55%">
+</p>
+
+<p align="center">
+  <b>Smith Chart Matching Result</b>
+</p>
+
+---
+
+### S11 / S21 기반 Matching 및 Gain 검증
+
+최종적으로 2.3GHz ~ 2.5GHz 범위에서
 
 ```text
-2.3GHz ~ 2.5GHz
 S11 < -10dB
 ```
 
@@ -262,16 +306,17 @@ S21 ≈ 12.5dB
 의 Gain을 확인했습니다.
 
 <p align="center">
-  <img src="./2025_capstone_final_final_KO.files/2025_capstone_final_final_KO_img_6.png" width="850">
+  <img src="./media/image12.png" width="45%">
+  <img src="./media/image13.png" width="45%">
 </p>
 
 <p align="center">
-  <b>CGH40010F Power Amplifier Schematic</b>
+  <b>S11 Input Reflection / S21 Forward Gain</b>
 </p>
 
 ---
 
-## 3-4. Harmonic Balance 및 Harmonic Trap 설계
+## 3-3. Harmonic Balance 및 Harmonic Trap 설계
 
 Power Amplifier는 큰 입력 신호에서 Transistor가 비선형적으로 동작하기 때문에 기본 주파수뿐만 아니라 2차 · 3차 Harmonic이 함께 발생합니다.
 
@@ -286,7 +331,19 @@ ADS Harmonic Balance Simulation을 이용해
 
 를 분석했습니다.
 
-Filter 적용 이전에는 Harmonic 영역에서 비교적 큰 Power가 나타났기 때문에 **L과 C를 이용한 Harmonic Trap Circuit**을 추가했습니다.
+초기 Schematic 단계에서 2.4GHz 기본파와 함께 Harmonic 성분을 분석했습니다.
+
+<p align="center">
+  <img src="./media/image5.png" width="70%">
+</p>
+
+<p align="center">
+  <b>Harmonic Balance Simulation – Schematic</b>
+</p>
+
+---
+
+Harmonic 성분을 줄이기 위해 **L과 C를 이용한 Harmonic Trap Circuit**을 적용했습니다.
 
 ```text
 2.4GHz Fundamental
@@ -300,19 +357,29 @@ LC Harmonic Trap
 Output Spectrum 개선
 ```
 
+Layout 기반 Simulation에서 2.4GHz 기본파가 가장 큰 출력 성분을 나타냈으며, 2차 Harmonic인 4.8GHz를 약
+
+```text
+4.8GHz ≤ 약 4dBm
+```
+
+수준으로 억제했습니다.
+
 <p align="center">
-  <img src="./2025_capstone_final_final_KO.files/2025_capstone_final_final_KO_img_7.png" width="700">
+  <img src="./media/image10.png" width="75%">
 </p>
 
 <p align="center">
-  <b>Harmonic Balance Simulation Result</b>
+  <b>Harmonic Balance Result – Layout Simulation</b>
 </p>
 
 ---
 
-## 3-5. Output Power 및 Saturation 특성 분석
+## 3-4. Output Power 및 Saturation 특성 분석
 
 Input Power를 증가시키면서 Output Power의 변화를 분석했습니다.
+
+Schematic Simulation에서는 약 33dBm까지 Output Power가 선형적으로 증가했으며, 약 34dBm 이후에는 출력 증가폭이 감소하면서 Saturation 영역에 진입하는 것을 확인했습니다.
 
 ```text
 Input Power 증가
@@ -326,21 +393,43 @@ Output Power 증가
 Gain Compression / Harmonic 증가
 ```
 
-Schematic Simulation에서는 입력 전력이 증가함에 따라 Output Power가 증가하다가 약 33 ~ 34dBm 이후 포화 영역에 도달하는 것을 확인했습니다.
+### Schematic Simulation
 
 <p align="center">
-  <img src="./2025_capstone_final_final_KO.files/2025_capstone_final_final_KO_img_8.png" width="750">
+  <img src="./media/image6.png" width="75%">
 </p>
 
 <p align="center">
-  <b>Input Power vs Output Power — Schematic Simulation</b>
+  <b>Input Power vs Output Power – Schematic Simulation</b>
 </p>
 
 ---
 
-## 3-6. 실제 Component Size 기반 PCB Layout 설계
+실제 PCB Layout의 영향을 반영한 Simulation에서도 동일한 방식으로 Output 특성을 분석했습니다.
 
-Schematic에서는 Component와 배선이 이상적인 회로 요소로 표현되지만 실제 PCB에서는 소자의 크기와 Routing 자체가 RF 특성에 영향을 줍니다.
+### Layout Simulation
+
+<p align="center">
+  <img src="./media/image11.png" width="75%">
+</p>
+
+<p align="center">
+  <b>Input Power vs Output Power – Layout Simulation</b>
+</p>
+
+최종적으로 Layout 기반 Simulation에서 최대
+
+```text
+Pout = 42.3dBm
+```
+
+의 Output Power를 확인했습니다.
+
+---
+
+## 3-5. 실제 Component Size 기반 PCB Layout 설계
+
+Schematic에서는 Component와 배선이 이상적인 회로 요소로 표현되지만 실제 PCB에서는 소자의 크기와 Routing 구조 자체가 RF 특성에 영향을 줍니다.
 
 따라서 실제 제작 환경을 고려해
 
@@ -354,40 +443,46 @@ Schematic에서는 Component와 배선이 이상적인 회로 요소로 표현�
 
 등을 반영한 PCB Layout을 구성했습니다.
 
-특히 Capacitor와 Inductor는 RF Component Data Sheet에 명시된 실제 크기를 기준으로 Layout에 반영했습니다.
+Capacitor와 Inductor는 실제 RF Component Data Sheet에 명시된 Physical Size를 기준으로 Layout에 반영했습니다.
+
+### Layout Simulation Circuit
 
 <p align="center">
-  <img src="./2025_capstone_final_final_KO.files/2025_capstone_final_final_KO_img_9.png" width="850">
+  <img src="./media/image7.png" width="90%">
 </p>
 
 <p align="center">
-  <b>Layout Simulation Circuit</b>
-</p>
-
-<p align="center">
-  <img src="./2025_capstone_final_final_KO.files/2025_capstone_final_final_KO_img_10.png" width="850">
-</p>
-
-<p align="center">
-  <b>ADS PCB Layout</b>
+  <b>PCB Layout Simulation Circuit</b>
 </p>
 
 ---
 
-## 3-7. ADS Momentum 기반 EM Simulation
+### ADS Physical Layout
 
-완성한 PCB Layout을 ADS Momentum에서 해석했습니다.
+<p align="center">
+  <img src="./media/image8.png" width="90%">
+</p>
+
+<p align="center">
+  <b>ADS PCB Physical Layout</b>
+</p>
+
+---
+
+## 3-6. ADS Momentum 기반 EM Simulation
+
+완성한 PCB Layout을 ADS Momentum 환경에서 해석했습니다.
 
 Momentum Simulation에서는 Schematic 단계에서 직접적으로 고려하기 어려운
 
 - Routing의 Parasitic Inductance
 - Pad 간 Parasitic Capacitance
-- Via
+- GND Via
 - PCB Material
 - Metal Thickness
 - RF Routing
 
-의 영향을 포함할 수 있습니다.
+등의 영향을 포함할 수 있습니다.
 
 ```text
 Schematic
@@ -403,101 +498,78 @@ Momentum EM Simulation
 Schematic / Layout 결과 비교
 ```
 
-Layout 기반 Simulation에서는 Smith Chart를 통해 Input / Output Matching 상태를 다시 확인하고 Harmonic 성분도 함께 분석했습니다.
-
-<p align="center">
-  <img src="./2025_capstone_final_final_KO.files/2025_capstone_final_final_KO_img_11.png" width="45%">
-  <img src="./2025_capstone_final_final_KO.files/2025_capstone_final_final_KO_img_12.png" width="45%">
-</p>
-
-<p align="center">
-  <b>Layout-based Matching & Harmonic Simulation</b>
-</p>
-
-Layout Simulation 기준으로 2차 Harmonic인
-
-```text
-4.8GHz ≤ 약 4dBm
-```
-
-수준의 결과를 확인했습니다.
+이를 통해 단순 회로도 수준의 성능이 아니라 **실제 PCB 구조를 적용했을 때에도 목표 성능을 유지할 수 있는지 검증**했습니다.
 
 ---
 
-## 3-8. Layout 기반 Output Power 분석
+## 3-7. 최종 S-Parameter 특성 분석
 
-실제 PCB Layout의 영향을 포함한 상태에서 Input Power와 Output Power의 관계를 다시 분석했습니다.
+최종 Layout에서 주파수에 따른 S-Parameter를 분석하여 Input / Output Matching과 전달 특성을 검증했습니다.
 
-<p align="center">
-  <img src="./2025_capstone_final_final_KO.files/2025_capstone_final_final_KO_img_13.png" width="750">
-</p>
+### S11 — Input Reflection Coefficient
 
-<p align="center">
-  <b>Input Power vs Output Power — Layout Simulation</b>
-</p>
-
-최종 Layout Simulation에서는
-
-```text
-Maximum Pout = 42.3dBm
-
-Drain Efficiency = 75.74%
-
-PAE = 62.2%
-```
-
-수준의 성능을 확보했습니다.
-
----
-
-## 3-9. S-Parameter 기반 최종 RF 특성 검증
-
-최종 Layout에서 주파수에 따른 S-Parameter를 분석해 Input / Output Matching 및 Gain 특성을 검증했습니다.
-
-### S11
-
-S11은 Input Reflection Coefficient로 입력 신호가 얼마나 반사되는지를 나타냅니다.
-
-2.3GHz ~ 2.5GHz에서
+2.3GHz ~ 2.5GHz 범위에서
 
 ```text
 S11 < -10dB
 ```
 
-수준을 유지하는 것을 확인했습니다.
+수준을 유지해 Input Matching이 양호함을 확인했습니다.
 
 <p align="center">
-  <img src="./2025_capstone_final_final_KO.files/2025_capstone_final_final_KO_img_14.png" width="700">
+  <img src="./media/image12.png" width="65%">
 </p>
 
-### S21
+<p align="center">
+  <b>S11 Frequency Response</b>
+</p>
 
-S21은 Forward Transmission 특성을 나타내며 2.4GHz에서 약
+---
+
+### S21 — Forward Transmission Gain
+
+2.4GHz에서 약
 
 ```text
 S21 ≈ 12.5dB
 ```
 
-수준의 Gain을 확인했습니다.
+의 Gain을 확인했습니다.
 
 <p align="center">
-  <img src="./2025_capstone_final_final_KO.files/2025_capstone_final_final_KO_img_15.png" width="700">
+  <img src="./media/image13.png" width="50%">
 </p>
 
-### S12
-
-S12는 Reverse Transmission Coefficient로 역방향 신호 전달 특성을 분석했습니다.
-
 <p align="center">
-  <img src="./2025_capstone_final_final_KO.files/2025_capstone_final_final_KO_img_16.png" width="700">
+  <b>S21 Forward Transmission Gain</b>
 </p>
 
-### S22
+---
 
-S22를 이용해 Output Port의 Reflection 특성을 확인했습니다.
+### S12 — Reverse Transmission
+
+Reverse Transmission 특성을 분석해 출력 신호가 입력단으로 전달되는 정도를 확인했습니다.
 
 <p align="center">
-  <img src="./2025_capstone_final_final_KO.files/2025_capstone_final_final_KO_img_17.png" width="700">
+  <img src="./media/image14.png" width="65%">
+</p>
+
+<p align="center">
+  <b>S12 Reverse Transmission</b>
+</p>
+
+---
+
+### S22 — Output Reflection Coefficient
+
+Output Port에서 발생하는 Reflection 특성을 분석해 Output Matching 상태를 확인했습니다.
+
+<p align="center">
+  <img src="./media/image15.png" width="65%">
+</p>
+
+<p align="center">
+  <b>S22 Output Reflection</b>
 </p>
 
 </details>
@@ -509,31 +581,31 @@ S22를 이용해 Output Port의 Reflection 특성을 확인했습니다.
 
 <br>
 
-## Trouble 01. CGH40010F Layout 정보 부재로 EM Simulation을 수행할 수 없는 문제
+## Trouble 01. CGH40010F Layout 정보 부재로 EM Simulation을 수행하기 어려운 문제
 
 ### Problem
 
-제조사에서 제공한 CGH40010F Model에는 회로 Simulation을 위한 정보가 존재했지만 **Momentum에서 사용할 수 있는 실제 Transistor Layout 정보가 포함되어 있지 않았습니다.**
+제조사에서 제공한 CGH40010F Model에는 회로 Simulation에 필요한 Electrical Model 정보가 존재했지만 **Momentum에서 사용할 수 있는 실제 Transistor Layout 정보가 포함되어 있지 않았습니다.**
 
-따라서 Schematic Simulation은 가능했지만 PCB Layout으로 변환해 EM Simulation을 수행하기 어려운 문제가 발생했습니다.
+따라서 Schematic 단계에서는 Simulation이 가능했지만 PCB Layout으로 변환해 EM Simulation을 진행하려면 Transistor의 물리적 구조를 별도로 구현해야 했습니다.
 
 ### Analysis
 
-Momentum은 단순한 Electrical Model이 아니라 실제
+처음에는 제공된 Transistor Model을 그대로 Layout에 적용할 수 있을 것으로 생각했습니다.
+
+하지만 Momentum은 단순한 Electrical Model이 아니라 실제
 
 - Metal Pattern
-- Pad
+- Gate / Drain / Source Pad
 - Routing
 - Via
 - Substrate
 
-구조를 기반으로 전자기장을 계산합니다.
-
-따라서 회로 Model과 Layout Model은 서로 다른 정보이며 **EM Simulation을 위한 Physical Model을 별도로 구성해야 한다고 판단했습니다.**
+구조를 기반으로 전자기장을 계산하기 때문에 **별도의 Physical Layout Model이 필요하다는 점**을 확인했습니다.
 
 ### Solution
 
-CGH40010F 제조사의 권장 구조와 Model 정보를 분석해
+CGH40010F의 제조사 권장 구조와 Model 정보를 분석해
 
 - Gate
 - Drain
@@ -568,24 +640,24 @@ EM Simulation
 - Component Size
 - GND Via
 
-를 함께 반영했습니다.
+등을 함께 반영했습니다.
 
 ### Result
 
-CGH40010F가 포함된 전체 PCB Layout에 대해 Momentum EM Simulation을 수행할 수 있게 되었습니다.
-
-단순 Schematic 단계에서 끝나지 않고 **실제 PCB 생산 환경을 고려한 RF Layout 설계 및 EM 검증 경험**을 확보했습니다.
+CGH40010F가 포함된 전체 PCB Layout을 구성해 Momentum 기반 EM Simulation을 수행할 수 있었습니다.
 
 <p align="center">
-  <img src="./2025_capstone_final_final_KO.files/2025_capstone_final_final_KO_img_18.png" width="750">
+  <img src="./media/image8.png" width="90%">
 </p>
 
 <p align="center">
-  <b>CGH40010F를 포함한 최종 PCB Layout</b>
+  <b>CGH40010F를 포함한 Physical PCB Layout</b>
 </p>
+
+최종적으로 회로도 수준에서 끝나지 않고 **실제 PCB 생산 환경을 고려한 RF Layout 설계 및 EM 검증까지 수행**했습니다.
 
 > **Learned**  
-> RF 설계에서는 Electrical Model뿐 아니라 **실제 구조를 표현하는 Physical Layout Model을 이해하고 직접 구성할 수 있어야 한다는 점**을 배웠습니다.
+> RF 설계에서는 Electrical Model뿐 아니라 **실제 구조를 표현하는 Physical Layout Model까지 이해하고 구성할 수 있어야 한다는 점**을 배웠습니다.
 
 ---
 
@@ -599,7 +671,7 @@ Schematic Simulation에서는 최대 Output Power가 약
 43.35dBm
 ```
 
-까지 나타났지만 PCB Layout 기반 Simulation에서는 약
+까지 나타났지만 실제 PCB Layout의 영향을 반영한 Simulation에서는 약
 
 ```text
 42.31dBm
@@ -611,7 +683,7 @@ Schematic Simulation에서는 최대 Output Power가 약
 
 ### Analysis
 
-Schematic에서는 배선과 연결이 이상적으로 표현되지만 실제 PCB에서는
+Schematic에서는 배선과 Component 연결이 이상적으로 표현되지만 실제 PCB에서는
 
 ```text
 Routing
@@ -629,7 +701,7 @@ Parasitic Capacitance
 
 가 추가됩니다.
 
-따라서 Layout의 물리 구조가 Input / Output Matching과 RF 전달 특성을 변화시키면서 Output Power 차이가 발생했다고 판단했습니다.
+따라서 PCB의 물리적 구조가 Input / Output Matching Point와 RF 전달 특성에 영향을 주면서 Output Power 차이가 발생했다고 판단했습니다.
 
 ### Solution
 
@@ -646,6 +718,17 @@ Momentum EM Simulation을 이용해 실제 PCB 구조의 영향을 분석하며
 
 단순히 Schematic을 Layout으로 변환하는 것이 아니라 **RF Signal Path를 기준으로 Routing 구조를 검토**했습니다.
 
+### Schematic / Layout 비교
+
+<p align="center">
+  <img src="./media/image6.png" width="45%">
+  <img src="./media/image11.png" width="45%">
+</p>
+
+<p align="center">
+  <b>Schematic Simulation vs Layout Simulation</b>
+</p>
+
 ### Result
 
 Schematic 대비 일부 출력 감소는 발생했지만 최종 Layout 환경에서도
@@ -659,7 +742,7 @@ PAE  = 62.2%
 수준의 성능을 확보했습니다.
 
 > **Learned**  
-> RF 회로에서는 Schematic 결과가 그대로 실제 PCB 성능으로 이어지지 않으며, **Layout에서 발생하는 Parasitic 성분을 포함해 검증해야 한다는 점**을 체감했습니다.
+> RF 회로에서는 Schematic 결과가 그대로 실제 PCB 성능으로 이어지지 않으며, **Layout에서 발생하는 Parasitic 성분을 포함해 성능을 검증해야 한다는 점**을 체감했습니다.
 
 ---
 
@@ -667,9 +750,9 @@ PAE  = 62.2%
 
 ### Problem
 
-Large Signal Simulation 과정에서 기본 주파수인 2.4GHz 이외에도 2차 · 3차 Harmonic 성분이 발생했습니다.
+Power Amplifier의 Large Signal Simulation을 진행하면서 기본 주파수인 2.4GHz 이외에도 2차 · 3차 Harmonic 성분이 발생하는 것을 확인했습니다.
 
-특히 Filter 설계 이전에는 Harmonic 영역에서 비교적 큰 Power가 나타나 출력 신호의 왜곡 가능성이 있었습니다.
+특히 출력단의 Harmonic 성분은 출력 신호의 품질과 효율에 영향을 줄 수 있기 때문에 억제 구조가 필요했습니다.
 
 ### Analysis
 
@@ -680,15 +763,26 @@ Power Amplifier는 큰 입력 신호에서 Transistor가 비선형적으로 동�
 2.4GHz × 3 = 7.2GHz
 ```
 
-와 같은 Harmonic이 발생합니다.
+와 같은 Harmonic 성분이 발생합니다.
 
-단순히 Impedance Matching만 개선하는 것으로는 해당 문제를 해결하기 어렵기 때문에 별도의 Harmonic 억제 구조가 필요하다고 판단했습니다.
+단순히 Input / Output Matching만 개선하는 것으로는 Harmonic 문제를 해결할 수 없기 때문에 Output Network에 별도의 Harmonic 억제 구조가 필요하다고 판단했습니다.
 
 ### Solution
 
-특정 Harmonic Frequency에서 낮은 Impedance Path를 형성하도록 **L과 C를 이용한 Harmonic Trap Circuit**을 추가했습니다.
+특정 Harmonic Frequency에서 낮은 Impedance Path를 형성하도록 **L과 C를 이용한 Harmonic Trap Circuit**을 구성했습니다.
 
-Harmonic Balance Simulation을 반복하며 기본파의 Output Power를 유지하면서 Harmonic 성분이 감소하도록 L / C Parameter를 조정했습니다.
+Harmonic Balance Simulation을 반복하면서 Fundamental Power를 유지하고 Harmonic 성분을 낮추도록 회로를 조정했습니다.
+
+### Schematic / Layout Harmonic Result
+
+<p align="center">
+  <img src="./media/image5.png" width="45%">
+  <img src="./media/image10.png" width="45%">
+</p>
+
+<p align="center">
+  <b>Schematic Harmonic Simulation / Layout Harmonic Simulation</b>
+</p>
 
 ### Result
 
@@ -698,7 +792,7 @@ Layout Simulation에서 2차 Harmonic인
 4.8GHz ≤ 약 4dBm
 ```
 
-수준으로 낮춰 기본파 대비 Harmonic 성분을 억제했습니다.
+수준의 결과를 확인해 2.4GHz 기본파 대비 Harmonic 성분을 억제했습니다.
 
 > **Learned**  
 > Power Amplifier에서는 높은 Gain과 Output Power뿐 아니라 **비선형 동작으로 발생하는 Harmonic까지 함께 고려해야 RF 출력 품질을 확보할 수 있다는 점**을 배웠습니다.
@@ -709,7 +803,7 @@ Layout Simulation에서 2차 Harmonic인
 
 ### Problem
 
-초기에는 Schematic Simulation 결과를 중심으로 Matching과 Efficiency를 조정했지만 Layout으로 변환하면서 실제 Component Size와 Routing 공간 때문에 회로도와 동일한 구조를 그대로 구현하기 어려운 부분이 발생했습니다.
+초기에는 Schematic Simulation 결과를 중심으로 Matching과 Efficiency를 조정했지만, Layout으로 변환하면서 실제 Component Size와 Routing 공간을 고려하면 회로도와 동일한 구조를 그대로 구현하기 어려운 부분이 발생했습니다.
 
 ### Analysis
 
@@ -725,28 +819,29 @@ PCB Manufacturability
 
 를 함께 고려해야 한다고 판단했습니다.
 
-회로도에서 최적의 Component 값을 찾는 것과 실제 PCB에서 해당 Component를 배치하고 짧은 RF Path를 만드는 것은 서로 다른 문제였습니다.
+회로도에서 최적의 Component 값을 찾는 것과 실제 PCB에서 해당 Component를 배치하고 짧은 RF Signal Path를 만드는 것은 서로 다른 문제였습니다.
 
 ### Solution
 
-Layout 설계 시 Schematic의 배치를 그대로 옮기지 않고 RF Signal Path를 기준으로 Component 위치를 조정했습니다.
+Layout 설계 시 Schematic의 부품 배치를 단순히 그대로 옮기지 않고 RF Signal Path를 기준으로 Component 위치와 Routing을 검토했습니다.
 
-또한
+특히
 
 - Component Package Size
 - Gate / Drain 연결 구조
 - RF Signal Path
 - Ground Path
 - GND Via 위치
+- PCB Substrate
 
-를 함께 검토했습니다.
+등을 함께 고려했습니다.
 
 ### Result
 
-회로 Simulation에서 끝나지 않고 Layout 기반 EM Simulation까지 완료해 **Electrical Design과 Physical Design을 연결한 RF 설계 과정**을 경험했습니다.
+Schematic Simulation뿐만 아니라 실제 Layout 기반 EM Simulation까지 완료해 **Electrical Design과 Physical Design을 연결한 RF 설계 과정**을 경험했습니다.
 
 <p align="center">
-  <img src="./2025_capstone_final_final_KO.files/2025_capstone_final_final_KO_img_19.png" width="750">
+  <img src="./media/image16.png" width="70%">
 </p>
 
 <p align="center">
@@ -754,7 +849,7 @@ Layout 설계 시 Schematic의 배치를 그대로 옮기지 않고 RF Signal Pa
 </p>
 
 > **Learned**  
-> 실제 제품을 고려한 회로 설계에서는 Simulation 결과뿐 아니라 **PCB에서 실제 구현 가능한 구조인지까지 고려해야 설계가 완성된다는 점**을 배웠습니다.
+> 실제 구현을 고려한 회로 설계에서는 Simulation 결과뿐 아니라 **PCB에서 실제로 구현 가능한 구조인지까지 함께 고려해야 설계가 완성된다는 점**을 배웠습니다.
 
 </details>
 
@@ -765,25 +860,7 @@ Layout 설계 시 Schematic의 배치를 그대로 옮기지 않고 RF Signal Pa
 
 <br>
 
-- CGH40010F GaN HEMT 기반 **2.4GHz RF Power Amplifier 설계**
-- `VDS = 28V`, `VGS = -2.7V` 기준 Bias Point 설정
-- 2.4GHz에서 **Stability Factor K = 2.243**
-- Smith Chart + LC Network 기반 **Input / Output Impedance Matching**
-- `2.3GHz ~ 2.5GHz`에서 **S11 < -10dB**
-- 2.4GHz에서 약 **12.5dB Gain**
-- Harmonic Balance 기반 **Large Signal 특성 분석**
-- LC Harmonic Trap 적용을 통한 **2차 Harmonic 억제**
-- 실제 Component · Via · Substrate를 반영한 **PCB Layout 설계**
-- 제조사에서 제공되지 않은 **CGH40010F Physical Layout 직접 구현**
-- ADS Momentum 기반 **EM Simulation 수행**
-- Maximum Output Power **42.3dBm**
-- Drain Efficiency **75.74%**
-- PAE **62.2%**
-- 기존 비교 연구 대비 Output Power **+0.3dBm**
-- Drain Efficiency **+11.74%p**
-- PAE **+4.6%p**
-
-### Final Performance
+## Final Performance
 
 | Parameter | Result |
 |---|---:|
@@ -796,7 +873,9 @@ Layout 설계 시 Schematic의 배치를 그대로 옮기지 않고 RF Signal Pa
 | Input Matching | **S11 < -10dB @ 2.3 ~ 2.5GHz** |
 | 2nd Harmonic | **약 4dBm 이하 @ 4.8GHz** |
 
-### 기존 연구와 성능 비교
+---
+
+## 기존 연구와 성능 비교
 
 | Parameter | Reference | 본 프로젝트 | Improvement |
 |---|---:|---:|---:|
@@ -804,25 +883,33 @@ Layout 설계 시 Schematic의 배치를 그대로 옮기지 않고 RF Signal Pa
 | Drain Efficiency | 64% | **75.74%** | **+11.74%p** |
 | PAE | 57.6% | **62.2%** | **+4.6%p** |
 
-### 핵심 설계 Flow
+---
 
-```text
-Device Analysis
-        ↓
-Circuit Design
-        ↓
-S-Parameter
-        ↓
-Impedance Matching
-        ↓
-Harmonic Analysis
-        ↓
-PCB Layout
-        ↓
-EM Simulation
-        ↓
-Performance Verification
-```
+## 주요 성과
+
+- CGH40010F GaN HEMT 기반 **2.4GHz RF Power Amplifier 설계**
+- `VDS = 28V`, `VGS = -2.7V` 기준 Bias Point 설정
+- 2.4GHz에서 **Stability Factor K = 2.243**
+- Smith Chart + LC Network 기반 **Input / Output Impedance Matching**
+- `2.3GHz ~ 2.5GHz`에서 **S11 < -10dB**
+- 2.4GHz에서 약 **12.5dB Gain**
+- Harmonic Balance를 이용한 **Large Signal 특성 분석**
+- LC Harmonic Trap을 이용한 **Harmonic 억제**
+- 실제 Component · Via · Substrate를 반영한 **PCB Layout 설계**
+- 제조사에서 제공되지 않은 **CGH40010F Physical Layout 직접 구성**
+- ADS Momentum 기반 **EM Simulation 수행**
+- Maximum Output Power **42.3dBm**
+- Drain Efficiency **75.74%**
+- PAE **62.2%**
+- 기존 비교 연구 대비 Output Power **+0.3dBm**
+- Drain Efficiency **+11.74%p**
+- PAE **+4.6%p**
+
+---
+
+### 핵심 성과
+
+> **회로도 수준의 RF 설계에서 끝나지 않고 실제 Component Size와 PCB 물리 구조를 반영한 Layout 및 EM Simulation까지 수행하여 2.4GHz GaN Power Amplifier의 실제 구현 가능성을 검증했습니다.**
 
 </details>
 
@@ -835,41 +922,47 @@ Performance Verification
 
 이번 프로젝트를 통해 RF 회로에서는 **Schematic에서 좋은 Simulation 결과를 얻는 것만으로 설계가 끝나는 것이 아니라는 점**을 배웠습니다.
 
-처음에는 회로도에서 Matching과 Output Power를 확보하면 Layout에서도 유사한 결과가 나올 것으로 생각했지만, 실제 PCB 구조를 적용하면서 Routing · Pad · Via · Substrate에서 발생하는 Parasitic 성분으로 인해 RF 특성이 달라지는 것을 확인했습니다.
+처음에는 회로도에서 Matching과 Output Power를 확보하면 Layout에서도 유사한 결과가 나올 것으로 생각했습니다.
 
-이를 해결하면서
+하지만 실제 PCB 구조를 적용하면서
 
-```text
-Bias 설정
-   ↓
-S-Parameter 분석
-   ↓
-Stability 검증
-   ↓
-Impedance Matching
-   ↓
-Harmonic Balance
-   ↓
-PCB Layout
-   ↓
-Momentum EM Simulation
-```
-
-으로 이어지는 RF Power Amplifier의 전체 설계 흐름을 경험했습니다.
-
-특히 CGH40010F의 Layout 정보가 제공되지 않는 상황에서 제조사 자료와 Model 정보를 기반으로 Gate · Drain · Source의 Physical Structure를 직접 구성하면서 **주어진 Model에 의존하지 않고 부족한 정보를 분석해 필요한 구조를 직접 구현하는 문제 해결 경험**을 얻었습니다.
-
-또한 Schematic과 Layout Simulation 결과를 비교하며 RF 회로에서는 Component 값뿐만 아니라
-
-- 배선 길이
+- Routing
 - Pad
 - Via
 - Substrate
 - Component Physical Size
 
-와 같은 **물리적 구조 자체가 하나의 회로 요소로 작용한다는 점**을 체감했습니다.
+등에서 발생하는 Parasitic 성분으로 인해 RF 특성이 달라지는 것을 확인했습니다.
 
-Harmonic 문제를 해결하는 과정에서는 높은 Output Power만 확보하는 것이 아니라
+이를 해결하면서
+
+```text
+Bias Point 설정
+        ↓
+S-Parameter 분석
+        ↓
+Stability 검증
+        ↓
+Impedance Matching
+        ↓
+Harmonic Balance
+        ↓
+PCB Layout
+        ↓
+Momentum EM Simulation
+```
+
+으로 이어지는 RF Power Amplifier의 전체 설계 흐름을 경험했습니다.
+
+특히 CGH40010F의 Layout 정보가 제공되지 않는 상황에서 제조사 자료와 Model 정보를 기반으로 Gate · Drain · Source의 Physical Structure를 직접 구성하면서
+
+> **주어진 Model에 의존하지 않고 부족한 정보를 분석해 필요한 구조를 직접 구현하는 문제 해결 경험**
+
+을 얻었습니다.
+
+또한 Schematic과 Layout Simulation 결과를 비교하면서 RF 회로에서는 단순히 Component의 값만 중요한 것이 아니라 **배선 길이 · Pad · Via · Substrate와 같은 물리적인 구조 자체가 하나의 회로 요소로 작용한다는 점**을 체감했습니다.
+
+Harmonic 문제를 분석하는 과정에서는 높은 Output Power만 만드는 것이 아니라
 
 **Gain · Efficiency · Stability · Matching · Harmonic**
 
