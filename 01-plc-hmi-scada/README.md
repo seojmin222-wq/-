@@ -16,38 +16,9 @@
 
 ## 시스템 구성
 
-```text
-               [Field Device]
-              Sensor / Switch
-                    │
-                    ▼
-              ┌───────────┐
-              │    PLC    │
-              │ Sequence  │
-              │  Control  │
-              └─────┬─────┘
-                    │
-          ┌─────────┴─────────┐
-          │                   │
-          ▼                   ▼
-     [Actuator]             [HMI]
- Motor / Cylinder             │
- Conveyor / MPS               │
-                              ▼
-                       Operator Control
-                              │
-                              │ PLC Data
-                              ▼
-                        KEPServerEX
-                              │
-                           OPC UA
-                              │
-                              ▼
-                          X-SCADA
-                              │
-                              ▼
-                     Monitoring / Display
-```
+<p align="center">
+  <img src="01-architecture_3.png" alt="시스템 구성도" width="90%">
+</p>
 
 * **제어 흐름**
   `Sensor / Switch → PLC Sequence Logic → Actuator`
