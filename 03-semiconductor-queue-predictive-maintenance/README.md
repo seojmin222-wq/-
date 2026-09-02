@@ -1,8 +1,8 @@
-# 큐타임 위반 예방 자동 라우팅 & O-ring 열화 예지보전 시스템
+# Q-Time 위반 예방 자동 라우팅 기반 스마트팩토리 시스템
 
-### PLC · SCADA · DB · 데이터분석 4-Layer 통합 스마트팩토리 시스템
+### PLC · SCADA · DB · 데이터분석 4-Layer 통합 자동화 시스템
 
-> **반도체 공정의 Q-Time 초과와 Chamber O-ring 열화 문제를 대상으로
+> **반도체 공정의 Q-Time 초과 문제를 대상으로
 > 현장제어 → SCADA → DB → 데이터분석까지 연결한 4-Layer 통합 시스템**
 
 > 🚧 **진행 상태**: 마무리 단계 — PLC 최종 동작 및 병렬 시퀀스 검증 진행 중
@@ -10,8 +10,8 @@
 * **기간**: 2026.08 ~ 진행 중
 * **참여 형태**: 팀 프로젝트 (4인)
 * **역할**: 팀장
-* **주요 기여**: Q-Time 위반 예방 자동 라우팅 아이디어 및 PLC 시퀀스 최초 제안 · 전체 아키텍처 구체화 · 역할 배분 및 일정관리 · MPS 하드웨어 재구성 · PLC/Servo 배선 · iFIX 설비 개요도 작화 · 3D Printing 부품 설계 총괄
-* **주요 기술**: MELSEC PLC, MR-J5 Servo, GOT HMI, iFIX, OPC-UA, SQLite, Python, pandas, LSTM, 3D Printing
+* **주요 기여**: Q-Time 위반 예방 자동 라우팅 아이디어 및 PLC 시퀀스 최초 제안 · 전체 아키텍처 구체화 · 역할 배분 및 일정관리 · MPS 하드웨어 재구성 · PLC/Servo 배선 · iFIX 설비 개요도 작화 · 3D Printing 부품 설계 및 Wafer 이송 구조 개선
+* **주요 기술**: MELSEC PLC, MR-J5 Servo, GOT HMI, iFIX, OPC-UA, SQLite, Python, pandas, 3D Printing
 
 ---
 
@@ -21,20 +21,28 @@
   <img src="images/03-architecture.png" alt="4-Layer 시스템 아키텍처" width="90%">
 </p>
 
-| Layer                  | 구성 요소                            | 역할                                           |
-| ---------------------- | -------------------------------- | -------------------------------------------- |
-| **1. Field / Control** | MELSEC PLC, MR-J5 Servo, GOT HMI | Lot·압력·Q-Time 데이터 처리, 위험등급 판정, 우선 이송 및 현장 제어 |
-| **2. SCADA**           | iFIX, OPC-UA                     | Q-Time Heatmap, O-ring 상태, KPI 및 설비 상태 시각화   |
-| **3. Database**        | SQLite                           | Lot·시간대·Chamber별 공정 이력 저장                    |
-| **4. Analysis**        | Python, pandas, LSTM             | 병목 구간 및 압력 변화 분석, 열화 패턴 분석 및 보전 주기 도출        |
+| Layer                  | 구성 요소                            | 역할                                       |
+| ---------------------- | -------------------------------- | ---------------------------------------- |
+| **1. Field / Control** | MELSEC PLC, MR-J5 Servo, GOT HMI | Lot·Q-Time 데이터 처리, 위험도 판정, 우선 이송 및 현장 제어 |
+| **2. SCADA**           | iFIX, OPC-UA                     | Q-Time Heatmap, KPI 및 설비 상태 시각화          |
+| **3. Database**        | SQLite                           | Lot·시간대·공정별 이력 저장                        |
+| **4. Analysis**        | Python, pandas                   | Q-Time 이력 및 공정 Cycle Time 분석, 병목 구간 확인   |
 
-* **Q-Time 제어 흐름**
+### Q-Time 제어 흐름
 
-  `Lot 투입 → Q-Time Monitoring → 위험도 판정 → 공급 Interlock → 위험 Lot 우선 배출`
-
-* **O-ring 분석 흐름**
-
-  `Chamber 압력 데이터 → SQLite → Python/pandas → LSTM 시계열 분석 → 열화 패턴 및 보전 시점 분석`
+```text
+Lot 투입
+    ↓
+Q-Time Monitoring
+    ↓
+위험도 판정
+    ↓
+신규 공급 Interlock
+    ↓
+위험 Lot 우선 이송 / 배출
+    ↓
+정상 Sequence 복귀
+```
 
 ---
 
@@ -43,31 +51,41 @@
 
 <br>
 
-반도체 공정에서는 특정 공정 사이의 **Q-Time을 초과할 경우 Lot 폐기 또는 품질 저하가 발생할 수 있고**, Chamber 내부의 O-ring 열화를 적절한 시점에 감지하지 못하면 압력 이상과 웨이퍼 불량으로 이어질 수 있습니다.
+반도체 공정에서는 특정 공정 사이의 **Q-Time을 초과할 경우 Lot 폐기 또는 품질 저하가 발생할 수 있습니다.**
 
-이러한 문제를 단순 모니터링에 그치지 않고 **현장에서 자동으로 판단·대응하고, 발생 이력을 상위 시스템에서 분석할 수 있는 구조**로 구현하는 것을 목표로 프로젝트를 시작했습니다.
+이러한 문제를 단순히 Q-Time 초과 이후 Alarm을 발생시키는 방식으로 처리하는 것이 아니라, **Q-Time이 임박한 Lot을 설비가 사전에 판단하고 일반 Lot보다 먼저 처리하는 자동화 구조**로 구현하는 것을 목표로 프로젝트를 시작했습니다.
 
-프로젝트 초기 단계에서 제가 먼저 **Q-Time이 임박한 Lot을 자동으로 식별하고 일반 Lot보다 우선 이송·배출하는 자동 라우팅 아이디어**를 제안했습니다.
+프로젝트 초기 단계에서 제가 먼저 **Q-Time이 임박한 Lot을 자동으로 식별하고 일반 Lot보다 우선 이송·배출하는 자동 Routing 아이디어**를 제안했습니다.
 
 이를 실제 PLC 제어로 구현하기 위해
 
-`Lot 투입 → 시간 측정 → 위험도 판정 → 공급 제어 → 우선 배출`
+```text
+Lot 투입
+    ↓
+시간 측정
+    ↓
+위험도 판정
+    ↓
+신규 공급 제어
+    ↓
+위험 Lot 우선 배출
+```
 
-순서의 PLC 로직 흐름을 순서도로 설계하고, 어떤 조건과 데이터를 Relay 및 Device에 전달할지 구체화했습니다.
+순서로 PLC Logic 흐름을 구체화하고, 각 단계에서 필요한 Relay 및 Device 조건을 정리했습니다.
 
-이후 전체 시스템을 다음 네 계층으로 확장했습니다.
+이후 하나의 PLC Sequence에 그치지 않고 시스템을 다음 네 계층으로 확장했습니다.
 
 1. **Field / Control** — PLC·Servo 기반 실시간 설비 제어
-2. **SCADA** — iFIX 기반 상태 및 Q-Time 시각화
-3. **Database** — 공정 이력 저장
-4. **Analysis** — 공정 병목 및 O-ring 열화 패턴 분석
+2. **SCADA** — iFIX 기반 설비 및 Q-Time 상태 시각화
+3. **Database** — Lot 및 공정 이력 저장
+4. **Analysis** — 공정 이력 및 Cycle Time 기반 병목 분석
 
 ### 프로젝트 핵심 과제
 
 * Q-Time 임박 Lot을 식별해 **일반 Lot보다 우선 이송하는 자동 Routing Logic 구현**
-* 여러 웨이퍼가 동시에 처리되는 상황에서도 **공급·적재·배출 Sequence가 충돌하지 않도록 Interlock 설계**
-* Chamber 압력 데이터를 활용한 **O-ring 열화 상태 Monitoring**
-* PLC부터 분석 계층까지 이어지는 **4-Layer Smart Factory Pipeline 구성**
+* 여러 Wafer가 동시에 처리되는 상황에서도 **공급·적재·배출 Sequence가 충돌하지 않도록 Interlock 설계**
+* MPS 구조 변경 이후에도 Wafer가 목표 위치에 안정적으로 도달할 수 있도록 **기구 구조 및 Cylinder 동작 조건 개선**
+* PLC부터 SCADA·DB·분석까지 이어지는 **4-Layer Smart Factory Pipeline 구성**
 
 </details>
 
@@ -78,19 +96,18 @@
 
 <br>
 
-| 구분                  | 기술 / 툴                       |
-| ------------------- | ---------------------------- |
-| PLC                 | MELSEC PLC                   |
-| Servo               | MR-J5 Servo Motor            |
-| HMI                 | GOT HMI                      |
-| SCADA               | iFIX                         |
-| Communication       | OPC-UA                       |
-| Database            | SQLite                       |
-| Data Analysis       | Python, pandas               |
-| Predictive Analysis | LSTM                         |
-| Hardware            | MPS 설비, Cylinder, Conveyor   |
-| Mechanical          | 3D Printing 부품 설계·제작         |
-| Project Management  | 주 단위 팀 공유 문서 및 진행상황 Tracking |
+| 구분                 | 기술 / 툴                       |
+| ------------------ | ---------------------------- |
+| PLC                | MELSEC PLC                   |
+| Servo              | MR-J5 Servo Motor            |
+| HMI                | GOT HMI                      |
+| SCADA              | iFIX                         |
+| Communication      | OPC-UA                       |
+| Database           | SQLite                       |
+| Data Analysis      | Python, pandas               |
+| Hardware           | MPS 설비, Cylinder, Conveyor   |
+| Mechanical         | 3D Printing 부품 설계·제작         |
+| Project Management | 주 단위 팀 공유 문서 및 진행상황 Tracking |
 
 </details>
 
@@ -105,7 +122,7 @@
 
 프로젝트 착수 단계에서 **Q-Time이 임박한 Lot을 자동으로 우선 처리하는 Routing 방식**을 제안했습니다.
 
-단순히 Q-Time 초과 시 경보를 발생시키는 것이 아니라, PLC가 각 Lot의 잔여 시간을 비교하고 위험 Lot이 발생하면 새로운 공급을 제한한 뒤 해당 Lot을 우선적으로 배출하는 구조를 목표로 했습니다.
+단순히 Q-Time 초과 시 Alarm을 발생시키는 것이 아니라, PLC가 각 Lot의 잔여 시간을 비교하고 위험 Lot이 발생하면 새로운 공급을 제한한 뒤 해당 Lot을 먼저 배출하는 구조를 목표로 했습니다.
 
 #### 기본 제어 흐름
 
@@ -125,7 +142,7 @@ Lot별 Q-Time 측정
 정상 Sequence 복귀
 ```
 
-해당 아이디어를 PLC 로직 순서도로 먼저 구체화한 뒤 팀원들에게 공유했고, 이를 기반으로 Field Control · SCADA · DB · 분석 계층의 작업 범위를 나누었습니다.
+해당 아이디어를 PLC Logic 순서도로 먼저 구체화한 뒤 팀원들에게 공유했고, 이를 기반으로 Field Control · SCADA · DB · 분석 계층의 작업 범위를 나누었습니다.
 
 ---
 
@@ -138,11 +155,14 @@ Lot별 Q-Time 측정
 * 지난주 완료 작업
 * 현재 진행 상황
 * 이번주 목표
+* 발생한 문제 및 해결 방법
 * 팀원 간 선행 / 후행 작업 의존성
 
 을 지속적으로 Tracking했습니다.
 
 특히 PLC Logic, MPS Hardware, Servo, SCADA 화면 등이 서로 독립적으로 진행될 수 없는 구조였기 때문에 **한 파트의 변경 사항이 다른 파트에 미치는 영향을 확인하며 일정과 작업 순서를 조율**했습니다.
+
+이전에 발생했던 문제와 해결 방법 중 다시 발생할 가능성이 높은 내용은 팀원들이 함께 확인할 수 있도록 공유 문서에 정리해 동일한 문제에 반복적으로 시간을 소모하지 않도록 관리했습니다.
 
 ---
 
@@ -155,21 +175,21 @@ Lot별 Q-Time 측정
 MELSEC PLC에서
 
 * Lot별 Q-Time
-* Chamber 압력
-* 설비 Sensor
+* 설비 Sensor 상태
 * 위험 등급
+* Sequence 진행 상태
 
-등을 처리하고, MR-J5 Servo와 Conveyor를 제어해 위험 Lot을 우선 이송하도록 설계했습니다.
+등을 처리하고, MR-J5 Servo와 Cylinder·Conveyor를 제어해 위험 Lot을 우선 이송하도록 설계했습니다.
 
-현장 작업자는 GOT HMI를 통해 상태와 Alarm을 확인할 수 있도록 구성했습니다.
+현장 작업자는 GOT HMI를 통해 설비 상태와 Alarm을 확인할 수 있도록 구성했습니다.
 
 #### Layer 2 — SCADA
 
 PLC 데이터를 OPC-UA로 iFIX와 연결해
 
 * Q-Time Heatmap
-* O-ring 상태 Gauge
-* 설비 상태
+* 설비 운전 상태
+* Alarm
 * 주요 KPI
 
 등을 상위 Monitoring 화면에서 확인할 수 있도록 구성했습니다.
@@ -180,41 +200,43 @@ PLC 데이터를 OPC-UA로 iFIX와 연결해
 
 * Lot별
 * 시간대별
-* Chamber별
+* 공정별
 
-이력을 이후 분석에 사용할 수 있도록 구성했습니다.
+이력을 이후 분석에 활용할 수 있도록 구성했습니다.
 
 #### Layer 4 — Analysis
 
-Python과 pandas를 활용해 공정 병목 구간을 분석하고, Chamber 압력 변화 데이터를 기반으로 LSTM 시계열 분석을 적용해 **O-ring 열화 패턴과 보전 시점을 분석하는 구조**를 설계했습니다.
+Python과 pandas를 활용해 저장된 Lot 및 Q-Time 이력을 가공하고, 공정별 Cycle Time과 대기시간을 비교해 **Q-Time 지연이 반복적으로 발생하는 구간과 병목 구간을 확인할 수 있는 구조**로 설계했습니다.
 
 ---
 
 ### 3-4. MPS Hardware 재구성
 
-기존 MPS 설비를 프로젝트 목적에 맞게 수정하기 위해 Chamber 설치 공간을 확보하고 Cylinder 및 Sensor 위치를 재조정했습니다.
+프로젝트 목적에 맞는 공정 구조를 만들기 위해 기존 MPS 설비의 Cylinder, Stopper, Sensor 및 Wafer 이동 구간을 재구성했습니다.
 
-<p align="center">
-  <img src="images/03-hardware.png" alt="MPS 하드웨어 재조립" width="90%">
-</p>
+초기에는 Chamber에 O-ring을 적용한 밀폐 구조까지 구현하기 위해 **가공·분배 Stopper의 높이와 위치를 변경**했습니다.
+
+하지만 Stopper 위치가 변경되면서 기존 Wafer 공급·분배 경로와 Cylinder 위치도 함께 달라졌기 때문에 주변 Hardware 구조를 연쇄적으로 수정해야 했습니다.
 
 주요 작업은 다음과 같습니다.
 
-* Chamber 설치를 위한 분배·공급 Cylinder 위치 변경
+* 가공·분배 Stopper 높이 및 위치 조정
+* 변경된 구조에 맞춘 분배부 재설계
 * MPS 구조 재조립
+* Cylinder 및 Sensor 위치 조정
 * 미사용 Sensor 배선 정리
 * Solenoid 상태 진단
 * Servo 및 PLC 배선
 * Camera-PLC 연동 상태 확인
 * Conveyor 구동 회로 구성
 
-기존 설비를 그대로 사용하는 것이 아니라 **제어 Sequence에 맞게 Hardware 구조 자체를 수정한 뒤 PLC Logic과 다시 연동**했습니다.
+기존 설비를 그대로 사용하는 것이 아니라 **제어 Sequence와 실제 Wafer 이동 경로에 맞춰 Hardware 구조 자체를 수정한 뒤 PLC Logic과 다시 연동**했습니다.
 
 ---
 
 ### 3-5. iFIX 설비 전체 개요도 작화
 
-SCADA에서 Q-Time Heatmap과 O-ring 상태 등을 표시하기 위한 기반 화면으로 MPS 전체 설비를 iFIX에서 직접 작화했습니다.
+SCADA에서 Q-Time과 설비 상태를 표시하기 위한 기반 화면으로 MPS 전체 설비를 iFIX에서 직접 작화했습니다.
 
 실제 MPS의
 
@@ -244,27 +266,101 @@ Cylinder와 Servo가 결합되는 주요 제어부를 확대해 현장 동작 �
 
 ---
 
-### 3-6. 3D Printing 기반 설비 부품 재설계
+### 3-6. 3D Printing 기반 설비 구조 재설계
 
-Hardware 구조 변경으로 기존 부품을 그대로 사용할 수 없는 부분은 3D Printing으로 직접 재설계했습니다.
+Hardware 구조 변경으로 기존 부품을 그대로 사용할 수 없는 부분은 3D Printing을 활용해 직접 재설계했습니다.
 
 <p align="center">
   <img src="images/03-3dprint-parts.png" alt="3D 프린팅 부품" width="90%">
 </p>
 
-주요 개선 사항은 다음과 같습니다.
+초기에는 Chamber에 O-ring을 적용한 구조를 구현하기 위해 가공·분배 Stopper의 높이와 위치를 변경했습니다.
 
-* 길이가 맞지 않게 된 분배 막대 재설계
+하지만 구조 변경 이후 기존 분배 부품의 높이와 길이가 맞지 않게 되어 **변경된 설비 치수에 맞춰 분배 Cylinder 측 부품을 새로 설계·출력**했습니다.
+
+또한 부품 크기로 인해 한 번에 출력하기 어려운 구조는 조립식으로 분할했습니다.
+
+주요 작업은 다음과 같습니다.
+
+* 변경된 Stopper 위치에 맞춘 분배부 치수 재설계
+* 기존 길이가 맞지 않게 된 분배 막대 재설계
 * 한 번에 출력하기 어려운 부품을 **조립식 구조로 분할**
-* Chamber-O-ring 접합부 구조 개선
+* Chamber 및 Cylinder 결합부 형상 수정
 * 출력 후 실제 설비에 장착해 간섭 여부 확인
 * 문제 발생 시 치수 변경 후 재출력
 
-설계 → 출력 → 조립 → 동작 확인 과정을 **3회 이상 반복**하며 실제 설비에서 사용할 수 있는 구조로 개선했습니다.
+설계 → 출력 → 조립 → 동작 확인 과정을 **3회 이상 반복**하며 실제 MPS 설비에 적용할 수 있는 구조로 개선했습니다.
 
 ---
 
-### 3-7. PLC · Conveyor 연동
+### 3-7. Wafer 이송 안정화를 위한 받침대 및 Guide 구조 추가
+
+분배 Cylinder가 Wafer를 밀어 Conveyor로 전달하는 과정에서 높이 차이로 인해 Wafer가 직접 떨어지면 낙하 위치가 일정하지 않고 이동이 불안정했습니다.
+
+이를 개선하기 위해 분배부와 Conveyor 사이에 **Wafer를 받아주는 받침대를 추가**해 Wafer가 직접 낙하하지 않고 자연스럽게 Conveyor Belt로 이동하도록 경로를 구성했습니다.
+
+하지만 받침대만 설치했을 때는 Wafer가 Conveyor 중앙에 항상 정확하게 도착하지 않고 좌·우로 치우치는 현상이 발생했습니다.
+
+이에 받침대 측면에 **Guide 구조를 추가**하여 Wafer의 좌·우 이동 범위를 제한하고 Conveyor 중앙 방향으로 유도하도록 개선했습니다.
+
+```text
+분배 Cylinder
+      ↓
+Wafer 밀어내기
+      ↓
+받침대를 통한 이동
+      ↓
+Guide를 통한 방향 보정
+      ↓
+Conveyor 중앙 진입
+```
+
+단순히 Wafer가 Conveyor에 도착하는 것에서 끝내지 않고, **후속 공정에서 반복적으로 동일한 위치를 사용할 수 있도록 이동 경로의 재현성을 높이는 방향으로 구조를 수정**했습니다.
+
+---
+
+### 3-8. Cylinder 전·후진 속도 차등 설정
+
+Wafer가 Chamber에 공급되거나 분배되는 과정에서 Cylinder의 전진 속도가 빠르면 Wafer에 가속이 붙어 최종 정지 위치가 일정하지 않는 현상이 발생했습니다.
+
+Cylinder Stroke가 동일하더라도 Wafer가 빠른 속도로 밀려나면 관성에 의해 계속 움직이기 때문에 실제 도달 위치에 편차가 생겼습니다.
+
+이를 개선하기 위해 Wafer를 직접 밀어내는 **공급 Cylinder와 분배 Cylinder의 전진 속도를 낮춰 천천히 동작하도록 조정**했습니다.
+
+#### 전진 속도 — 저속
+
+* Wafer에 발생하는 관성 최소화
+* Chamber 공급 위치 안정화
+* 분배 위치 편차 감소
+* Guide 및 Stopper 충돌 가능성 감소
+
+반면 Cylinder의 복귀 동작까지 동일하게 느리게 설정하면 전체 Cycle Time이 길어지고 다음 Cylinder의 Sequence와 동작이 겹칠 가능성이 있었습니다.
+
+따라서 Wafer 이동이 완료된 이후의 **후진 동작은 빠르게 설정**했습니다.
+
+#### 후진 속도 — 고속
+
+* 불필요한 Cycle Time 증가 방지
+* 다음 Sequence 시작 전 빠른 원위치 복귀
+* 후속 Cylinder 동작과의 간섭 방지
+
+```text
+Wafer 이송
+   ↓
+Cylinder 저속 전진
+   ↓
+Wafer 목표 위치 도달
+   ↓
+Cylinder 고속 후진
+   ↓
+다음 Sequence 진행
+```
+
+이를 통해 단순히 Cylinder의 동작 여부만 확인하는 것이 아니라 **Wafer의 위치 재현성과 전체 Sequence의 Cycle Time을 함께 고려해 Actuator 속도를 조정**했습니다.
+
+---
+
+### 3-9. PLC · Conveyor 연동
 
 PLC 출력으로 Conveyor를 직접 제어하기 위해 **24V → 12V Converter**를 적용하고 배선 및 전압 Setting 절차를 구성했습니다.
 
@@ -293,9 +389,9 @@ Start / Stop
 
 #### Problem
 
-여러 웨이퍼를 병렬로 처리하는 과정에서 **배출해야 할 위험 웨이퍼가 발생하면 신규 공급 동작을 멈추도록 Interlock**을 구성했습니다.
+여러 Wafer를 병렬로 처리하는 과정에서 **배출해야 할 위험 Wafer가 발생하면 신규 공급 동작을 멈추도록 Interlock**을 구성했습니다.
 
-하지만 기존 로직에서는 Q-Time 잔여 시간이 약 **18초 수준에 도달했을 때 공급을 정지**하도록 설정되어 있어, 이미 다른 웨이퍼의 공급 또는 적재 Sequence가 진행 중인 경우 문제가 발생했습니다.
+하지만 기존 Logic에서는 Q-Time 잔여 시간이 약 **18초 수준에 도달했을 때 공급을 정지**하도록 설정되어 있어, 이미 다른 Wafer의 공급 또는 적재 Sequence가 진행 중인 경우 문제가 발생했습니다.
 
 예를 들어,
 
@@ -305,15 +401,17 @@ Wafer B → Q-Time 임박
 Wafer C → 이미 공급 진행 중
 ```
 
-상태에서 Wafer B의 우선 배출 조건이 발생하면 **기존 공급·적재 Sequence와 배출 Sequence가 동시에 영향을 받으면서 웨이퍼 처리 순서가 꼬이는 현상**이 발생했습니다.
+상태에서 Wafer B의 우선 배출 조건이 발생하면 **기존 공급·적재 Sequence와 배출 Sequence가 동시에 영향을 받으면서 Wafer 처리 순서가 꼬이는 현상**이 발생했습니다.
 
-그 결과 위험 Lot을 먼저 배출하기 전에 다른 웨이퍼 동작이 계속 진행되면서 오히려 Q-Time을 초과할 가능성이 생겼습니다.
+그 결과 위험 Lot을 먼저 배출하기 전에 다른 Wafer 동작이 계속 진행되면서 오히려 Q-Time을 초과할 가능성이 생겼습니다.
 
 #### Analysis
 
 초기에는 단순히
 
-`Q-Time 임박 → 공급 Stop`
+```text
+Q-Time 임박 → 공급 Stop
+```
 
 조건만 적용했지만, 실제 설비에서는 정지 명령이 발생한 순간에도 이미 시작된 Cylinder·Conveyor·Servo Sequence가 즉시 모두 종료되는 것이 아니었습니다.
 
@@ -358,7 +456,12 @@ Q-Time 위험 판단 시점
 
 단순히 Q-Time 숫자만 기준으로 설정하지 않고,
 
-`공급 소요 시간 + 적재 완료 시간 + 배출 준비 시간 + Safety Margin`
+```text
+공급 소요 시간
++ 적재 완료 시간
++ 배출 준비 시간
++ Safety Margin
+```
 
 을 고려해 **위험 Lot 판정 시점을 앞당기는 방향으로 반복 검증**하고 있습니다.
 
@@ -418,51 +521,112 @@ Online Monitoring을 통해 Sensor 입력을 하나씩 확인한 결과, 현재 
 
 #### Solution
 
-현재 공정에서 사용하지 않는 Sensor를 식별하고 제거한 뒤, 필요한 Sensor만으로 입력 조건을 다시 구성했습니다.
+현재 공정에서 사용하지 않는 Sensor를 식별하고 제거한 뒤 필요한 Sensor만으로 입력 조건을 다시 구성했습니다.
 
 #### Result
 
 불필요한 입력 간섭이 제거되면서 PLC Sequence가 의도한 Sensor 조건에 따라 동작하도록 안정화했습니다.
 
+> **Learned**
+> 자동화 설비에서는 사용하지 않는 Sensor라도 PLC Input에 연결되어 있다면 예상하지 못한 Sequence 조건을 만들 수 있기 때문에, **실제 사용하는 I/O 기준으로 Hardware와 Logic을 함께 정리해야 한다는 점**을 확인했습니다.
+
 ---
 
-### Trouble 04. Hardware 구조 변경에 따른 부품 간섭 및 치수 불일치
+### Trouble 04. 구조 변경 후 Wafer 이송 위치 불안정
 
 #### Problem
 
-Chamber 설치를 위해 Cylinder 위치를 변경하면서 기존 구조에서는 없었던 부품 간 간섭이 발생했고, 기존 분배 막대의 길이도 변경된 구조와 맞지 않게 되었습니다.
+Chamber 구조를 적용하기 위해 가공·분배 Stopper의 높이와 위치를 변경하면서 기존 Wafer 이송 경로가 달라졌습니다.
 
-또한 일부 부품은 크기 때문에 한 번에 3D Printing하기 어려웠습니다.
+변경된 구조에 맞춰 분배부를 다시 설계했지만 실제 Wafer를 공급해보니 다음과 같은 문제가 발생했습니다.
+
+* 분배된 Wafer가 Conveyor로 떨어지는 과정에서 이동이 불안정함
+* Conveyor 중앙이 아닌 좌·우로 치우쳐 진입함
+* 공급·분배 Cylinder가 빠르게 전진할 경우 Wafer의 최종 정지 위치가 일정하지 않음
 
 #### Analysis
 
-단순히 기존 부품의 치수만 늘리는 방식으로는
+Wafer의 이동 과정을 반복해서 확인한 결과 문제를 하나의 원인이 아닌 **기구 구조와 Cylinder 동작 조건이 함께 영향을 주는 문제**로 판단했습니다.
 
-* 출력 가능한 크기
-* 실제 조립성
-* Chamber와 O-ring 접합
-* Cylinder 동작 범위
+먼저 분배부와 Conveyor 사이에 높이 차이가 있어 Wafer가 직접 떨어질 경우 낙하 위치가 일정하지 않았습니다.
 
-를 동시에 만족하기 어렵다고 판단했습니다.
+이를 해결하기 위해 받침대를 설치했지만, Wafer의 좌·우 이동을 제한하는 구조가 없어 Conveyor 중앙에서 벗어나는 현상이 남아 있었습니다.
+
+또한 공급·분배 Cylinder의 전진 속도가 빠르면 Wafer가 Cylinder에서 힘을 받은 이후에도 관성에 의해 계속 움직이면서 같은 Stroke에서도 최종 정지 위치에 편차가 발생하는 것을 확인했습니다.
 
 #### Solution
 
-* 간섭이 발생하는 구조 자체를 변경
-* 분배 막대 치수 재설계
-* 대형 부품을 **조립식 구조로 분할**
-* Chamber-O-ring 접합부 형상 개선
-* 출력 → 장착 → 간섭 확인 → 치수 수정 과정을 반복
+##### 1. Wafer 이동용 받침대 설치
+
+분배부와 Conveyor 사이에 받침대를 추가해 Wafer가 직접 낙하하지 않고 자연스럽게 Conveyor로 이동하도록 경로를 수정했습니다.
+
+##### 2. Guide 구조 추가
+
+받침대만으로는 Wafer가 Conveyor 중앙에 정확하게 진입하지 않아 좌·우 이동을 제한하는 Guide를 추가했습니다.
+
+이를 통해 Wafer가 정해진 경로를 따라 Conveyor 중앙으로 이동하도록 구조를 개선했습니다.
+
+##### 3. 공급·분배 Cylinder 전진 속도 저감
+
+Wafer에 불필요한 가속이 발생하지 않도록 공급 Cylinder와 분배 Cylinder의 **전진 속도를 낮춰 Wafer를 천천히 이송**하도록 조정했습니다.
+
+이를 통해 Chamber 공급 및 분배 과정에서 Wafer가 지나치게 밀려나는 현상을 줄였습니다.
+
+##### 4. Cylinder 후진 속도 고속 설정
+
+전진과 동일하게 후진 속도까지 낮추면 Cycle Time이 증가하고 다음 Cylinder 동작과 겹칠 가능성이 있었습니다.
+
+따라서 Wafer를 직접 움직이는 **전진 동작만 저속으로 설정하고, Wafer 이송이 끝난 후의 후진 동작은 빠르게 설정**해 다음 Sequence가 시작되기 전에 원위치로 복귀하도록 조정했습니다.
 
 #### Result
 
-3회 이상의 반복 설계·출력을 통해 실제 MPS 설비에 장착 가능한 형태로 구조를 개선했습니다.
+받침대와 Guide를 통해 Wafer 이동 경로를 제한하고, Cylinder의 전진·후진 속도를 동작 목적에 맞게 다르게 설정함으로써 **Wafer가 Chamber 및 Conveyor의 목표 위치에 보다 안정적으로 공급·분배될 수 있도록 개선**했습니다.
 
 > **Learned**
-> 자동화 설비 제작에서는 Software Logic뿐 아니라 **기구물의 치수·조립성·Sensor 위치까지 제어 Sequence와 함께 고려해야 한다는 점**을 경험했습니다.
+> 자동화 설비에서는 Cylinder의 Stroke와 Sensor 조건만 맞는다고 해서 실제 물체가 항상 동일한 위치에 도달하는 것은 아니며, **이송 대상의 관성·낙하 경로·Guide 구조·Cylinder 속도까지 함께 고려해야 위치 재현성을 확보할 수 있다는 점**을 경험했습니다.
+> 또한 Cycle Time을 무조건 줄이는 것보다 **정확도가 필요한 동작은 느리게, 단순 복귀 동작은 빠르게 설정하는 방식으로 각 동작의 목적에 맞게 속도를 조정하는 것이 중요하다는 점**을 배웠습니다.
 
 ---
 
-### Trouble 05. Camera-PLC 연동 시 Barcode 인식 불량
+### Trouble 05. 3D Printing 기반 O-ring 밀폐 구조의 한계
+
+#### Problem
+
+Chamber에 O-ring을 적용해 밀폐 구조를 구현하기 위해 O-ring 결합부를 직접 설계하고 3D Printing으로 제작했습니다.
+
+O-ring 압착을 고려해 여러 차례 치수와 결합 구조를 수정했지만 실제 조립 후 테스트에서는 원하는 수준의 기밀을 확보하지 못했습니다.
+
+#### Analysis
+
+초기에는 O-ring 결합부의 치수와 압착량 문제로 판단해 구조를 반복 수정했습니다.
+
+하지만 여러 차례 출력·조립한 결과 단순 치수 문제뿐 아니라 **3D Printing 특유의 적층면과 표면 상태, 조립부의 미세한 공차**로 인해 밀폐 구조에 필요한 균일한 접촉면을 확보하기 어렵다는 점을 확인했습니다.
+
+따라서 동일한 방식으로 치수만 계속 수정하는 것은 실질적인 해결 방법이 아니라고 판단했습니다.
+
+#### Decision
+
+O-ring 적용을 위해 설비 구조와 부품을 여러 차례 수정했지만 현재 제작 방식으로는 안정적인 기밀을 확보하기 어렵다고 판단해 **O-ring 밀폐 기능은 최종 시스템 구현 범위에서 제외**했습니다.
+
+다만 이 과정에서 변경된 설비를 기준으로
+
+* 가공·분배 Stopper 높이 및 위치 조정
+* 분배부 재설계
+* Wafer 이동 받침대 설치
+* Guide 구조 추가
+* 공급·분배 Cylinder 속도 최적화
+
+등의 개선 작업을 수행했고, 해당 구조는 Wafer 이송 안정화에 활용했습니다.
+
+향후 동일한 밀폐 구조를 다시 구현한다면 Chamber 자체를 3D Printing으로 제작하기보다 **치수 정밀도와 기밀 확보가 가능한 규격 아크릴 Chamber를 사용하고 O-ring 결합부를 별도로 설계하는 방식**으로 개선할 계획입니다.
+
+> **Learned**
+> 3D Modeling에서 원하는 형상을 구현할 수 있는 것과 실제 부품이 요구 성능을 만족하는 것은 별개의 문제라는 점을 경험했습니다.
+> 특히 밀폐 구조에서는 형상뿐 아니라 **제작 방식의 표면 상태·공차·재료 특성까지 고려해 제조 방법을 선정해야 한다는 점**을 배웠습니다.
+
+---
+
+### Trouble 06. Camera-PLC 연동 시 Barcode 인식 불량
 
 #### Problem
 
@@ -495,8 +659,11 @@ Camera 판정 결과를 PLC Sequence에서 정상적으로 사용할 수 있도�
 * MPS Hardware 구조 변경 및 PLC · Servo 배선 수행
 * **iFIX 설비 전체 개요도 및 상세 시점 직접 작화**
 * MR-J5 Servo · Sensor · PLC · Camera 연동 관련 Hardware Troubleshooting 수행
-* **3D Printing 부품 3회 이상 반복 설계·제작**
-* PLC-Conveyor 구동용 24V → 12V 전원 구성 및 제어 연동
+* 구조 변경에 맞춰 **3D Printing 부품을 3회 이상 반복 설계·제작**
+* 분배부와 Conveyor 사이의 **Wafer 이동 받침대 및 Guide 구조 추가**
+* 공급·분배 Cylinder의 **전진 저속 / 후진 고속 설정을 통해 위치 재현성과 Cycle Time을 함께 고려**
+* PLC-Conveyor 구동용 **24V → 12V 전원 구성 및 제어 연동**
+* O-ring 밀폐 구조 구현 과정에서 **3D Printing 방식의 기밀 한계를 확인하고 최종 구현 범위에서 제외**
 * 병렬 공정에서 **Q-Time 위험 Lot과 일반 Lot 간 Sequence 충돌 문제를 발견하고 Interlock 및 선행 제어 시점 개선 중**
 * 주 단위 일정관리 및 작업 의존성 조율을 통한 **4인 팀 프로젝트 리딩**
 * 현재 PLC 병렬 Sequence 및 최종 동작 검증 단계 진행 중
@@ -514,15 +681,26 @@ Camera 판정 결과를 PLC Sequence에서 정상적으로 사용할 수 있도�
 
 Q-Time 위반 문제를 해결하기 위해 자동 Routing Sequence를 먼저 제안하고 PLC Logic의 흐름을 설계한 뒤, 이를 Field Control · SCADA · DB · Analysis로 확장하면서 하나의 아이디어를 실제 Smart Factory Architecture로 발전시키는 과정을 경험했습니다.
 
-특히 병렬 동작 과정에서 Q-Time 임박 Lot과 일반 Lot의 Sequence가 충돌하는 문제를 확인하면서, 자동화 시스템에서는 각 Logic이 개별적으로 정상 동작하는 것보다 **여러 Sequence가 동시에 동작할 때 발생할 수 있는 상태 조합과 상호 Interlock을 설계하는 것이 중요하다**는 점을 배웠습니다.
+특히 병렬 동작 과정에서 Q-Time 임박 Lot과 일반 Lot의 Sequence가 충돌하는 문제를 확인하면서 자동화 시스템에서는 각 Logic이 개별적으로 정상 동작하는 것보다 **여러 Sequence가 동시에 실행될 때 발생할 수 있는 상태 조합과 상호 Interlock을 설계하는 것이 중요하다**는 점을 배웠습니다.
 
 또한 Q-Time과 같이 시간 제한이 있는 제어에서는 단순히 기준 시간이 되었을 때 동작시키는 것이 아니라, **설비가 실제로 정지하고 다른 Sequence로 전환되는 데 필요한 물리적 Cycle Time을 역산해 선행 제어해야 한다는 점**도 확인했습니다.
 
-Hardware 측면에서는 Servo 배선, Sensor 간섭, Cylinder 위치 변경, 3D Printing 부품 치수 문제 등 매뉴얼대로 해결되지 않는 문제를 반복적으로 경험했습니다. 이를 전기·제어·기구 문제로 나누어 원인을 좁히고 수정하면서 **Software와 Hardware를 분리해서 보지 않고 하나의 시스템으로 분석하는 문제해결 방식**을 익혔습니다.
+Hardware 측면에서는 Stopper 위치 변경, Cylinder 및 Servo 배선, Sensor 간섭, Wafer 이송 위치 편차, 3D Printing 부품 치수 문제 등 매뉴얼만으로 해결하기 어려운 문제를 반복적으로 경험했습니다.
 
-팀장으로서는 초기 아이디어와 PLC Sequence를 팀원들에게 설명하고 작업 단위로 분해해 역할을 배분했으며, 주 단위로 작업 진행 상황과 의존성을 관리했습니다. 이를 통해 직접 구현하는 역량뿐 아니라 **전체 프로젝트의 기술적 방향을 설계하고 팀원 간 작업을 연결하는 System Integration 및 Project Leading 경험**을 쌓았습니다.
+특히 Wafer 이송 과정에서는 Cylinder의 Stroke만 맞추는 것으로 충분하지 않았습니다. Wafer가 Conveyor로 낙하하는 경로를 확인해 받침대를 추가하고, 중앙에서 벗어나는 문제를 해결하기 위해 Guide 구조를 설계했습니다.
+
+또한 Cylinder의 전진 속도가 빠르면 Wafer에 관성이 발생해 목표 위치가 일정하지 않다는 점을 확인해 **Wafer를 움직이는 전진 동작은 느리게, 다음 Sequence 준비를 위한 후진 동작은 빠르게 설정**했습니다.
+
+이를 통해 자동화 설비에서는 Logic뿐만 아니라 **이송 대상의 물리적 움직임, 기구 구조, Actuator 속도와 전체 Cycle Time을 함께 고려해야 안정적인 Sequence를 만들 수 있다는 점**을 배웠습니다.
+
+O-ring 밀폐 구조의 경우 구현을 위해 부품을 여러 차례 설계하고 실제 설비 구조까지 변경했지만, 3D Printing 방식으로는 요구한 수준의 기밀을 확보하기 어렵다는 것을 확인했습니다.
+
+기능을 완성하는 것에만 집중하기보다 반복 테스트 결과를 기준으로 **현재 제작 방식의 한계를 판단하고 최종 구현 범위에서 제외하는 결정**을 내렸습니다. 이를 통해 설계 형상의 완성도뿐 아니라 실제 요구 성능과 제조 방식의 적합성을 함께 판단해야 한다는 점을 경험했습니다.
+
+팀장으로서는 초기 아이디어와 PLC Sequence를 팀원들에게 설명하고 작업 단위로 분해해 역할을 배분했으며, 주 단위로 작업 진행 상황과 의존성을 관리했습니다.
+
+또한 진행 과정에서 발생한 문제와 해결 방법을 공유 문서에 지속적으로 기록해 팀원들이 동일한 문제를 반복해서 해결하지 않도록 관리했습니다.
+
+이를 통해 직접 구현하는 역량뿐 아니라 **전체 프로젝트의 기술적 방향을 설계하고 Software · Hardware · 팀원 간 작업을 연결하는 System Integration 및 Project Leading 경험**을 쌓았습니다.
 
 </details>
-
-
-
