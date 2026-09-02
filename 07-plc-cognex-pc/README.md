@@ -118,10 +118,10 @@ PC에서 장비를 직접 조작하면서 입출력 상태를 동시에 확인�
   </tr>
   <tr>
     <td align="center">
-      <img src="프젝7이미지/PC제어2.png" width="95%">
+      <img src="프젝7이미지/PC제어3.png" width="95%">
     </td>
     <td align="center">
-      <img src="프젝7이미지/PC제어3.png" width="95%">
+      <img src="프젝7이미지/PC제어2.png" width="95%">
     </td>
   </tr>
   <tr>
@@ -188,10 +188,32 @@ using Cognex.InSight.Sensor;
 * Software Trigger
 * External Trigger
 
-<p align="center">
-  <img src="프젝7이미지/PC제어4.png" width="80%" alt="Cognex 비전검사 PC 제어 프로그램">
-</p>
+<br>
 
+<table>
+  <tr>
+    <th width="50%">Cognex · Arduino 하드웨어 연동</th>
+    <th width="50%">C# 기반 Cognex 비전 제어 화면</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="프젝7이미지/PC제어4.png" width="95%">
+    </td>
+    <td align="center">
+      <img src="프젝7이미지/PC제어5.png" width="95%">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      Cognex Vision Camera와 Arduino I/O 실제 배선 및 신호 연동
+    </td>
+    <td align="center">
+      Camera View · Trigger · PatMax · Blob · QR Code 검사값 실시간 표시
+    </td>
+  </tr>
+</table>
+
+<br>
 ---
 
 ### 3-3. 비전 판정 결과 기반 MPS 장비 제어
