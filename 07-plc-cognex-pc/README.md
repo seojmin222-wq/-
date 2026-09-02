@@ -118,10 +118,10 @@ PC에서 장비를 직접 조작하면서 입출력 상태를 동시에 확인�
   </tr>
   <tr>
     <td align="center">
-      <img src="프로젝트이미지/PC제어2.png" width="95%">
+      <img src="프젝7이미지/PC제어2.png" width="95%">
     </td>
     <td align="center">
-      <img src="프로젝트이미지/PC제어3.png" width="95%">
+      <img src="프젝7이미지/PC제어3.png" width="95%">
     </td>
   </tr>
   <tr>
