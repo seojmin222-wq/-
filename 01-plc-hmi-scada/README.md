@@ -94,238 +94,138 @@ KEPServerEX
 GX Works2를 이용하여 센서와 스위치의 입력 상태를 확인하고, 조건에 따라 솔레노이드·램프·컨베이어 등의 출력 장치를 제어하는 PLC 프로그램을 구성했습니다.
 
 #### 주요 구현 기능
+### 3-1. PLC 래더로직 설계 및 HMI 구현
 
-* A접점 / B접점
-* 자기유지 회로
-* 인터록 회로
-* 자기유지 + 인터록 구성
-* Timer / Counter
-* SET / RST
-* Rising Pulse
-* 연속동작 / 단속동작
-* Digital Input / Output 제어
+GXWorks2를 활용해 스마트 창고관리 설비의 PLC 제어 로직을 설계하고, GTDesigner3로 현장 조작 및 상태 모니터링을 위한 HMI 화면을 구현했습니다.
 
-```text
-Sensor Input
-     ↓
-PLC Input Device
-     ↓
-Sequence Logic
-     ↓
-PLC Output Device
-     ↓
-Actuator
-```
+SCADA 통합에 앞서 필드 계층인 PLC에서 제어 로직과 인터록을 먼저 완성한 뒤, 해당 디바이스를 기준으로 HMI와 iFIX를 단계적으로 연동했습니다.
 
-PLC 내부 Device의 상태와 실제 장비의 동작을 함께 확인하며 **래더 프로그램의 논리 신호가 물리적인 I/O 동작으로 연결되는 구조**를 확인했습니다.
+#### PLC 래더로직 설계
 
-<!-- PLC 기본 I/O 및 래더로직 이미지 삽입 -->
+MPS 창고관리 설비의 입·출고 컨베이어, 위치 감지 센서, 스토퍼 실린더, 소재 감지 센서, 랙 적재 상태 등을 제어 대상으로 기능별 로직을 구성했습니다.
 
----
+| 기능 블록     | 주요 내용                           |
+| --------- | ------------------------------- |
+| 기동/정지 인터록 | 비상정지 및 초기 안전 조건 충족 시에만 설비 기동 허용 |
+| 입출고 시퀀스   | 센서 입력 순서에 따라 컨베이어·스토퍼 순차 제어     |
+| 위치/재고 판별  | 랙별 적재 상태를 판별해 저장 위치 결정          |
+| 소재/수량 판별  | 금속·비금속 소재 구분 및 종류별 작업 수량 카운트    |
 
-### 3-2. 자동 운전 시퀀스 및 MPS 제어
+#### 기동/정지 인터록
 
-센서 입력과 장비의 동작 완료 조건을 이용하여 여러 출력 장치가 순차적으로 동작하는 자동 운전 시퀀스를 구성했습니다.
+<p align="center">
+  <img src="프젝1이미지/PLC1.png" width="48%" alt="PLC 기동 정지 인터록 1">
+  <img src="프젝1이미지/PLC1-1.png" width="48%" alt="PLC 기동 정지 인터록 2">
+</p>
 
-```text
-START
-  ↓
-초기 조건 확인
-  ↓
-Sensor Input
-  ↓
-1단계 장비 동작
-  ↓
-완료 조건 확인
-  ↓
-2단계 장비 동작
-  ↓
-Cycle Complete
-```
+#### 입출고 시퀀스 제어
 
-Timer, Counter, SET/RST 및 센서 입력을 조합해 단순 ON/OFF 제어에서 **조건 기반 순차 제어 방식**으로 프로그램을 확장했습니다.
+<p align="center">
+  <img src="프젝1이미지/PLC2.png" width="90%" alt="입출고 시퀀스 제어">
+</p>
 
-MPS 장비를 이용한 실습에서는 각 공정의 센서 입력과 장비 상태를 다음 동작의 조건으로 사용하여 하나의 공정이 완료된 후 다음 공정으로 넘어가도록 시퀀스를 구성했습니다.
+#### 위치 / 재고 판별
 
-<!-- 자동 운전 시퀀스 이미지 삽입 -->
+<p align="center">
+  <img src="프젝1이미지/PLC3.png" width="48%" alt="위치 재고 판별 1">
+  <img src="프젝1이미지/PLC4.png" width="48%" alt="위치 재고 판별 2">
+</p>
 
-<!-- MPS 실제 장비 및 PLC 프로그램 이미지 삽입 -->
+<details>
+<summary><b>📎 전체 래더로직 보기</b></summary>
 
----
+<br>
 
-### 3-3. Auto / Manual 운전 구성
+[PLC 래더로직 전체 PDF](프젝1이미지/PLC%20프로젝트%201_서정민.pdf)
 
-설비 점검과 자동 생산 운전을 구분하기 위해 **Manual / Auto Mode**를 구성했습니다.
+</details>
 
-#### Manual Mode
+<br>
 
-작업자가 개별 출력 장치를 직접 조작하여 설비의 I/O와 장비 상태를 점검할 수 있도록 구성했습니다.
+#### HMI 화면 구현
 
-```text
-Manual Command
-      ↓
-     PLC
-      ↓
-Individual Output
-      ↓
- Equipment
-```
+GTDesigner3로 **MAIN · Servo Control · Equipment Control** 3개 화면을 구성하고, 상단 버튼을 통해 각 화면으로 전환할 수 있도록 구현했습니다.
 
-#### Auto Mode
-
-초기 운전 조건을 확인한 후 Start 신호가 입력되면 작성한 시퀀스에 따라 설비가 자동으로 동작하도록 구성했습니다.
-
-```text
-AUTO
- ↓
-START
- ↓
-Condition Check
- ↓
-Sequence Logic
- ↓
-Equipment Operation
-```
-
-이를 통해 실제 자동화 설비에서 사용하는 **점검용 Manual 운전과 생산용 Auto 운전의 역할 차이**를 학습했습니다.
+|                   MAIN                   |               Servo Control              |             Equipment Control            |
+| :--------------------------------------: | :--------------------------------------: | :--------------------------------------: |
+| <img src="프젝1이미지/HMI1.png" width="100%"> | <img src="프젝1이미지/HMI2.png" width="100%"> | <img src="프젝1이미지/HMI3.png" width="100%"> |
+|         서보/설비 제어 진입 및 현재 날짜·시각 표시        |    원점 복귀·JOG·에러 리셋 및 위치·속도·알람 상태 모니터링    |      가공 설정·비상정지·창고 적재 상태 및 작업 수량 표시      |
 
 ---
 
-### 3-4. GT Designer3 기반 HMI 구성
+### 3-2. iFIX 기반 SCADA 창고관리 시스템
 
-GT Designer3를 이용하여 PLC와 연동되는 설비 운전 화면을 제작했습니다.
+PLC·HMI 구현 이후 KEPServerEX를 이용해 PLC 데이터를 상위 SCADA 계층으로 연결했습니다.
 
-작업자가 PLC 프로그램을 직접 확인하지 않아도 **설비 상태를 확인하고 필요한 제어 명령을 입력할 수 있도록 HMI 화면을 구성**했습니다.
+KEPServerEX에서 **Modbus TCP · OPC · OPC UA** 통신 환경을 직접 구성하고, Mitsubishi PLC의 실제 디바이스 값을 OPC 태그로 가져와 통신 상태를 확인했습니다.
 
-#### 구현 기능
+추가로 MQTT 및 MySQL 기반 데이터 처리 방식도 학습하고 적용했습니다.
 
-* Button / Switch
-* Lamp
-* Alternate Switch
-* Numerical Display
-* Numerical Input
-* 날짜 / 시간 표시
-* Screen 전환
-* 문자 표시 및 변환
-* Language 전환
-* Graph 표시
-* Alarm History 표시
-
-```text
-Operator
-   ↓
-HMI Button / Input
-   ↓
-PLC Device
-   ↓
-Sequence Logic
-   ↓
-Equipment
-```
-
-반대로 실제 장비와 PLC의 상태는 다음 경로로 HMI에 표시했습니다.
-
-```text
-Equipment Status
-      ↓
- PLC Device
-      ↓
-HMI Lamp / Text
-      ↓
-Numerical Display
-```
-
-HMI에서 값을 입력하면 연결된 PLC Device에 해당 데이터가 반영되고, PLC 내부 데이터가 변경되면 HMI의 Lamp·Text·Numerical Display도 함께 변경되는 **HMI ↔ PLC 양방향 데이터 연동**을 확인했습니다.
-
-<!-- HMI 메인 화면 이미지 삽입 -->
-
-<!-- HMI Button / Lamp / Numerical Input 이미지 삽입 -->
-
----
-
-### 3-5. HMI 설비 상태 모니터링
-
-PLC 내부 Device와 HMI Object를 연결하여 현장 설비의 상태를 HMI 화면에서 실시간으로 확인할 수 있도록 구성했습니다.
-
-#### 주요 모니터링 항목
-
-| 항목             | 모니터링 내용          |
-| -------------- | ---------------- |
-| Sensor Input   | 센서 입력 ON/OFF 상태  |
-| Output         | 액추에이터 출력 상태      |
-| Operation Mode | Auto / Manual 상태 |
-| Equipment      | 설비 운전 상태         |
-| Set Value      | 작업자가 입력한 설정값     |
-| Current Value  | PLC 내부 현재 데이터    |
-| Alarm          | 설비 이상 및 경고 상태    |
-| Process        | 공정 진행 단계         |
+#### 데이터 연결 구조
 
 ```text
 PLC Device
-     ↓
-HMI Object
-     ↓
-Lamp / Text / Value / Graph
+    ↓
+KEPServerEX OPC Tag
+    ↓
+iFIX I/O Driver
+    ↓
+iFIX Database Tag
+    ↓
+SCADA Screen
 ```
 
-이를 통해 PLC의 Bit 및 Word 데이터를 작업자가 쉽게 확인할 수 있는 **시각적인 운전·모니터링 정보로 변환**했습니다.
+KEPServerEX에서 Mitsubishi PLC의 디바이스 영역별 OPC 그룹과 Item을 구성해 PLC 메모리를 OPC 태그로 노출했습니다.
+
+이후 iFIX I/O Driver에서 해당 OPC Item을 참조하도록 태그를 매핑하고, DB Manager에서 실제 SCADA 화면에 사용할 태그와 설명을 구성해 최종 태그 데이터베이스를 완성했습니다.
+
+<details>
+<summary><b>📎 KEPServerEX / iFIX 태그 설정 화면 보기</b></summary>
+
+<br>
+
+#### KEPServerEX OPC 그룹 / Item 구성
+
+<p align="center">
+  <img src="프젝1이미지/KEP1.png" width="90%" alt="KEPServerEX OPC 설정">
+</p>
+
+#### iFIX I/O Driver 태그 매핑
+
+<p align="center">
+  <img src="프젝1이미지/KEP2.png" width="90%" alt="iFIX IO Driver">
+</p>
+
+#### iFIX DB Manager
+
+<p align="center">
+  <img src="프젝1이미지/KEP3.png" width="90%" alt="iFIX DB Manager">
+</p>
+
+</details>
+
+<br>
+
+#### iFIX 화면 구현
+
+iFIX에서도 HMI와 동일한 설비를 상위 계층에서 제어·모니터링할 수 있도록 **MAIN · Equipment Control · Servo Control · Trend** 화면을 구성했습니다.
+
+상단 공통 Header에는 화면 전환 버튼, 현재 날짜·시각, Auto/Manual Mode 전환 기능을 배치했습니다.
+
+|                    MAIN                   |             Equipment Control             |
+| :---------------------------------------: | :---------------------------------------: |
+| <img src="프젝1이미지/iFIX1.png" width="100%"> | <img src="프젝1이미지/iFIX2.png" width="100%"> |
+|  공정 모식도, 축별 JOG 제어, Servo Position 실시간 표시 |        창고 적재 상태, 설비 상태 및 작업 수량 모니터링       |
+
+|               Servo Control               |                   Trend                   |
+| :---------------------------------------: | :---------------------------------------: |
+| <img src="프젝1이미지/iFIX3.png" width="100%"> | <img src="프젝1이미지/iFIX4.png" width="100%"> |
+|      JOG·원점복귀·에러 리셋 및 위치·속도·에러 상태 표시      |            HDA 기반 태그 이력 시계열 조회            |
+
+HDA 기능을 이용해 사용자가 지정한 기간의 설비 태그 데이터를 조회하고 Trend 화면에서 시계열로 확인할 수 있도록 구성했습니다.
 
 ---
 
-### 3-6. Servo Motor 위치제어
-
-PLC와 위치결정 모듈, Servo Amplifier, Servo Motor를 연결하여 위치제어를 실습했습니다.
-
-#### 주요 구현 기능
-
-* JOG 운전
-* 원점 복귀
-* 기계 원점 복귀
-* 고속 원점 복귀
-* 위치 데이터 설정
-* 축 현재 위치 확인
-* 축 속도 확인
-* 축 상태 확인
-* Servo Error 확인
-* 위치결정 시퀀스 구성
-
-```text
-PLC
- ↓
-Positioning Module
- ↓
-Servo Amplifier
- ↓
-Servo Motor
- ↓
-Position Control
-```
-
-특히 Incremental Encoder 방식에서는 장비 전원을 다시 인가하면 현재 절대 위치를 알 수 없기 때문에 **자동 운전 전 원점 복귀 과정이 필요하다는 Servo 위치제어의 기본 구조**를 확인했습니다.
-
-<!-- Servo 및 위치제어 프로그램 이미지 삽입 -->
-
----
-
-### 3-7. X-SCADA 기반 상위 모니터링
-
-현장의 PLC 데이터를 상위 PC에서 확인할 수 있도록 X-SCADA와 KEPServerEX를 이용한 데이터 연동 환경을 구성했습니다.
-
-```text
-PLC
- ↓
-Communication
- ↓
-KEPServerEX
- ↓
-OPC UA
- ↓
-X-SCADA
- ↓
-Monitoring
-```
-
-KEPServerEX에서 PLC Device를 OPC Tag로 구성하고, X-SCADA에서 해당 데이터를 연동하여 현장 설비의 상태를 상위 시스템에서 확인할 수 있도록 구성했습니다.
 
 #### 주요 구현 내용
 
