@@ -269,12 +269,37 @@ Equipment Control
 <br>
 
 #### 비전검사 프로그램 및 실제 장비 연동
+Cognex의 검사 결과를 Arduino의 Digital Input으로 받아 판정 조건에 활용하고,  
+결과에 따라 Conveyor 정지 및 Cylinder 동작 등 **MPS 자동 시퀀스가 실행되도록 제어 로직을 구성**했습니다.
 
-| 비전검사 제어 프로그램 | 실제 장비 연동 |
-| :---: | :---: |
-| <img src="프젝7이미지/PC제어5.png" width="100%"> | <img src="프젝7이미지/PC제어6.png" width="100%"> |
-| PatMax·Blob·QR Code 판독 결과 및 장비 상태 모니터링 | Cognex Camera·Arduino·MPS 실제 배선 및 장비 연동 |
+비전 검사 결과가 단순 모니터링 데이터로 끝나지 않고 실제 장비 동작까지 이어지도록 연계했습니다.
 
+<br>
+
+<table>
+  <tr>
+    <th width="50%">Cognex 판정 기반 Arduino 시퀀스 제어</th>
+    <th width="50%">MPS 장비 실제 동작</th>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="프로젝트이미지/PC제어6.png" width="95%">
+    </td>
+    <td align="center">
+      <img src="프로젝트이미지/PC제어7.png" width="95%">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      Cognex Output 신호를 이용한 검사 결과 판정 및 MPS 자동 시퀀스 제어
+    </td>
+    <td align="center">
+      비전 판정 결과에 따라 Conveyor · Cylinder가 동작하는 실제 MPS 자동화 과정
+    </td>
+  </tr>
+</table>
+
+<br>
 </details>
 
 ---
