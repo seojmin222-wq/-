@@ -335,84 +335,7 @@ Hardware 구조 변경으로 기존 부품을 그대로 사용할 수 없는 부
 <br>
 
 <details>
-<summary><b>3-7. Wafer 이송 안정화를 위한 받침대 및 Guide 구조 추가</b></summary>
-
-<br>
-
-분배 Cylinder가 Wafer를 밀어 Conveyor로 전달하는 과정에서 높이 차이로 인해 Wafer가 직접 떨어지면 낙하 위치가 일정하지 않고 이동이 불안정했습니다.
-
-이를 개선하기 위해 분배부와 Conveyor 사이에 **Wafer를 받아주는 받침대를 추가**해 Wafer가 직접 낙하하지 않고 자연스럽게 Conveyor Belt로 이동하도록 경로를 구성했습니다.
-
-하지만 받침대만 설치했을 때는 Wafer가 Conveyor 중앙에 항상 정확하게 도착하지 않고 좌·우로 치우치는 현상이 발생했습니다.
-
-이에 받침대 측면에 **Guide 구조를 추가**하여 Wafer의 좌·우 이동 범위를 제한하고 Conveyor 중앙 방향으로 유도하도록 개선했습니다.
-
-```text
-분배 Cylinder
-      ↓
-Wafer 밀어내기
-      ↓
-받침대를 통한 이동
-      ↓
-Guide를 통한 방향 보정
-      ↓
-Conveyor 중앙 진입
-```
-
-단순히 Wafer가 Conveyor에 도착하는 것에서 끝내지 않고, **후속 공정에서 반복적으로 동일한 위치를 사용할 수 있도록 이동 경로의 재현성을 높이는 방향으로 구조를 수정**했습니다.
-
-</details>
-
-<br>
-
-<details>
-<summary><b>3-8. Cylinder 전·후진 속도 차등 설정</b></summary>
-
-<br>
-
-Wafer가 Chamber에 공급되거나 분배되는 과정에서 Cylinder의 전진 속도가 빠르면 Wafer에 가속이 붙어 최종 정지 위치가 일정하지 않는 현상이 발생했습니다.
-
-Cylinder Stroke가 동일하더라도 Wafer가 빠른 속도로 밀려나면 관성에 의해 계속 움직이기 때문에 실제 도달 위치에 편차가 생겼습니다.
-
-이를 개선하기 위해 Wafer를 직접 밀어내는 **공급 Cylinder와 분배 Cylinder의 전진 속도를 낮춰 천천히 동작하도록 조정**했습니다.
-
-#### 전진 속도 — 저속
-
-* Wafer에 발생하는 관성 최소화
-* Chamber 공급 위치 안정화
-* 분배 위치 편차 감소
-* Guide 및 Stopper 충돌 가능성 감소
-
-반면 Cylinder의 복귀 동작까지 동일하게 느리게 설정하면 전체 Cycle Time이 길어지고 다음 Cylinder의 Sequence와 동작이 겹칠 가능성이 있었습니다.
-
-따라서 Wafer 이동이 완료된 이후의 **후진 동작은 빠르게 설정**했습니다.
-
-#### 후진 속도 — 고속
-
-* 불필요한 Cycle Time 증가 방지
-* 다음 Sequence 시작 전 빠른 원위치 복귀
-* 후속 Cylinder 동작과의 간섭 방지
-
-```text
-Wafer 이송
-   ↓
-Cylinder 저속 전진
-   ↓
-Wafer 목표 위치 도달
-   ↓
-Cylinder 고속 후진
-   ↓
-다음 Sequence 진행
-```
-
-이를 통해 단순히 Cylinder의 동작 여부만 확인하는 것이 아니라 **Wafer의 위치 재현성과 전체 Sequence의 Cycle Time을 함께 고려해 Actuator 속도를 조정**했습니다.
-
-</details>
-
-<br>
-
-<details>
-<summary><b>3-9. PLC · Conveyor 연동</b></summary>
+<summary><b>3-7. PLC · Conveyor 연동</b></summary>
 
 <br>
 
@@ -435,7 +358,7 @@ Start / Stop
 <br>
 
 <details>
-<summary><b>3-10. Q-Time 기반 전체 자동 운전 Sequence 검증</b></summary>
+<summary><b>3-8. Q-Time 기반 전체 자동 운전 Sequence 검증</b></summary>
 
 <br>
 
@@ -570,7 +493,10 @@ Q-Time Monitoring 지속
 
 <br>
 
-### Trouble 01. 병렬 동작 중 Q-Time 임박 Lot과 일반 Lot의 Sequence 충돌
+<details>
+<summary><b>Trouble 01. 병렬 동작 중 Q-Time 임박 Lot과 일반 Lot의 Sequence 충돌</b></summary>
+
+<br>
 
 #### Problem
 
@@ -656,9 +582,14 @@ Q-Time 임박 Lot이 발생했을 때 신규 Lot 공급을 제한하고, 기존 
 > 병렬 자동화 설비에서는 개별 Sequence가 정상 동작하는 것만으로 충분하지 않고, **여러 Sequence가 동시에 실행될 수 있는 상태를 고려한 상호 Interlock 설계가 필요하다는 점**을 확인했습니다.  
 > 또한 Q-Time 제어에서는 제한 시간 직전에 대응하는 것이 아니라 **실제 설비의 물리적 Cycle Time까지 역산해 제어 시점을 선행해야 한다는 점**을 배웠습니다.
 
----
+</details>
 
-### Trouble 02. Servo Alarm 및 Limit Sensor 신호 불량
+<br>
+
+<details>
+<summary><b>Trouble 02. Servo Alarm 및 Limit Sensor 신호 불량</b></summary>
+
+<br>
 
 #### Problem
 
@@ -690,9 +621,14 @@ PLC Logic 문제와 Hardware 문제를 분리해 확인한 결과,
 > **Learned**  
 > PLC에서 Servo Alarm이 발생하더라도 Logic부터 수정하기보다 **전원 → 배선 → Sensor → PLC Input → Logic 순으로 계층을 분리해 확인하는 것이 문제를 빠르게 좁히는 방법**임을 배웠습니다.
 
----
+</details>
 
-### Trouble 03. Sensor 간섭으로 인한 PLC 입력 오동작
+<br>
+
+<details>
+<summary><b>Trouble 03. Sensor 간섭으로 인한 PLC 입력 오동작</b></summary>
+
+<br>
 
 #### Problem
 
@@ -713,9 +649,14 @@ Online Monitoring을 통해 Sensor 입력을 하나씩 확인한 결과, 현재 
 > **Learned**  
 > 자동화 설비에서는 사용하지 않는 Sensor라도 PLC Input에 연결되어 있다면 예상하지 못한 Sequence 조건을 만들 수 있기 때문에, **실제 사용하는 I/O 기준으로 Hardware와 Logic을 함께 정리해야 한다는 점**을 확인했습니다.
 
----
+</details>
 
-### Trouble 04. 구조 변경 후 Wafer 이송 위치 불안정
+<br>
+
+<details>
+<summary><b>Trouble 04. 구조 변경 후 Wafer 이송 위치 불안정</b></summary>
+
+<br>
 
 #### Problem
 
@@ -743,9 +684,29 @@ Wafer의 이동 과정을 반복해서 확인한 결과 문제를 하나의 원�
 
 분배부와 Conveyor 사이에 받침대를 추가해 Wafer가 직접 낙하하지 않고 자연스럽게 Conveyor로 이동하도록 경로를 수정했습니다.
 
+```text
+분배 Cylinder
+      ↓
+Wafer 밀어내기
+      ↓
+받침대를 통한 이동
+      ↓
+Conveyor 진입
+```
+
 ##### 2. Guide 구조 추가
 
-받침대만으로는 Wafer가 Conveyor 중앙에 정확하게 진입하지 않아 좌·우 이동을 제한하는 Guide를 추가했습니다.
+받침대만으로는 Wafer가 Conveyor 중앙에 정확하게 진입하지 않아 좌·우 이동을 제한하는 **Guide 구조를 추가**했습니다.
+
+```text
+분배 Cylinder
+      ↓
+받침대를 통한 이동
+      ↓
+Guide를 통한 방향 보정
+      ↓
+Conveyor 중앙 진입
+```
 
 이를 통해 Wafer가 정해진 경로를 따라 Conveyor 중앙으로 이동하도록 구조를 개선했습니다.
 
@@ -759,19 +720,40 @@ Wafer에 불필요한 가속이 발생하지 않도록 공급 Cylinder와 분배
 
 전진과 동일하게 후진 속도까지 낮추면 Cycle Time이 증가하고 다음 Cylinder 동작과 겹칠 가능성이 있었습니다.
 
-따라서 Wafer를 직접 움직이는 **전진 동작만 저속으로 설정하고, Wafer 이송이 끝난 후의 후진 동작은 빠르게 설정**해 다음 Sequence가 시작되기 전에 원위치로 복귀하도록 조정했습니다.
+따라서 Wafer를 직접 움직이는 **전진 동작만 저속으로 설정하고, Wafer 이송이 끝난 후의 후진 동작은 빠르게 설정**했습니다.
+
+```text
+Wafer 이송
+   ↓
+Cylinder 저속 전진
+   ↓
+Wafer 목표 위치 도달
+   ↓
+Cylinder 고속 후진
+   ↓
+다음 Sequence 진행
+```
+
+이를 통해 다음 Sequence가 시작되기 전에 Cylinder가 빠르게 원위치로 복귀하도록 조정했습니다.
 
 #### Result
 
-받침대와 Guide를 통해 Wafer 이동 경로를 제한하고 Cylinder의 전진·후진 속도를 동작 목적에 맞게 다르게 설정함으로써 **Wafer가 Chamber 및 Conveyor의 목표 위치에 보다 안정적으로 공급·분배될 수 있도록 개선**했습니다.
+받침대와 Guide를 통해 Wafer 이동 경로를 제한하고 Cylinder의 전진·후진 속도를 동작 목적에 맞게 다르게 설정함으로써 **Wafer가 목표 위치와 Conveyor 중앙으로 보다 안정적으로 공급·분배될 수 있도록 개선**했습니다.
+
+단순히 Cylinder가 정상적으로 움직이는지만 확인하는 것이 아니라 **Wafer의 위치 재현성과 전체 Sequence의 Cycle Time을 함께 고려해 기구 구조와 Actuator 조건을 조정**했습니다.
 
 > **Learned**  
 > 자동화 설비에서는 Cylinder의 Stroke와 Sensor 조건만 맞는다고 해서 실제 물체가 항상 동일한 위치에 도달하는 것은 아니며, **이송 대상의 관성·낙하 경로·Guide 구조·Cylinder 속도까지 함께 고려해야 위치 재현성을 확보할 수 있다는 점**을 경험했습니다.  
 > 또한 Cycle Time을 무조건 줄이는 것보다 **정확도가 필요한 동작은 느리게, 단순 복귀 동작은 빠르게 설정하는 방식으로 각 동작의 목적에 맞게 속도를 조정하는 것이 중요하다는 점**을 배웠습니다.
 
----
+</details>
 
-### Trouble 05. 3D Printing 기반 O-ring 밀폐 구조의 한계
+<br>
+
+<details>
+<summary><b>Trouble 05. 3D Printing 기반 O-ring 밀폐 구조의 한계</b></summary>
+
+<br>
 
 #### Problem
 
@@ -807,9 +789,14 @@ O-ring 적용을 위해 설비 구조와 부품을 여러 차례 수정했지만
 > 3D Modeling에서 원하는 형상을 구현할 수 있는 것과 실제 부품이 요구 성능을 만족하는 것은 별개의 문제라는 점을 경험했습니다.  
 > 특히 밀폐 구조에서는 형상뿐 아니라 **제작 방식의 표면 상태·공차·재료 특성까지 고려해 제조 방법을 선정해야 한다는 점**을 배웠습니다.
 
----
+</details>
 
-### Trouble 06. Camera-PLC 연동 시 Barcode 인식 불량
+<br>
+
+<details>
+<summary><b>Trouble 06. Camera-PLC 연동 시 Barcode 인식 불량</b></summary>
+
+<br>
 
 #### Problem
 
@@ -826,6 +813,10 @@ Camera 설정 및 PLC 연동 조건을 다시 확인해 Barcode 인식 결과가
 #### Result
 
 Camera 판정 결과를 PLC Sequence에서 정상적으로 사용할 수 있도록 연동 상태를 복구했습니다.
+
+</details>
+
+<br>
 
 </details>
 
@@ -870,7 +861,9 @@ Q-Time 위반 문제를 해결하기 위해 자동 Routing Sequence를 먼저 �
 
 Hardware 측면에서는 Stopper 위치 변경, Cylinder 및 Servo 배선, Sensor 간섭, Wafer 이송 위치 편차, 3D Printing 부품 치수 문제 등 매뉴얼만으로 해결하기 어려운 문제를 반복적으로 경험했습니다.
 
-특히 Wafer 이송 과정에서는 Cylinder의 Stroke만 맞추는 것으로 충분하지 않았습니다. Wafer가 Conveyor로 낙하하는 경로를 확인해 받침대를 추가하고, 중앙에서 벗어나는 문제를 해결하기 위해 Guide 구조를 설계했습니다.
+특히 Wafer 이송 과정에서는 Cylinder의 Stroke만 맞추는 것으로 충분하지 않았습니다.
+
+Wafer가 Conveyor로 낙하하는 경로를 확인해 받침대를 추가하고, 중앙에서 벗어나는 문제를 해결하기 위해 Guide 구조를 설계했습니다.
 
 또한 Cylinder의 전진 속도가 빠르면 Wafer에 관성이 발생해 목표 위치가 일정하지 않다는 점을 확인해 **Wafer를 움직이는 전진 동작은 느리게, 다음 Sequence 준비를 위한 후진 동작은 빠르게 설정**했습니다.
 
