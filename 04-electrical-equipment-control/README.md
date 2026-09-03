@@ -195,7 +195,7 @@ TC 설정값 비교
 <!-- 온도 자동조절 회로 사진 -->
 
 <p align="center">
-  <img src="프젝4이미지/temp.png" width="85%" alt="온도 자동조절 회로">
+  <img src="프젝4이미지/temp.jpg" width="85%" alt="온도 자동조절 회로">
 </p>
 
 </details>
@@ -229,24 +229,9 @@ Lamp + Buzzer 경보
 
 정상 운전 조건보다 **Protection Contact가 우선하도록 회로에 포함**해 이상 발생 시 설비가 계속 운전되지 않도록 설계했습니다.
 
-<!-- EOCR + Flicker Relay 회로 사진 -->
+또한 제어회로 전원 입력부에는 Fuse를 적용하고, 단순히 지정된 단자를 따라 연결하는 것이 아니라 **전원 신호가 어느 방향으로 들어오고 Fuse를 거친 뒤 어떤 제어회로로 전달되어야 하는지 직접 판단해 배선**했습니다.
 
-<p align="center">
-  <img src="프젝4이미지/eocr.png" width="85%" alt="EOCR 과전류 보호 및 플리커 경보회로">
-</p>
-
-</details>
-
-<br>
-
-<details>
-<summary><b>3-5. Fuse 기반 제어회로 전원 흐름 구성</b></summary>
-
-<br>
-
-실제 결선 과정에서는 Fuse도 단순히 지정된 단자를 따라 연결하지 않고, **전원 신호가 어느 방향으로 들어오고 Fuse를 거친 뒤 어떤 제어회로로 전달되어야 하는지 직접 판단해 배선**했습니다.
-
-#### 전원 흐름
+#### 제어회로 전원 흐름
 
 ```text
 Power Input
@@ -260,16 +245,22 @@ Relay / Timer / Sensor
 MC / Output
 ```
 
-전체 회로에서 전원이 공급되는 지점과 보호 이후 신호가 전달되어야 할 경로를 확인하며 Fuse의 입·출력 방향과 다음 연결 지점을 구성했습니다.
+전체 회로의 **전원 → 보호회로 → 제어회로 → 출력**으로 이어지는 전류 흐름을 기준으로 Fuse의 입·출력 방향과 다음 연결 지점을 구성했습니다.
 
-이를 통해 개별 단자를 단순 연결하는 것이 아니라 **전원 → 보호회로 → 제어회로 → 출력으로 이어지는 전체 전류 흐름을 기준으로 Wiring을 구성하는 경험**을 쌓았습니다.
+이를 통해 정상 운전 Sequence뿐 아니라 **과전류 및 이상 상황을 고려한 보호회로와 전체 전원 흐름을 함께 이해하며 Wiring을 구성하는 경험**을 쌓았습니다.
+
+<!-- EOCR + Flicker Relay 회로 사진 -->
+
+<p align="center">
+  <img src="프젝4이미지/eocr.png" width="85%" alt="EOCR 과전류 보호 및 플리커 경보회로">
+</p>
 
 </details>
 
 <br>
 
 <details>
-<summary><b>3-6. 최종평가 – 이중 EOCR 기반 복합 자동 Sequence</b></summary>
+<summary><b>3-5. 최종평가 – 이중 EOCR 기반 복합 자동 Sequence</b></summary>
 
 <br>
 
