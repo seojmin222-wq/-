@@ -115,7 +115,10 @@ Modeling 완료 후에는 두 부품을 **제3각법 기준 2D Drawing으로 변
 
 <br>
 
-### 3-1. 타원형 Dome Housing 역설계
+<details>
+<summary><b>3-1. 타원형 Dome Housing 역설계</b></summary>
+
+<br>
 
 완성 도면과 3D Reference를 분석해 타원형 Dome 구조를 갖는 첫 번째 Housing 부품을 역설계했습니다.
 
@@ -145,9 +148,14 @@ Modeling Sequence가 제공되지 않았기 때문에 최종 형상을
   <img src="프젝5이미지/SW1-1.png" width="85%" alt="타원형 Dome Housing 3D Model">
 </p>
 
----
+</details>
 
-### 3-2. 4엽 Clover Housing 역설계
+<br>
+
+<details>
+<summary><b>3-2. 4엽 Clover Housing 역설계</b></summary>
+
+<br>
 
 두 번째 부품은 중심을 기준으로 4방향 대칭 구조를 갖는 Clover형 Housing으로, 반복되는 형상을 하나씩 개별 Modeling하지 않고 **대칭 구속과 Pattern 기능을 활용해 형상 일관성을 유지**했습니다.
 
@@ -166,9 +174,14 @@ Modeling Sequence가 제공되지 않았기 때문에 최종 형상을
   <img src="프젝5이미지/SW2-1.png" width="85%" alt="Clover Housing 3D Model">
 </p>
 
----
+</details>
 
-### 3-3. 제3각법 기반 2D Drawing 작성
+<br>
+
+<details>
+<summary><b>3-3. 제3각법 기반 2D Drawing 작성</b></summary>
+
+<br>
 
 완성한 두 Part Model을 SolidWorks Drawing 환경으로 가져와 **제3각법(Third-angle Projection) 기준 2D 도면**으로 변환했습니다.
 
@@ -192,9 +205,14 @@ Modeling Sequence가 제공되지 않았기 때문에 최종 형상을
 
 이를 통해 3D Model을 만드는 것뿐 아니라 **제작자가 도면만 보고 형상과 치수를 이해할 수 있도록 표현하는 Drawing 작성 경험**을 함께 쌓았습니다.
 
----
+</details>
 
-### 3-4. 3D Printing 기반 실물 검증
+<br>
+
+<details>
+<summary><b>3-4. 3D Printing 기반 실물 검증</b></summary>
+
+<br>
 
 완성한 CAD Model을 3D Printer로 출력해 화면상의 형상이 실제 물체에서도 의도한 형태로 구현되는지 확인했습니다.
 
@@ -221,9 +239,14 @@ Modeling Sequence가 제공되지 않았기 때문에 최종 형상을
 
 이를 통해 CAD 작업을 화면상의 Modeling에서 끝내지 않고 **Drawing → Model → 실물로 이어지는 제작 관점에서 검증**했습니다.
 
----
+</details>
 
-### 3-5. Roller / Caster 지지 구조물 Part Modeling
+<br>
+
+<details>
+<summary><b>3-5. Roller / Caster 지지 구조물 Part Modeling</b></summary>
+
+<br>
 
 별도 Assembly 과제에서는 완성된 Roller / Caster 지지 구조물 이미지만을 보고 조립체를 구성하는 Part를 역으로 분석했습니다.
 
@@ -238,9 +261,14 @@ Modeling Sequence가 제공되지 않았기 때문에 최종 형상을
 
 완성된 조립체의 외형만 보고 각 Part가 어떤 형상과 결합 구조를 가져야 하는지 추론한 뒤 개별적으로 Modeling했습니다.
 
----
+</details>
 
-### 3-6. Assembly 및 Mate 구속조건 적용
+<br>
+
+<details>
+<summary><b>3-6. Assembly 및 Mate 구속조건 적용</b></summary>
+
+<br>
 
 완성한 Part를 SolidWorks Assembly 환경으로 불러와 실제 구조와 동일하게 조립했습니다.
 
@@ -258,9 +286,14 @@ Modeling Sequence가 제공되지 않았기 때문에 최종 형상을
 
 Assembly 과정에서는 Part를 단순히 원하는 위치로 이동시키는 것이 아니라 **어느 면과 축을 기준으로 다른 부품과 결합되는지를 먼저 판단한 뒤 Mate를 적용**했습니다.
 
----
+</details>
 
-### 3-7. Exploded View 작성
+<br>
+
+<details>
+<summary><b>3-7. Exploded View 작성</b></summary>
+
+<br>
 
 완성된 Assembly의 부품 구성과 조립 순서를 쉽게 파악할 수 있도록 **Exploded View**를 작성했습니다.
 
@@ -272,6 +305,8 @@ Assembly 과정에서는 Part를 단순히 원하는 위치로 이동시키는 �
 
 </details>
 
+</details>
+
 ---
 
 <details>
@@ -279,7 +314,10 @@ Assembly 과정에서는 Part를 단순히 원하는 위치로 이동시키는 �
 
 <br>
 
-### Trouble 01. 복합 Fillet이 원하는 방향으로 생성되지 않거나 Feature Error가 발생하는 문제
+<details>
+<summary><b>Trouble 01. 복합 Fillet이 원하는 방향으로 생성되지 않거나 Feature Error가 발생하는 문제</b></summary>
+
+<br>
 
 #### Problem
 
@@ -323,9 +361,14 @@ Fillet을 한 번에 적용하지 않고
 > **Learned**
 > Fillet은 단순히 Radius 값을 입력하는 기능이 아니라 **주변 면과 Edge, 이전 Feature와의 관계에 따라 결과가 달라지는 Feature**라는 점을 배웠습니다.
 
----
+</details>
 
-### Trouble 02. Fillet 적용 순서에 따라 최종 형상이 달라지는 문제
+<br>
+
+<details>
+<summary><b>Trouble 02. Fillet 적용 순서에 따라 최종 형상이 달라지는 문제</b></summary>
+
+<br>
 
 #### Problem
 
@@ -386,9 +429,14 @@ Fillet 생성 순서를 재구성해 복합 곡면이 참조 형상과 동일한
 > **Learned**
 > CAD에서는 개별 Feature의 치수뿐 아니라 **Feature Tree의 생성 순서 자체가 최종 설계 결과를 결정한다는 점**을 체감했습니다.
 
----
+</details>
 
-### Trouble 03. Shell 적용 후 두께와 곡면이 깨지는 문제
+<br>
+
+<details>
+<summary><b>Trouble 03. Shell 적용 후 두께와 곡면이 깨지는 문제</b></summary>
+
+<br>
 
 #### Problem
 
@@ -427,9 +475,14 @@ Feature 적용 순서를 조정해 Housing의 외곽 곡면을 유지하면서 �
 > **Learned**
 > Shell과 같이 기존 형상을 기준으로 새로운 면을 생성하는 Feature는 **앞선 Feature의 영향을 크게 받기 때문에 적용 시점까지 고려해 Modeling Sequence를 설계해야 한다는 점**을 배웠습니다.
 
----
+</details>
 
-### Trouble 04. 도면 치수만으로 3D 형상이 해석되지 않는 문제
+<br>
+
+<details>
+<summary><b>Trouble 04. 도면 치수만으로 3D 형상이 해석되지 않는 문제</b></summary>
+
+<br>
 
 #### Problem
 
@@ -481,6 +534,8 @@ Model을 여러 각도로 회전하면서 Reference와 대조하고, 형상이 �
 
 </details>
 
+</details>
+
 ---
 
 <details>
@@ -526,4 +581,3 @@ Assembly 과정에서는 개별 Part의 형상보다 부품 사이의 축·면·
 으로 이어지는 전체 설계 과정을 경험했습니다.
 
 </details>
-
