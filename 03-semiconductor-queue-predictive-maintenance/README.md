@@ -1,30 +1,44 @@
-<details>
-<summary><b>03. 주요 구현 내용</b></summary>
+# Q-Time 위반 예방 자동 라우팅 기반 스마트팩토리 시스템
 
-<br>
+### PLC · SCADA · DB · 데이터분석 4-Layer 통합 자동화 시스템
 
-<details>
-<summary><b>3-1. Q-Time 위반 예방 자동 Routing Logic 기획</b></summary>
+> **반도체 공정의 Q-Time 초과 문제를 대상으로  
+> 현장제어 → SCADA → DB → 데이터분석까지 연결한 4-Layer 통합 시스템**
 
-<br>
+> **진행 상태**: 마무리 단계 — PLC 최종 동작 및 병렬 시퀀스 검증 진행 중
 
-프로젝트 착수 단계에서 **Q-Time이 임박한 Lot을 자동으로 우선 처리하는 Routing 방식**을 제안했습니다.
+* **기간**: 2026.08 ~ 진행 중
+* **참여 형태**: 팀 프로젝트 (4인)
+* **역할**: 팀장
+* **주요 기여**: Q-Time 위반 예방 자동 라우팅 아이디어 및 PLC 시퀀스 최초 제안 · 전체 아키텍처 구체화 · 역할 배분 및 일정관리 · MPS 하드웨어 재구성 · PLC/Servo 배선 · iFIX 설비 개요도 작화 · 3D Printing 부품 설계 및 Wafer 이송 구조 개선
+* **주요 기술**: MELSEC PLC, MR-J5 Servo, GOT HMI, iFIX, OPC-UA, SQLite, Python, pandas, 3D Printing
 
-단순히 Q-Time 초과 시 Alarm을 발생시키는 것이 아니라, PLC가 각 Lot의 잔여 시간을 비교하고 위험 Lot이 발생하면 새로운 공급을 제한한 뒤 해당 Lot을 먼저 배출하는 구조를 목표로 했습니다.
+---
 
-#### 기본 제어 흐름
+## 시스템 구성
+
+<p align="center">
+  <img src="images/03-architecture.png" alt="4-Layer 시스템 아키텍처" width="90%">
+</p>
+
+| Layer | 구성 요소 | 역할 |
+| --- | --- | --- |
+| **1. Field / Control** | MELSEC PLC, MR-J5 Servo, GOT HMI | Lot·Q-Time 데이터 처리, 위험도 판정, 우선 이송 및 현장 제어 |
+| **2. SCADA** | iFIX, OPC-UA | Q-Time Heatmap, KPI 및 설비 상태 시각화 |
+| **3. Database** | SQLite | Lot·시간대·공정별 이력 저장 |
+| **4. Analysis** | Python, pandas | Q-Time 이력 및 공정 Cycle Time 분석, 병목 구간 확인 |
+
+### Q-Time 제어 흐름
 
 ```text
 Lot 투입
-   ↓
-Lot별 Q-Time 측정
-   ↓
-잔여 시간 비교
-   ↓
-위험 Lot 판정
-   ↓
-신규 공급 제한
-   ↓
+    ↓
+Q-Time Monitoring
+    ↓
+위험도 판정
+    ↓
+신규 공급 Interlock
+    ↓
 위험 Lot 우선 이송 / 배출
-   ↓
+    ↓
 정상 Sequence 복귀
