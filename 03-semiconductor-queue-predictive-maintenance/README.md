@@ -248,21 +248,23 @@ SCADA에서 Q-Time과 설비 상태를 표시하기 위한 기반 화면으로 M
 
 배치를 반영해 현장 구조와 SCADA 화면이 직관적으로 대응되도록 구성했습니다.
 
-#### 상세 시점
-
-<p align="center">
-  <img src="images/03-ifix-detail.png" alt="iFIX 상세 시점" width="90%">
-</p>
-
-Cylinder와 Servo가 결합되는 주요 제어부를 확대해 현장 동작 상태를 쉽게 파악할 수 있도록 구성했습니다.
 
 #### 전체 개요 시점
 
-<p align="center">
-  <img src="images/03-ifix-overview.png" alt="iFIX 전체 설비 개요" width="90%">
-</p>
-
-좌·우 MPS Station과 Conveyor, Gate를 포함한 전체 공정 배치를 한 화면에서 확인할 수 있도록 구성했습니다.
+<table align="center">
+  <tr>
+    <td align="center" width="50%">
+      <img src="프젝3이미지/full1.png" alt="전체 개요 시점 1" width="95%">
+    </td>
+    <td align="center" width="50%">
+      <img src="프젝3이미지/full2.png" alt="전체 개요 시점 2" width="95%">
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><b>전체 개요 시점 1</b></td>
+    <td align="center"><b>전체 개요 시점 2</b></td>
+  </tr>
+</table>
 
 ---
 
@@ -376,7 +378,6 @@ Conveyor Driver
 Start / Stop
 ```
 
-</details>
 
 ---
 ### 3-10. Q-Time 기반 전체 자동 운전 Sequence 검증
@@ -394,6 +395,7 @@ PLC Logic과 MPS Hardware, iFIX Monitoring 화면을 연동한 뒤 실제 Wafer�
                     ↓
              Sequence 반복
 ```
+</details>
 
 ---
 
