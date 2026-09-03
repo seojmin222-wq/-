@@ -85,7 +85,10 @@ Raspberry Pi5는 별도의 GPU 없이 CPU만으로 추론해야 했기 때문에
 
 <br>
 
-### 3-1. YOLOv8 전이학습 및 저사양 환경 최적화
+<details>
+<summary><b>3-1. YOLOv8 전이학습 및 저사양 환경 최적화</b></summary>
+
+<br>
 
 YOLOv8의 경량 모델인 **`yolov8n.pt`**를 기반으로 커스텀 번호판 데이터셋을 전이학습했습니다.
 
@@ -106,9 +109,14 @@ Raspberry Pi5는 GPU 없이 CPU만으로 추론해야 했기 때문에 모델 �
   <img src="프젝2이미지/RP1.png" alt="YOLOv8 학습 및 테스트" width="90%">
 </p>
 
----
+</details>
 
-### 3-2. ROI 기반 실시간 추론 구조 설계
+<br>
+
+<details>
+<summary><b>3-2. ROI 기반 실시간 추론 구조 설계</b></summary>
+
+<br>
 
 전체 카메라 프레임을 YOLOv8에 그대로 입력하면 Raspberry Pi5에서 처리해야 할 연산량이 커지기 때문에, 차량 번호판이 진입할 영역을 기준으로 **화면 중앙 300×300 ROI만 Crop해 추론하는 방식**을 적용했습니다.
 
@@ -122,9 +130,14 @@ YOLOv8 Detection
 
 전체 영상이 아닌 필요한 영역만 추론함으로써 불필요한 픽셀 연산을 줄이고 CPU 환경에서의 실시간 처리 부담을 낮췄습니다.
 
----
+</details>
 
-### 3-3. EasyOCR 인식 정확도 개선
+<br>
+
+<details>
+<summary><b>3-3. EasyOCR 인식 정확도 개선</b></summary>
+
+<br>
 
 YOLOv8이 탐지한 번호판 영역을 그대로 OCR에 전달하지 않고, EasyOCR의 문자 인식 성능을 높이기 위한 전처리 과정을 적용했습니다.
 
@@ -160,9 +173,14 @@ Detected License Plate
   <img src="프젝2이미지/RP4.png" alt="번호판 탐지 및 OCR 인식 결과" width="90%">
 </p>
 
----
+</details>
 
-### 3-4. 차량 번호 인식 및 출입 기록 자동화
+<br>
+
+<details>
+<summary><b>3-4. 차량 번호 인식 및 출입 기록 자동화</b></summary>
+
+<br>
 
 번호판이 정상적으로 인식되면 결과를 별도의 `parking_log.csv` 파일에 즉시 Append하도록 구현했습니다.
 
@@ -178,9 +196,14 @@ parking_log.csv 저장
 
 프로그램 종료 시 일괄 저장하는 방식이 아닌 **인식 직후 저장하는 구조**를 적용해 예기치 않은 프로그램 종료가 발생하더라도 이미 인식한 차량 기록이 유실되지 않도록 했습니다.
 
----
+</details>
 
-### 3-5. Raspberry Pi5 원격 개발 및 배포
+<br>
+
+<details>
+<summary><b>3-5. Raspberry Pi5 원격 개발 및 배포</b></summary>
+
+<br>
 
 MobaXTerm을 이용해 Raspberry Pi5에 SSH로 원격 접속하고, Linux 환경에서 프로젝트를 개발·테스트했습니다.
 
@@ -202,6 +225,8 @@ YOLOv8 + EasyOCR 실행
 
 </details>
 
+</details>
+
 ---
 
 <details>
@@ -209,7 +234,10 @@ YOLOv8 + EasyOCR 실행
 
 <br>
 
-### Trouble 01. 연속 추론 중 Raspberry Pi5가 반복적으로 다운되는 문제
+<details>
+<summary><b>Trouble 01. 연속 추론 중 Raspberry Pi5가 반복적으로 다운되는 문제</b></summary>
+
+<br>
 
 #### Problem
 
@@ -278,9 +306,14 @@ Next Detection
 > **Learned**
 > 엣지 AI에서는 모델 정확도만 최적화하는 것이 아니라 **추론 빈도, 메모리 회수, 데이터 저장 방식까지 포함한 전체 Runtime 구조를 하드웨어 리소스에 맞춰 설계해야 한다는 점**을 배웠습니다.
 
----
+</details>
 
-### Trouble 02. YOLO는 번호판을 탐지하지만 최종 인식 결과가 출력되지 않는 문제
+<br>
+
+<details>
+<summary><b>Trouble 02. YOLO는 번호판을 탐지하지만 최종 인식 결과가 출력되지 않는 문제</b></summary>
+
+<br>
 
 #### Problem
 
@@ -348,6 +381,8 @@ OCR 결과를 바로 사용하는 대신 정규식 후처리와 **7~8자 길이 
 
 > **Learned**
 > 객체 탐지와 OCR을 결합한 시스템에서는 각 모델의 성능을 따로 보는 것보다 **Detection → Crop → Preprocessing → OCR → Validation으로 이어지는 전체 Pipeline에서 어느 단계가 결과를 차단하는지 추적하는 것이 중요하다는 점**을 배웠습니다.
+
+</details>
 
 </details>
 
