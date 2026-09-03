@@ -2,13 +2,13 @@
 
 ### CGH40010F GaN HEMT 기반 RF PA 설계 + Impedance Matching + Harmonic Suppression + Momentum EM 검증
 
-> **2.4GHz ISM 대역에서 동작하는 GaN RF Power Amplifier를 설계하고,**  
+> **2.4GHz ISM 대역에서 동작하는 GaN RF Power Amplifier를 설계하고,**
 > **S-Parameter 분석 · Impedance Matching · Harmonic Balance · PCB Layout · Momentum EM Simulation까지 수행한 RF 회로 설계 프로젝트**
 
-- **기간**: 2025.03 ~ 2025.05
-- **참여 형태**: 5인 팀 프로젝트
-- **담당 역할**: PCB Layout 설계 · 소신호 Simulation · Momentum EM Simulation · 제안서 작성
-- **주요 기술**: Keysight ADS, ADS Momentum, S-Parameter, Smith Chart, LC Matching, Harmonic Balance, Harmonic Trap, PCB Layout, GaN HEMT
+* **기간**: 2025.03 ~ 2025.05
+* **참여 형태**: 5인 팀 프로젝트
+* **담당 역할**: PCB Layout 설계 · 소신호 Simulation · Momentum EM Simulation · 제안서 작성
+* **주요 기술**: Keysight ADS, ADS Momentum, S-Parameter, Smith Chart, LC Matching, Harmonic Balance, Harmonic Trap, PCB Layout, GaN HEMT
 
 ---
 
@@ -20,13 +20,13 @@
 
 RF Power Amplifier는 단순히 높은 출력만 확보하는 것이 아니라
 
-- Input / Output Impedance Matching
-- 회로 Stability
-- Gain
-- Output Power
-- Drain Efficiency
-- PAE
-- Harmonic Suppression
+* Input / Output Impedance Matching
+* 회로 Stability
+* Gain
+* Output Power
+* Drain Efficiency
+* PAE
+* Harmonic Suppression
 
 을 함께 고려해야 했습니다.
 
@@ -61,16 +61,16 @@ RF Power Amplifier는 단순히 높은 출력만 확보하는 것이 아니라
 
 ## 핵심 성과
 
-| Parameter | Result |
-|---|---:|
-| Operating Frequency | **2.4GHz** |
-| Maximum Output Power | **42.3dBm** |
-| Drain Efficiency | **75.74%** |
-| PAE | **62.2%** |
-| Gain @ 2.4GHz | **약 12.5dB** |
-| Stability Factor K | **2.243** |
-| Input Matching | **S11 < -10dB @ 2.3 ~ 2.5GHz** |
-| 2nd Harmonic | **약 4dBm 이하 @ 4.8GHz** |
+| Parameter            |                         Result |
+| -------------------- | -----------------------------: |
+| Operating Frequency  |                     **2.4GHz** |
+| Maximum Output Power |                    **42.3dBm** |
+| Drain Efficiency     |                     **75.74%** |
+| PAE                  |                      **62.2%** |
+| Gain @ 2.4GHz        |                   **약 12.5dB** |
+| Stability Factor K   |                      **2.243** |
+| Input Matching       | **S11 < -10dB @ 2.3 ~ 2.5GHz** |
+| 2nd Harmonic         |         **약 4dBm 이하 @ 4.8GHz** |
 
 ---
 
@@ -132,33 +132,33 @@ Layout 성능 검증
 
 <br>
 
-| 구분 | 기술 / 기능 | 활용 내용 |
-|---|---|---|
-| RF Design | Keysight ADS | RF 회로 설계 및 Simulation |
-| EM Simulation | ADS Momentum | PCB Layout 기반 전자기 해석 |
-| Active Device | CGH40010F | GaN HEMT 기반 Power Amplifier |
-| Small Signal | S-Parameter | S11 · S21 · S12 · S22 분석 |
-| Stability | Stability Factor K | 발진 가능성 및 안정성 검증 |
-| Matching | Smith Chart | Input / Output Impedance Matching |
-| Matching Network | L / C | 50Ω Impedance Matching |
-| Large Signal | Harmonic Balance | Output Power 및 비선형 특성 분석 |
-| Harmonic | LC Trap Circuit | Harmonic 억제 |
-| Layout | PCB Layout | 실제 Component 및 Routing 구현 |
-| Ground | GND Via | RF Ground Path 구현 |
-| Verification | EM Simulation | Schematic / Layout 결과 비교 |
+| 구분               | 기술 / 기능            | 활용 내용                             |
+| ---------------- | ------------------ | --------------------------------- |
+| RF Design        | Keysight ADS       | RF 회로 설계 및 Simulation             |
+| EM Simulation    | ADS Momentum       | PCB Layout 기반 전자기 해석              |
+| Active Device    | CGH40010F          | GaN HEMT 기반 Power Amplifier       |
+| Small Signal     | S-Parameter        | S11 · S21 · S12 · S22 분석          |
+| Stability        | Stability Factor K | 발진 가능성 및 안정성 검증                   |
+| Matching         | Smith Chart        | Input / Output Impedance Matching |
+| Matching Network | L / C              | 50Ω Impedance Matching            |
+| Large Signal     | Harmonic Balance   | Output Power 및 비선형 특성 분석          |
+| Harmonic         | LC Trap Circuit    | Harmonic 억제                       |
+| Layout           | PCB Layout         | 실제 Component 및 Routing 구현         |
+| Ground           | GND Via            | RF Ground Path 구현                 |
+| Verification     | EM Simulation      | Schematic / Layout 결과 비교          |
 
 ### 주요 기술
 
-`Keysight ADS`  
-`ADS Momentum`  
-`CGH40010F GaN HEMT`  
-`S-Parameter`  
-`Stability Factor K`  
-`Smith Chart`  
-`LC Matching`  
-`Harmonic Balance`  
-`Harmonic Trap`  
-`PCB RF Layout`  
+`Keysight ADS`
+`ADS Momentum`
+`CGH40010F GaN HEMT`
+`S-Parameter`
+`Stability Factor K`
+`Smith Chart`
+`LC Matching`
+`Harmonic Balance`
+`Harmonic Trap`
+`PCB RF Layout`
 `GND Via`
 
 </details>
@@ -170,7 +170,10 @@ Layout 성능 검증
 
 <br>
 
-## 3-1. CGH40010F Stability 및 Bias Point 분석
+<details>
+<summary><b>3-1. CGH40010F Stability 및 Bias Point 분석</b></summary>
+
+<br>
 
 2.4GHz 대역에서 Power Amplifier가 안정적으로 동작하도록 CGH40010F의 동작 특성과 S-Parameter를 분석했습니다.
 
@@ -212,9 +215,14 @@ IDS ≈ 211mA
   <b>CGH40010F Bias Point & I-V Characteristics</b>
 </p>
 
----
+</details>
 
-## 3-2. 기본 PA 회로 구성 및 Impedance Matching
+<br>
+
+<details>
+<summary><b>3-2. 기본 PA 회로 구성 및 Impedance Matching</b></summary>
+
+<br>
 
 CGH40010F를 중심으로 Bias Network와 Input / Output Matching Network, Harmonic Filter를 포함한 RF Power Amplifier 구조를 구성했습니다.
 
@@ -311,20 +319,25 @@ S21 ≈ 12.5dB
   <b>S11 Input Reflection / S21 Forward Gain</b>
 </p>
 
----
+</details>
 
-## 3-3. Harmonic Balance 및 Harmonic Trap 설계
+<br>
+
+<details>
+<summary><b>3-3. Harmonic Balance 및 Harmonic Trap 설계</b></summary>
+
+<br>
 
 Power Amplifier는 큰 입력 신호에서 Transistor가 비선형적으로 동작하기 때문에 기본 주파수뿐만 아니라 2차 · 3차 Harmonic이 함께 발생합니다.
 
 ADS Harmonic Balance Simulation을 이용해
 
-- Fundamental
-- 2nd Harmonic
-- 3rd Harmonic
-- Output Power
-- PAE
-- Drain Efficiency
+* Fundamental
+* 2nd Harmonic
+* 3rd Harmonic
+* Output Power
+* PAE
+* Drain Efficiency
 
 를 분석했습니다.
 
@@ -370,9 +383,14 @@ Layout 기반 Simulation에서 2.4GHz 기본파가 가장 큰 출력 성분을 �
   <b>Harmonic Balance Result – Layout Simulation</b>
 </p>
 
----
+</details>
 
-## 3-4. Output Power 및 Saturation 특성 분석
+<br>
+
+<details>
+<summary><b>3-4. Output Power 및 Saturation 특성 분석</b></summary>
+
+<br>
 
 Input Power를 증가시키면서 Output Power의 변화를 분석했습니다.
 
@@ -422,21 +440,26 @@ Pout = 42.3dBm
 
 의 Output Power를 확인했습니다.
 
----
+</details>
 
-## 3-5. 실제 Component Size 기반 PCB Layout 설계
+<br>
+
+<details>
+<summary><b>3-5. 실제 Component Size 기반 PCB Layout 설계</b></summary>
+
+<br>
 
 Schematic에서는 Component와 배선이 이상적인 회로 요소로 표현되지만 실제 PCB에서는 소자의 크기와 Routing 구조 자체가 RF 특성에 영향을 줍니다.
 
 따라서 실제 제작 환경을 고려해
 
-- Capacitor Package
-- Inductor Package
-- CGH40010F Pad
-- Signal Routing
-- GND Via
-- Substrate
-- Metal Thickness
+* Capacitor Package
+* Inductor Package
+* CGH40010F Pad
+* Signal Routing
+* GND Via
+* Substrate
+* Metal Thickness
 
 등을 반영한 PCB Layout을 구성했습니다.
 
@@ -464,20 +487,25 @@ Capacitor와 Inductor는 실제 RF Component Data Sheet에 명시된 Physical Si
   <b>ADS PCB Physical Layout</b>
 </p>
 
----
+</details>
 
-## 3-6. ADS Momentum 기반 EM Simulation
+<br>
+
+<details>
+<summary><b>3-6. ADS Momentum 기반 EM Simulation</b></summary>
+
+<br>
 
 완성한 PCB Layout을 ADS Momentum 환경에서 해석했습니다.
 
 Momentum Simulation에서는 Schematic 단계에서 직접적으로 고려하기 어려운
 
-- Routing의 Parasitic Inductance
-- Pad 간 Parasitic Capacitance
-- GND Via
-- PCB Material
-- Metal Thickness
-- RF Routing
+* Routing의 Parasitic Inductance
+* Pad 간 Parasitic Capacitance
+* GND Via
+* PCB Material
+* Metal Thickness
+* RF Routing
 
 등의 영향을 포함할 수 있습니다.
 
@@ -497,9 +525,14 @@ Schematic / Layout 결과 비교
 
 이를 통해 단순 회로도 수준의 성능이 아니라 **실제 PCB 구조를 적용했을 때에도 목표 성능을 유지할 수 있는지 검증**했습니다.
 
----
+</details>
 
-## 3-7. 최종 S-Parameter 특성 분석
+<br>
+
+<details>
+<summary><b>3-7. 최종 S-Parameter 특성 분석</b></summary>
+
+<br>
 
 최종 Layout에서 주파수에 따른 S-Parameter를 분석하여 Input / Output Matching과 전달 특성을 검증했습니다.
 
@@ -571,6 +604,8 @@ Output Port에서 발생하는 Reflection 특성을 분석해 Output Matching �
 
 </details>
 
+</details>
+
 ---
 
 <details>
@@ -578,7 +613,10 @@ Output Port에서 발생하는 Reflection 특성을 분석해 Output Matching �
 
 <br>
 
-## Trouble 01. CGH40010F Layout 정보 부재로 EM Simulation을 수행하기 어려운 문제
+<details>
+<summary><b>Trouble 01. CGH40010F Layout 정보 부재로 EM Simulation을 수행하기 어려운 문제</b></summary>
+
+<br>
 
 ### Problem
 
@@ -592,11 +630,11 @@ Output Port에서 발생하는 Reflection 특성을 분석해 Output Matching �
 
 하지만 Momentum은 단순한 Electrical Model이 아니라 실제
 
-- Metal Pattern
-- Gate / Drain / Source Pad
-- Routing
-- Via
-- Substrate
+* Metal Pattern
+* Gate / Drain / Source Pad
+* Routing
+* Via
+* Substrate
 
 구조를 기반으로 전자기장을 계산하기 때문에 **별도의 Physical Layout Model이 필요하다는 점**을 확인했습니다.
 
@@ -604,10 +642,10 @@ Output Port에서 발생하는 Reflection 특성을 분석해 Output Matching �
 
 CGH40010F의 제조사 권장 구조와 Model 정보를 분석해
 
-- Gate
-- Drain
-- Source
-- Metal Pad
+* Gate
+* Drain
+* Source
+* Metal Pad
 
 구조를 직접 Layout으로 구현했습니다.
 
@@ -631,11 +669,11 @@ EM Simulation
 
 또한
 
-- Substrate Material
-- Substrate Height
-- Metal Layer
-- Component Size
-- GND Via
+* Substrate Material
+* Substrate Height
+* Metal Layer
+* Component Size
+* GND Via
 
 등을 함께 반영했습니다.
 
@@ -653,12 +691,17 @@ CGH40010F가 포함된 전체 PCB Layout을 구성해 Momentum 기반 EM Simulat
 
 최종적으로 회로도 수준에서 끝나지 않고 **실제 PCB 생산 환경을 고려한 RF Layout 설계 및 EM 검증까지 수행**했습니다.
 
-> **Learned**  
+> **Learned**
 > RF 설계에서는 Electrical Model뿐 아니라 **실제 구조를 표현하는 Physical Layout Model까지 이해하고 구성할 수 있어야 한다는 점**을 배웠습니다.
 
----
+</details>
 
-## Trouble 02. Schematic과 PCB Layout Simulation의 Output Power 차이
+<br>
+
+<details>
+<summary><b>Trouble 02. Schematic과 PCB Layout Simulation의 Output Power 차이</b></summary>
+
+<br>
 
 ### Problem
 
@@ -704,12 +747,12 @@ Parasitic Capacitance
 
 Momentum EM Simulation을 이용해 실제 PCB 구조의 영향을 분석하며
 
-- 불필요한 Metal Routing 제거
-- 불필요한 Via 최소화
-- Component 간 배선 길이 검토
-- Metal Thickness 반영
-- Substrate Dielectric 특성 반영
-- Component Physical Size 반영
+* 불필요한 Metal Routing 제거
+* 불필요한 Via 최소화
+* Component 간 배선 길이 검토
+* Metal Thickness 반영
+* Substrate Dielectric 특성 반영
+* Component Physical Size 반영
 
 등을 수행했습니다.
 
@@ -738,12 +781,17 @@ PAE  = 62.2%
 
 수준의 성능을 확보했습니다.
 
-> **Learned**  
+> **Learned**
 > RF 회로에서는 Schematic 결과가 그대로 실제 PCB 성능으로 이어지지 않으며, **Layout에서 발생하는 Parasitic 성분을 포함해 성능을 검증해야 한다는 점**을 체감했습니다.
 
----
+</details>
 
-## Trouble 03. Harmonic 성분으로 인한 출력 신호 왜곡
+<br>
+
+<details>
+<summary><b>Trouble 03. Harmonic 성분으로 인한 출력 신호 왜곡</b></summary>
+
+<br>
 
 ### Problem
 
@@ -791,12 +839,17 @@ Layout Simulation에서 2차 Harmonic인
 
 수준의 결과를 확인해 2.4GHz 기본파 대비 Harmonic 성분을 억제했습니다.
 
-> **Learned**  
+> **Learned**
 > Power Amplifier에서는 높은 Gain과 Output Power뿐 아니라 **비선형 동작으로 발생하는 Harmonic까지 함께 고려해야 RF 출력 품질을 확보할 수 있다는 점**을 배웠습니다.
 
----
+</details>
 
-## Trouble 04. 회로 성능과 실제 PCB 구현 가능성을 동시에 고려해야 하는 문제
+<br>
+
+<details>
+<summary><b>Trouble 04. 회로 성능과 실제 PCB 구현 가능성을 동시에 고려해야 하는 문제</b></summary>
+
+<br>
 
 ### Problem
 
@@ -824,12 +877,12 @@ Layout 설계 시 Schematic의 부품 배치를 단순히 그대로 옮기지 �
 
 특히
 
-- Component Package Size
-- Gate / Drain 연결 구조
-- RF Signal Path
-- Ground Path
-- GND Via 위치
-- PCB Substrate
+* Component Package Size
+* Gate / Drain 연결 구조
+* RF Signal Path
+* Ground Path
+* GND Via 위치
+* PCB Substrate
 
 등을 함께 고려했습니다.
 
@@ -845,8 +898,10 @@ Schematic Simulation뿐만 아니라 실제 Layout 기반 EM Simulation까지 �
   <b>Final RF Power Amplifier PCB Layout</b>
 </p>
 
-> **Learned**  
+> **Learned**
 > 실제 구현을 고려한 회로 설계에서는 Simulation 결과뿐 아니라 **PCB에서 실제로 구현 가능한 구조인지까지 함께 고려해야 설계가 완성된다는 점**을 배웠습니다.
+
+</details>
 
 </details>
 
@@ -859,48 +914,48 @@ Schematic Simulation뿐만 아니라 실제 Layout 기반 EM Simulation까지 �
 
 ## Final Performance
 
-| Parameter | Result |
-|---|---:|
-| Operating Frequency | **2.4GHz** |
-| Maximum Output Power | **42.3dBm** |
-| Drain Efficiency | **75.74%** |
-| PAE | **62.2%** |
-| Gain @ 2.4GHz | **약 12.5dB** |
-| Stability Factor K | **2.243** |
-| Input Matching | **S11 < -10dB @ 2.3 ~ 2.5GHz** |
-| 2nd Harmonic | **약 4dBm 이하 @ 4.8GHz** |
+| Parameter            |                         Result |
+| -------------------- | -----------------------------: |
+| Operating Frequency  |                     **2.4GHz** |
+| Maximum Output Power |                    **42.3dBm** |
+| Drain Efficiency     |                     **75.74%** |
+| PAE                  |                      **62.2%** |
+| Gain @ 2.4GHz        |                   **약 12.5dB** |
+| Stability Factor K   |                      **2.243** |
+| Input Matching       | **S11 < -10dB @ 2.3 ~ 2.5GHz** |
+| 2nd Harmonic         |         **약 4dBm 이하 @ 4.8GHz** |
 
 ---
 
 ## 기존 연구와 성능 비교
 
-| Parameter | Reference | 본 프로젝트 | Improvement |
-|---|---:|---:|---:|
-| Output Power | 42dBm | **42.3dBm** | **+0.3dBm** |
-| Drain Efficiency | 64% | **75.74%** | **+11.74%p** |
-| PAE | 57.6% | **62.2%** | **+4.6%p** |
+| Parameter        | Reference |      본 프로젝트 |  Improvement |
+| ---------------- | --------: | ----------: | -----------: |
+| Output Power     |     42dBm | **42.3dBm** |  **+0.3dBm** |
+| Drain Efficiency |       64% |  **75.74%** | **+11.74%p** |
+| PAE              |     57.6% |   **62.2%** |   **+4.6%p** |
 
 ---
 
 ## 주요 성과
 
-- CGH40010F GaN HEMT 기반 **2.4GHz RF Power Amplifier 설계**
-- `VDS = 28V`, `VGS = -2.7V` 기준 Bias Point 설정
-- 2.4GHz에서 **Stability Factor K = 2.243**
-- Smith Chart + LC Network 기반 **Input / Output Impedance Matching**
-- `2.3GHz ~ 2.5GHz`에서 **S11 < -10dB**
-- 2.4GHz에서 약 **12.5dB Gain**
-- Harmonic Balance를 이용한 **Large Signal 특성 분석**
-- LC Harmonic Trap을 이용한 **Harmonic 억제**
-- 실제 Component · Via · Substrate를 반영한 **PCB Layout 설계**
-- 제조사에서 제공되지 않은 **CGH40010F Physical Layout 직접 구성**
-- ADS Momentum 기반 **EM Simulation 수행**
-- Maximum Output Power **42.3dBm**
-- Drain Efficiency **75.74%**
-- PAE **62.2%**
-- 기존 비교 연구 대비 Output Power **+0.3dBm**
-- Drain Efficiency **+11.74%p**
-- PAE **+4.6%p**
+* CGH40010F GaN HEMT 기반 **2.4GHz RF Power Amplifier 설계**
+* `VDS = 28V`, `VGS = -2.7V` 기준 Bias Point 설정
+* 2.4GHz에서 **Stability Factor K = 2.243**
+* Smith Chart + LC Network 기반 **Input / Output Impedance Matching**
+* `2.3GHz ~ 2.5GHz`에서 **S11 < -10dB**
+* 2.4GHz에서 약 **12.5dB Gain**
+* Harmonic Balance를 이용한 **Large Signal 특성 분석**
+* LC Harmonic Trap을 이용한 **Harmonic 억제**
+* 실제 Component · Via · Substrate를 반영한 **PCB Layout 설계**
+* 제조사에서 제공되지 않은 **CGH40010F Physical Layout 직접 구성**
+* ADS Momentum 기반 **EM Simulation 수행**
+* Maximum Output Power **42.3dBm**
+* Drain Efficiency **75.74%**
+* PAE **62.2%**
+* 기존 비교 연구 대비 Output Power **+0.3dBm**
+* Drain Efficiency **+11.74%p**
+* PAE **+4.6%p**
 
 ---
 
@@ -923,11 +978,11 @@ Schematic Simulation뿐만 아니라 실제 Layout 기반 EM Simulation까지 �
 
 하지만 실제 PCB 구조를 적용하면서
 
-- Routing
-- Pad
-- Via
-- Substrate
-- Component Physical Size
+* Routing
+* Pad
+* Via
+* Substrate
+* Component Physical Size
 
 등에서 발생하는 Parasitic 성분으로 인해 RF 특성이 달라지는 것을 확인했습니다.
 
@@ -977,18 +1032,18 @@ Harmonic 문제를 분석하는 과정에서는 높은 Output Power만 만드는
 
 ## Project Contribution
 
-| 구분 | 담당 |
-|---|---|
-| PCB Layout Design | ✅ |
-| Small Signal Simulation | ✅ |
-| Momentum EM Simulation | ✅ |
-| RF Circuit Analysis | ✅ |
-| Proposal Documentation | ✅ |
+| 구분                      | 담당 |
+| ----------------------- | -- |
+| PCB Layout Design       | ✅  |
+| Small Signal Simulation | ✅  |
+| Momentum EM Simulation  | ✅  |
+| RF Circuit Analysis     | ✅  |
+| Proposal Documentation  | ✅  |
 
 ---
 
 ## Reference
 
-- *Design and Optimization of the GaN HEMT Class-J Power Amplifier for 2.4GHz Applications*, 2024
-- *Measurements on CREE CGH40010F Evaluation Board PA*, 2020
-- D. M. Pozar, *Microwave Engineering*, 2018
+* *Design and Optimization of the GaN HEMT Class-J Power Amplifier for 2.4GHz Applications*, 2024
+* *Measurements on CREE CGH40010F Evaluation Board PA*, 2020
+* D. M. Pozar, *Microwave Engineering*, 2018
