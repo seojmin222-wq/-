@@ -379,6 +379,129 @@ Start / Stop
 </details>
 
 ---
+### 3-10. Q-Time 기반 전체 자동 운전 Sequence 검증
+
+PLC Logic과 MPS Hardware, iFIX Monitoring 화면을 연동한 뒤 실제 Wafer를 투입하여 전체 자동 운전 Sequence를 검증했습니다.
+
+전체 동작을 다음 3단계로 나누어 확인했으며, 각 단계별로 **실제 MPS Hardware 동작과 동일 시점의 iFIX Monitoring 화면**을 함께 확인했습니다.
+
+```text
+[1단계] 병렬 Wafer 적재 및 Q-Time Monitoring
+                    ↓
+[2단계] Q-Time 잔여시간 기준 우선 배출
+                    ↓
+[3단계] 배출 후 빈 위치 순차 재적재
+                    ↓
+             Sequence 반복
+```
+
+---
+
+#### STEP 1. 병렬 Wafer 적재 및 Q-Time Monitoring
+
+여러 Wafer를 순차적으로 공급하면서 Servo와 Cylinder를 이용해 각 위치에 적재하고, **적재가 완료된 Wafer별로 Q-Time 측정을 시작**하도록 구성했습니다.
+
+한 Wafer의 전체 공정이 끝날 때까지 기다린 뒤 다음 Wafer를 투입하는 방식이 아니라, 각 공정의 동작 가능 상태를 확인하면서 **여러 Wafer가 동시에 공정 내에서 처리되는 병렬 Sequence**로 구성했습니다.
+
+iFIX에서는 실제 설비의 Wafer 적재 상태와 함께 각 Wafer별 Q-Time이 정상적으로 증가하는지 확인했습니다.
+
+##### 실제 Hardware 동작
+
+> Wafer가 연속적으로 공급되어 각 위치에 적재되고, 여러 Wafer가 병렬로 처리되는 실제 MPS 동작입니다.
+
+https://github.com/user-attachments/assets/8edfe899-859c-44aa-bd8a-7cd0d4e1a9ec
+
+##### iFIX Monitoring
+
+> 실제 Hardware의 Wafer 적재 상태와 연동하여 각 Wafer의 Q-Time이 측정되는 iFIX Monitoring 화면입니다.
+
+https://github.com/user-attachments/assets/dbd3c299-5736-459a-8db8-66f02bdc4d8c
+
+---
+
+#### STEP 2. Q-Time 잔여시간 기준 Wafer 우선 배출
+
+Wafer가 적재된 이후에는 각 Wafer의 Q-Time을 지속적으로 Monitoring하고, **Q-Time 잔여시간이 적은 Wafer부터 우선적으로 배출**하도록 Sequence를 구성했습니다.
+
+단순히 먼저 적재된 순서로 배출하는 것이 아니라 PLC에서 각 Wafer의 Q-Time 상태를 확인한 뒤, **공정 제한시간 초과 위험이 높은 Wafer를 먼저 선택하여 배출하는 Routing Logic**을 적용했습니다.
+
+위험 Wafer의 배출이 시작되면 신규 공급 및 일반 Sequence와 충돌하지 않도록 Interlock 조건을 적용했습니다.
+
+##### 실제 Hardware 동작
+
+> 적재된 Wafer 중 Q-Time 잔여시간이 적은 Wafer를 우선 선택하여 배출하는 실제 MPS 동작입니다.
+
+https://github.com/user-attachments/assets/256d5afd-f6e5-4ea2-8553-24b0a2ee4325
+
+##### iFIX Monitoring
+
+> Wafer별 Q-Time 상태와 우선 배출 대상의 변화를 확인할 수 있는 iFIX Monitoring 화면입니다.
+
+https://github.com/user-attachments/assets/b050b6d4-b794-49c0-8d60-977e825c9181
+
+---
+
+#### STEP 3. 배출 후 빈 위치 순차 재적재
+
+Q-Time을 기준으로 Wafer가 배출되면 기존 적재 위치에 빈 공간이 발생합니다.
+
+이때 새로운 Wafer를 단순히 마지막 위치에 추가하는 것이 아니라, **현재 비어 있는 적재 위치를 확인한 뒤 1층부터 순차적으로 다시 채우도록** 공급 Sequence를 구성했습니다.
+
+이를 통해 Wafer가 배출된 이후에도 설비가 정지하지 않고,
+
+```text
+Wafer 배출
+    ↓
+빈 위치 확인
+    ↓
+낮은 층부터 적재 위치 결정
+    ↓
+신규 Wafer 공급
+    ↓
+해당 위치 적재
+    ↓
+Q-Time Monitoring 재시작
+```
+
+순서로 자동 운전을 지속하도록 구성했습니다.
+
+##### 실제 Hardware 동작
+
+> Wafer 배출 후 비어 있는 위치를 확인하고, 1층부터 다시 Wafer를 적재하는 실제 MPS 동작입니다.
+
+https://github.com/user-attachments/assets/382351eb-6bda-4968-b9fa-1ba32ec8b9fd
+
+##### iFIX Monitoring
+
+> Wafer 배출로 발생한 빈 위치와 신규 Wafer가 낮은 층부터 다시 적재되는 상태를 확인할 수 있는 iFIX Monitoring 화면입니다.
+
+https://github.com/user-attachments/assets/2c279415-942a-4b5f-a6ff-cd18e8c6c593
+
+---
+
+#### 전체 Sequence
+
+최종적으로 다음 동작이 반복되는 자동 운전 구조를 구성했습니다.
+
+```text
+Wafer 공급
+    ↓
+병렬 적재
+    ↓
+Wafer별 Q-Time Monitoring
+    ↓
+Q-Time 잔여시간 비교
+    ↓
+위험 Wafer 우선 배출
+    ↓
+빈 적재 위치 확인
+    ↓
+1층부터 신규 Wafer 재적재
+    ↓
+Q-Time Monitoring 지속
+```
+
+실제 MPS Hardware 동작과 iFIX 화면을 함께 확인하며 **PLC의 내부 Sequence와 실제 설비 동작, 상위 Monitoring 화면의 상태가 동일하게 연동되는지 검증**했습니다.
 
 <details>
 <summary><b>04. 트러블슈팅 ⭐</b></summary>
