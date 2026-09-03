@@ -121,7 +121,7 @@ MC2 순차 기동
 <!-- 급수 자동/수동 제어 회로 사진 -->
 
 <p align="center">
-  <img src="이미지경로" width="85%" alt="급수 자동 수동 제어회로">
+  <img src="프젝4이미지/fls.png" width="85%" alt="급수 자동 수동 제어회로">
 </p>
 
 </details>
@@ -158,7 +158,7 @@ Sensor 입력을 단순 ON/OFF 신호로 사용하는 것이 아니라 **제품 
 <!-- Conveyor 자동화 회로 사진 -->
 
 <p align="center">
-  <img src="이미지경로" width="85%" alt="컨베이어 자동화 회로">
+  <img src="프젝4이미지/cnt.png" width="85%" alt="컨베이어 자동화 회로">
 </p>
 
 </details>
@@ -195,7 +195,7 @@ TC 설정값 비교
 <!-- 온도 자동조절 회로 사진 -->
 
 <p align="center">
-  <img src="이미지경로" width="85%" alt="온도 자동조절 회로">
+  <img src="프젝4이미지/temp.png" width="85%" alt="온도 자동조절 회로">
 </p>
 
 </details>
@@ -232,7 +232,7 @@ Lamp + Buzzer 경보
 <!-- EOCR + Flicker Relay 회로 사진 -->
 
 <p align="center">
-  <img src="이미지경로" width="85%" alt="EOCR 과전류 보호 및 플리커 경보회로">
+  <img src="프젝4이미지/eocr.png" width="85%" alt="EOCR 과전류 보호 및 플리커 경보회로">
 </p>
 
 </details>
