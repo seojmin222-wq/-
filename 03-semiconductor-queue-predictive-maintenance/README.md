@@ -18,7 +18,7 @@
 ## 시스템 구성
 
 <p align="center">
-  <img src="images/03-architecture.png" alt="4-Layer 시스템 아키텍처" width="90%">
+  <img src="프젝3이미지/시스템구성" alt="4-Layer 시스템 아키텍처" width="90%">
 </p>
 
 | Layer | 구성 요소 | 역할 |
@@ -249,6 +249,9 @@ Python과 pandas를 활용해 저장된 Lot 및 Q-Time 이력을 가공하고, �
 * Conveyor 구동 회로 구성
 
 기존 설비를 그대로 사용하는 것이 아니라 **제어 Sequence와 실제 Wafer 이동 경로에 맞춰 Hardware 구조 자체를 수정한 뒤 PLC Logic과 다시 연동**했습니다.
+<p align="center">
+  <img src="프젝3이미지/MPS" alt="좌우반전 되게 자동화 기기 재구성" width="90%">
+</p>
 
 </details>
 
