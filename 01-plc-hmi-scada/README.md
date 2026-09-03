@@ -89,7 +89,10 @@ KEPServerEX
 
 <br>
 
-### 3-1. PLC 래더로직 설계 및 HMI 구현
+<details>
+<summary><b>3-1. PLC 래더로직 설계 및 HMI 구현</b></summary>
+
+<br>
 
 GX Works2를 이용하여 센서와 스위치의 입력 상태를 확인하고, 조건에 따라 솔레노이드·램프·컨베이어 등의 출력 장치를 제어하는 PLC 프로그램을 구성했습니다.
 
@@ -148,9 +151,14 @@ GTDesigner3로 **MAIN · Servo Control · Equipment Control** 3개 화면을 구
 | <img src="프젝1이미지/HMI1.png" width="100%"> | <img src="프젝1이미지/HMI2.png" width="100%"> | <img src="프젝1이미지/HMI3.png" width="100%"> |
 |         서보/설비 제어 진입 및 현재 날짜·시각 표시        |    원점 복귀·JOG·에러 리셋 및 위치·속도·알람 상태 모니터링    |      가공 설정·비상정지·창고 적재 상태 및 작업 수량 표시      |
 
----
+</details>
 
-### 3-2. iFIX 기반 SCADA 창고관리 시스템
+<br>
+
+<details>
+<summary><b>3-2. iFIX 기반 SCADA 창고관리 시스템</b></summary>
+
+<br>
 
 PLC·HMI 구현 이후 KEPServerEX를 이용해 PLC 데이터를 상위 SCADA 계층으로 연결했습니다.
 
@@ -221,9 +229,14 @@ iFIX에서도 HMI와 동일한 설비를 상위 계층에서 제어·모니터�
 
 HDA 기능을 이용해 사용자가 지정한 기간의 설비 태그 데이터를 조회하고 Trend 화면에서 시계열로 확인할 수 있도록 구성했습니다.
 
----
+</details>
 
-### 3-3. PLC · HMI · SCADA 전체 데이터 흐름
+<br>
+
+<details>
+<summary><b>3-3. PLC · HMI · SCADA 전체 데이터 흐름</b></summary>
+
+<br>
 
 전체 시스템은 현장 장비, 제어 계층, 운전 계층, 상위 모니터링 계층이 연결되는 구조로 구성했습니다.
 
@@ -263,6 +276,8 @@ HDA 기능을 이용해 사용자가 지정한 기간의 설비 태그 데이터
 
 </details>
 
+</details>
+
 ---
 
 <details>
@@ -270,7 +285,10 @@ HDA 기능을 이용해 사용자가 지정한 기간의 설비 태그 데이터
 
 <br>
 
-### Trouble 01. 금속·비금속 소재 판별 시 잘못된 수량 카운트
+<details>
+<summary><b>Trouble 01. 금속·비금속 소재 판별 시 잘못된 수량 카운트</b></summary>
+
+<br>
 
 #### Problem
 
@@ -301,9 +319,14 @@ HDA 기능을 이용해 사용자가 지정한 기간의 설비 태그 데이터
 > **Learned**
 > PLC 로직에서는 조건의 충족 여부뿐 아니라 **해당 조건과 데이터가 어느 Scan에서 확정되는지까지 고려해야 한다는 점**을 배웠습니다.
 
----
+</details>
 
-### Trouble 02. iFIX 값은 변경되지만 실제 PLC가 동작하지 않는 문제
+<br>
+
+<details>
+<summary><b>Trouble 02. iFIX 값은 변경되지만 실제 PLC가 동작하지 않는 문제</b></summary>
+
+<br>
 
 #### Problem
 
@@ -349,6 +372,8 @@ iFIX 화면에서 MPS 설비를 정상적으로 원격 구동할 수 있게 되�
 > **Learned**
 > SCADA 시스템을 하나의 태그 문제가 아니라
 > **PLC ↔ 통신 Driver ↔ Middleware ↔ Database ↔ SCADA**로 이어지는 하나의 데이터 파이프라인으로 바라보는 관점을 익혔습니다.
+
+</details>
 
 </details>
 
