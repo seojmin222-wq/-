@@ -2,11 +2,11 @@
 
 ### Windows Forms · Cognex In-Sight · Serial · Modbus TCP · MPS 장비 연동
 
-> **C# 기반 PC 제어 프로그램에 Arduino I/O와 Cognex 비전 검사를 통합하고,  
+> **C# 기반 PC 제어 프로그램에 Arduino I/O와 Cognex 비전 검사를 통합하고,
 > 검사 결과를 MPS 설비의 후속 동작까지 연결한 자동화 제어 시스템**
 
-- **기간**: 2026.07 - 08
-- **주요 기술**: C#, Windows Forms, Arduino, Cognex In-Sight, Serial, Ethernet, Modbus TCP, EasyModbus, MPS
+* **기간**: 2026.07 - 08
+* **주요 기술**: C#, Windows Forms, Arduino, Cognex In-Sight, Serial, Ethernet, Modbus TCP, EasyModbus, MPS
 
 ---
 
@@ -62,19 +62,19 @@ Cognex In-Sight에서는 **PatMax 패턴 매칭, Blob 검출, QR Code 판독**�
 
 <br>
 
-| 구분 | 기술 / 툴 |
-|---|---|
-| PC Control | C# / Windows Forms |
-| MCU | Arduino |
-| Vision | Cognex In-Sight / In-Sight Explorer |
-| Vision SDK | Cognex In-Sight SDK |
-| Vision Tool | PatMax / Blob / QR Code |
-| Serial | SerialPort |
-| Network | Ethernet / TCP/IP |
-| Protocol | Modbus TCP |
-| Library | EasyModbus |
-| I/O | Digital Input / Output, DC 24V |
-| Equipment | MPS Automation System |
+| 구분          | 기술 / 툴                              |
+| ----------- | ----------------------------------- |
+| PC Control  | C# / Windows Forms                  |
+| MCU         | Arduino                             |
+| Vision      | Cognex In-Sight / In-Sight Explorer |
+| Vision SDK  | Cognex In-Sight SDK                 |
+| Vision Tool | PatMax / Blob / QR Code             |
+| Serial      | SerialPort                          |
+| Network     | Ethernet / TCP/IP                   |
+| Protocol    | Modbus TCP                          |
+| Library     | EasyModbus                          |
+| I/O         | Digital Input / Output, DC 24V      |
+| Equipment   | MPS Automation System               |
 
 </details>
 
@@ -85,7 +85,10 @@ Cognex In-Sight에서는 **PatMax 패턴 매칭, Blob 검출, QR Code 판독**�
 
 <br>
 
-## 3-1. C# 기반 PC 제어 및 Arduino I/O 연동
+<details>
+<summary><b>3-1. C# 기반 PC 제어 및 Arduino I/O 연동</b></summary>
+
+<br>
 
 Windows Forms를 이용하여 **장비의 상태를 확인하고 직접 제어할 수 있는 PC 제어 화면**을 구성했습니다.
 
@@ -93,13 +96,13 @@ Arduino와는 Serial 통신으로 연결하여 외부 Digital Input 상태를 PC
 
 ### 주요 구현 기능
 
-- COM Port 선택 및 Connect / Disconnect
-- Digital Input 상태 모니터링
-- Digital Output ON / OFF 제어
-- Start / Stop / Auto 운전
-- 연결 상태에 따른 Button 상태 표시
-- DC 24V 산업용 I/O 처리
-- Lamp / Buzzer / Conveyor 제어
+* COM Port 선택 및 Connect / Disconnect
+* Digital Input 상태 모니터링
+* Digital Output ON / OFF 제어
+* Start / Stop / Auto 운전
+* 연결 상태에 따른 Button 상태 표시
+* DC 24V 산업용 I/O 처리
+* Lamp / Buzzer / Conveyor 제어
 
 ```text
 Operator
@@ -144,19 +147,24 @@ Lamp / Buzzer / Conveyor
 
 <br>
 
----
+</details>
 
-## 3-2. Cognex 비전검사 및 C# 프로그램 통합
+<br>
+
+<details>
+<summary><b>3-2. Cognex 비전검사 및 C# 프로그램 통합</b></summary>
+
+<br>
 
 Cognex In-Sight 카메라를 Ethernet으로 연결하고 In-Sight Explorer에서 제품 검사 환경을 구성했습니다.
 
 제품의 위치, 형상 및 정보를 판별하기 위해 다음 Vision Tool을 활용했습니다.
 
-| 기능 | 적용 내용 |
-|---|---|
-| **PatMax** | 패턴 매칭을 통한 대상 위치 및 형상 확인 |
-| **Blob** | 객체 및 영역 검출 |
-| **QR Code** | 제품 정보 판독 |
+| 기능          | 적용 내용                   |
+| ----------- | ----------------------- |
+| **PatMax**  | 패턴 매칭을 통한 대상 위치 및 형상 확인 |
+| **Blob**    | 객체 및 영역 검출              |
+| **QR Code** | 제품 정보 판독                |
 
 ```text
 Inspection Target
@@ -185,14 +193,14 @@ using Cognex.InSight.Sensor;
 
 PC 제어 화면에서는 다음 기능을 구현했습니다.
 
-- Cognex Camera 연결
-- Camera Live View
-- Software Trigger
-- 외부 입력 Trigger
-- PatMax 좌표값 표시
-- Blob 검출 결과 표시
-- QR Code 판독값 표시
-- Vision 검사 결과 모니터링
+* Cognex Camera 연결
+* Camera Live View
+* Software Trigger
+* 외부 입력 Trigger
+* PatMax 좌표값 표시
+* Blob 검출 결과 표시
+* QR Code 판독값 표시
+* Vision 검사 결과 모니터링
 
 Cognex 카메라와 Arduino의 I/O를 실제로 연결하고, PC 프로그램에서는 **카메라 화면·Trigger·검사 결과값을 하나의 화면에서 확인할 수 있도록 통합**했습니다.
 
@@ -223,9 +231,14 @@ Cognex 카메라와 Arduino의 I/O를 실제로 연결하고, PC 프로그램에
 
 <br>
 
----
+</details>
 
-## 3-3. 비전 판정 결과 기반 MPS 장비 제어
+<br>
+
+<details>
+<summary><b>3-3. 비전 판정 결과 기반 MPS 장비 제어</b></summary>
+
+<br>
 
 Cognex에서 생성된 검사 결과가 단순 모니터링 데이터로 끝나지 않고 **실제 MPS 장비의 후속 동작에 활용되도록 자동 시퀀스를 구성**했습니다.
 
@@ -249,12 +262,12 @@ MPS 자동 시퀀스
 
 Arduino 자동 시퀀스에서는
 
-- Conveyor를 이용한 제품 이송
-- 카메라 도착 위치에서 Conveyor 정지
-- Cognex Camera Trigger 출력
-- Vision Result 입력 대기
-- 판정 결과 확인
-- 결과에 따른 후속 Cylinder 및 Conveyor 동작
+* Conveyor를 이용한 제품 이송
+* 카메라 도착 위치에서 Conveyor 정지
+* Cognex Camera Trigger 출력
+* Vision Result 입력 대기
+* 판정 결과 확인
+* 결과에 따른 후속 Cylinder 및 Conveyor 동작
 
 순으로 설비를 제어했습니다.
 
@@ -266,13 +279,13 @@ ModbusClient modbus = new ModbusClient();
 
 ### Modbus TCP 주요 기능
 
-- IP / Port 설정
-- Connect / Disconnect
-- Discrete Input Read
-- Coil Write
-- Holding Register Read / Write
-- MPS I/O 상태 모니터링
-- Auto / Start / Stop 명령
+* IP / Port 설정
+* Connect / Disconnect
+* Discrete Input Read
+* Coil Write
+* Holding Register Read / Write
+* MPS I/O 상태 모니터링
+* Auto / Start / Stop 명령
 
 ```text
 C# PC Control
@@ -315,6 +328,8 @@ Equipment Control
 
 </details>
 
+</details>
+
 ---
 
 <details>
@@ -322,7 +337,10 @@ Equipment Control
 
 <br>
 
-## Trouble 01. Arduino Input 신호 미입력
+<details>
+<summary><b>Trouble 01. Arduino Input 신호 미입력</b></summary>
+
+<br>
 
 ### Problem
 
@@ -352,13 +370,18 @@ COM 단자에 +24V를 연결하여 입력 회로를 완성했습니다.
 
 Arduino Input LED가 정상적으로 점등되고 외부 입력 신호도 정상적으로 읽을 수 있었습니다.
 
-> 프로그램 문제처럼 보이는 경우에도 먼저  
-> **전원 → COM → 배선 → Controller → Software**  
+> 프로그램 문제처럼 보이는 경우에도 먼저
+> **전원 → COM → 배선 → Controller → Software**
 > 순서로 실제 신호 경로를 확인하는 것이 중요하다는 점을 경험했습니다.
 
----
+</details>
 
-## Trouble 02. Arduino에서는 입력되지만 PC 화면에 표시되지 않는 문제
+<br>
+
+<details>
+<summary><b>Trouble 02. Arduino에서는 입력되지만 PC 화면에 표시되지 않는 문제</b></summary>
+
+<br>
 
 ### Problem
 
@@ -392,9 +415,11 @@ Digital Input 배열을 읽는 함수가 코드 조건으로 인해 실행되지
 
 C# PC 제어 화면에서도 외부 Input 상태가 정상적으로 표시되는 것을 확인했습니다.
 
-> 통신 문제를 하나의 영역으로 판단하지 않고  
-> **Physical I/O → Controller → Data Processing → Communication → PC Display**  
+> 통신 문제를 하나의 영역으로 판단하지 않고
+> **Physical I/O → Controller → Data Processing → Communication → PC Display**
 > 순으로 구간을 나누어 확인함으로써 문제 발생 위치를 특정했습니다.
+
+</details>
 
 </details>
 
@@ -409,18 +434,18 @@ C# Windows Forms를 중심으로 Arduino, Cognex In-Sight, MPS 장비를 연결�
 
 ### 주요 결과
 
-- C# Windows Forms 기반 **PC 장비 제어 화면 구현**
-- Arduino Serial 통신 기반 **Digital I/O 제어**
-- 산업용 DC 24V I/O 배선 및 Address Mapping
-- Cognex In-Sight와 C# 프로그램 **SDK 연동**
-- PC 프로그램 내 **Camera Live View 통합**
-- **PatMax · Blob · QR Code** 기반 제품 검사
-- Software / External Trigger 구현
-- Cognex Vision Result를 Arduino 입력 신호로 활용
-- 검사 결과 기반 **MPS 자동 시퀀스 제어**
-- EasyModbus 기반 **Modbus TCP 통신**
-- MPS Digital I/O 및 Holding Register 제어
-- 실제 배선과 소프트웨어 데이터 흐름을 기반으로 한 Troubleshooting
+* C# Windows Forms 기반 **PC 장비 제어 화면 구현**
+* Arduino Serial 통신 기반 **Digital I/O 제어**
+* 산업용 DC 24V I/O 배선 및 Address Mapping
+* Cognex In-Sight와 C# 프로그램 **SDK 연동**
+* PC 프로그램 내 **Camera Live View 통합**
+* **PatMax · Blob · QR Code** 기반 제품 검사
+* Software / External Trigger 구현
+* Cognex Vision Result를 Arduino 입력 신호로 활용
+* 검사 결과 기반 **MPS 자동 시퀀스 제어**
+* EasyModbus 기반 **Modbus TCP 통신**
+* MPS Digital I/O 및 Holding Register 제어
+* 실제 배선과 소프트웨어 데이터 흐름을 기반으로 한 Troubleshooting
 
 최종적으로
 
