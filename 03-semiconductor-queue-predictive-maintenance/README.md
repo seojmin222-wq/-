@@ -18,7 +18,7 @@
 ## 시스템 구성
 
 <p align="center">
-  <img src="프젝3이미지/시스템구성" alt="4-Layer 시스템 아키텍처" width="90%">
+  <img src="프젝3이미지/시스템구성.png" alt="4-Layer 시스템 아키텍처" width="90%">
 </p>
 
 | Layer | 구성 요소 | 역할 |
@@ -250,7 +250,7 @@ Python과 pandas를 활용해 저장된 Lot 및 Q-Time 이력을 가공하고, �
 
 기존 설비를 그대로 사용하는 것이 아니라 **제어 Sequence와 실제 Wafer 이동 경로에 맞춰 Hardware 구조 자체를 수정한 뒤 PLC Logic과 다시 연동**했습니다.
 <p align="center">
-  <img src="프젝3이미지/MPS" alt="좌우반전 되게 자동화 기기 재구성" width="90%">
+  <img src="프젝3이미지/MPS.jpg" alt="좌우반전 되게 자동화 기기 재구성" width="90%">
 </p>
 
 </details>
@@ -274,13 +274,6 @@ SCADA에서 Q-Time과 설비 상태를 표시하기 위한 기반 화면으로 M
 
 배치를 반영해 현장 구조와 SCADA 화면이 직관적으로 대응되도록 구성했습니다.
 
-#### 상세 시점
-
-<p align="center">
-  <img src="images/03-ifix-detail.png" alt="iFIX 상세 시점" width="90%">
-</p>
-
-Cylinder와 Servo가 결합되는 주요 제어부를 확대해 현장 동작 상태를 쉽게 파악할 수 있도록 구성했습니다.
 
 #### 전체 개요 시점
 
@@ -289,10 +282,10 @@ Cylinder와 Servo가 결합되는 주요 제어부를 확대해 현장 동작 �
 <table align="center">
   <tr>
     <td align="center" width="50%">
-      <img src="images/full1.png" alt="전체 개요 시점 1" width="95%">
+      <img src="프젝3이미지/full1.png" alt="전체 개요 시점 1" width="95%">
     </td>
     <td align="center" width="50%">
-      <img src="images/full2.png" alt="전체 개요 시점 2" width="95%">
+      <img src="프젝3이미지/full2.png" alt="전체 개요 시점 2" width="95%">
     </td>
   </tr>
   <tr>
@@ -313,7 +306,7 @@ Cylinder와 Servo가 결합되는 주요 제어부를 확대해 현장 동작 �
 Hardware 구조 변경으로 기존 부품을 그대로 사용할 수 없는 부분은 3D Printing을 활용해 직접 재설계했습니다.
 
 <p align="center">
-  <img src="images/03-3dprint-parts.png" alt="3D 프린팅 부품" width="90%">
+  <img src="프젝3이미지/3D.jpg" alt="3D 프린팅 부품" width="90%">
 </p>
 
 초기에는 Chamber에 O-ring을 적용한 구조를 구현하기 위해 가공·분배 Stopper의 높이와 위치를 변경했습니다.
@@ -355,6 +348,9 @@ Conveyor Driver
     ↓
 Start / Stop
 ```
+<p align="center">
+  <img src="프젝3이미지/cunvert.png" alt="iFIX 상세 시점" width="90%">
+</p>
 
 </details>
 
