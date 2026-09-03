@@ -17,7 +17,7 @@
 ## 시스템 구성
 
 <p align="center">
-  <img src="01-architecture_3.png" alt="시스템 구성도" width="90%">
+  <img src="프젝1이미지/01-architecture_3.png" alt="시스템 구성도" width="90%">
 </p>
 
 * **제어 흐름**
@@ -240,37 +240,10 @@ HDA 기능을 이용해 사용자가 지정한 기간의 설비 태그 데이터
 
 전체 시스템은 현장 장비, 제어 계층, 운전 계층, 상위 모니터링 계층이 연결되는 구조로 구성했습니다.
 
-```text
-            [Field Device]
-             Sensor / SW
-                  │
-                  ▼
-             ┌─────────┐
-             │   PLC   │
-             └────┬────┘
-                  │
-        ┌─────────┼─────────┐
-        │                   │
-        ▼                   ▼
-   [Actuator]             [HMI]
- Motor / Cylinder            │
- Conveyor                    │
-                             ▼
-                       Operator Control
+<p align="center">
+  <img src="프젝1이미지/3-3.png"  width="90%">
+</p>
 
-             PLC Data
-                  │
-                  ▼
-            KEPServerEX
-                  │
-               OPC UA
-                  │
-                  ▼
-              X-SCADA
-                  │
-                  ▼
-             Monitoring
-```
 
 이를 통해 단순 PLC 프로그램 작성이 아니라 **Field Device → PLC → HMI → OPC Server → SCADA로 이어지는 산업자동화 시스템의 계층 구조와 각 계층의 역할**을 경험했습니다.
 
