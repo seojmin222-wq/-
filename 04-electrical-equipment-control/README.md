@@ -83,7 +83,10 @@
 
 <br>
 
-### 3-1. FLS 기반 급수 자동 / 수동 제어
+<details>
+<summary><b>3-1. FLS 기반 급수 자동 / 수동 제어</b></summary>
+
+<br>
 
 Selector Switch를 이용해 **AUTO / MANUAL Mode를 선택할 수 있는 급수 제어회로**를 설계했습니다.
 
@@ -121,9 +124,14 @@ MC2 순차 기동
   <img src="이미지경로" width="85%" alt="급수 자동 수동 제어회로">
 </p>
 
----
+</details>
 
-### 3-2. Proximity Sensor + Counter 기반 Conveyor 자동화
+<br>
+
+<details>
+<summary><b>3-2. Proximity Sensor + Counter 기반 Conveyor 자동화</b></summary>
+
+<br>
 
 근접센서로 Conveyor를 통과하는 제품을 감지하고 **Counter(CNT)를 이용해 통과 수량을 계수하는 자동화 회로**를 구현했습니다.
 
@@ -153,9 +161,14 @@ Sensor 입력을 단순 ON/OFF 신호로 사용하는 것이 아니라 **제품 
   <img src="이미지경로" width="85%" alt="컨베이어 자동화 회로">
 </p>
 
----
+</details>
 
-### 3-3. Temperature Controller 기반 자동 온도조절
+<br>
+
+<details>
+<summary><b>3-3. Temperature Controller 기반 자동 온도조절</b></summary>
+
+<br>
 
 Thermocouple로 현재 온도를 감지하고 Temperature Controller의 설정값과 비교해 Motor 동작을 자동으로 전환하는 회로를 구성했습니다.
 
@@ -185,9 +198,14 @@ TC 설정값 비교
   <img src="이미지경로" width="85%" alt="온도 자동조절 회로">
 </p>
 
----
+</details>
 
-### 3-4. EOCR + Flicker Relay 기반 보호 및 경보회로
+<br>
+
+<details>
+<summary><b>3-4. EOCR + Flicker Relay 기반 보호 및 경보회로</b></summary>
+
+<br>
 
 각 실습 회로에는 정상 운전 Logic뿐 아니라 **과전류 발생 시 Motor를 차단하는 EOCR 보호회로**를 함께 적용했습니다.
 
@@ -217,9 +235,14 @@ Lamp + Buzzer 경보
   <img src="이미지경로" width="85%" alt="EOCR 과전류 보호 및 플리커 경보회로">
 </p>
 
----
+</details>
 
-### 3-5. Fuse 기반 제어회로 전원 흐름 구성
+<br>
+
+<details>
+<summary><b>3-5. Fuse 기반 제어회로 전원 흐름 구성</b></summary>
+
+<br>
 
 실제 결선 과정에서는 Fuse도 단순히 지정된 단자를 따라 연결하지 않고, **전원 신호가 어느 방향으로 들어오고 Fuse를 거친 뒤 어떤 제어회로로 전달되어야 하는지 직접 판단해 배선**했습니다.
 
@@ -241,9 +264,14 @@ MC / Output
 
 이를 통해 개별 단자를 단순 연결하는 것이 아니라 **전원 → 보호회로 → 제어회로 → 출력으로 이어지는 전체 전류 흐름을 기준으로 Wiring을 구성하는 경험**을 쌓았습니다.
 
----
+</details>
 
-### 3-6. 최종평가 – 이중 EOCR 기반 복합 자동 Sequence
+<br>
+
+<details>
+<summary><b>3-6. 최종평가 – 이중 EOCR 기반 복합 자동 Sequence</b></summary>
+
+<br>
 
 **2026.05.08** 최종평가에서는 앞선 실습에서 사용한 여러 제어기기를 종합해 복합 Sequence 회로를 직접 설계·배선했습니다.
 
@@ -299,6 +327,8 @@ MC2 + Red Lamp
 
 </details>
 
+</details>
+
 ---
 
 <details>
@@ -306,7 +336,10 @@ MC2 + Red Lamp
 
 <br>
 
-### Trouble 01. Timer 동작 후 Reset되지 않는 문제
+<details>
+<summary><b>Trouble 01. Timer 동작 후 Reset되지 않는 문제</b></summary>
+
+<br>
 
 #### Problem
 
@@ -347,9 +380,14 @@ Timer가 매 Cycle마다 정상적으로 Reset되면서 이후 Sequence도 연�
 > **Learned**
 > 제어기가 예상대로 동작하지 않을 때 부품 자체를 먼저 의심하는 것이 아니라, **조건 신호가 실제 어느 Pin까지 전달되는지를 회로도와 실제 Wiring을 비교하며 추적하는 것이 중요하다는 점**을 배웠습니다.
 
----
+</details>
 
-### Trouble 02. Start 입력에도 회로가 기동하지 않는 문제
+<br>
+
+<details>
+<summary><b>Trouble 02. Start 입력에도 회로가 기동하지 않는 문제</b></summary>
+
+<br>
 
 #### Problem
 
@@ -393,6 +431,8 @@ Pin 기능에 맞게 결선한 이후 Start 입력 시 Relay가 정상 동작했
 
 </details>
 
+</details>
+
 ---
 
 <details>
@@ -432,4 +472,3 @@ Pin 기능에 맞게 결선한 이후 Start 입력 시 Relay가 정상 동작했
 이를 통해 회로 설계 능력뿐 아니라 실제 Wiring 과정에서 발생하는 문제를 **회로도 → Pin → Contact → 실제 배선 → 출력 상태 순으로 추적하는 현장형 Troubleshooting 경험**을 쌓았습니다.
 
 </details>
-
