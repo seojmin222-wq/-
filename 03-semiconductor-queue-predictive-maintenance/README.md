@@ -793,31 +793,6 @@ O-ring 적용을 위해 설비 구조와 부품을 여러 차례 수정했지만
 
 <br>
 
-<details>
-<summary><b>Trouble 06. Camera-PLC 연동 시 Barcode 인식 불량</b></summary>
-
-<br>
-
-#### Problem
-
-Vision Camera와 PLC를 연결하는 과정에서 Barcode 인식 결과가 정상적으로 PLC Sequence에 반영되지 않는 문제가 발생했습니다.
-
-#### Analysis
-
-Camera 자체 인식 상태와 PLC 입력 상태를 분리해 확인하며 연동 구간을 점검했습니다.
-
-#### Solution
-
-Camera 설정 및 PLC 연동 조건을 다시 확인해 Barcode 인식 결과가 정상적으로 전달되도록 수정했습니다.
-
-#### Result
-
-Camera 판정 결과를 PLC Sequence에서 정상적으로 사용할 수 있도록 연동 상태를 복구했습니다.
-
-</details>
-
-<br>
-
 </details>
 
 ---
